@@ -1,0 +1,56 @@
+{% extends "base.html.j2" %}
+{% set title %}{{ post.title }} - Blog{% endset %}
+{% set page = 'blog' %}
+
+{% block content %}
+
+<main class="container">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><a href="/blog">Blog</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+        </ol>
+      </nav>
+    </div>
+    <div class="col-md-3">
+      <div class="sidebar-item">
+        <div class="sidebar-heder">
+          <div class="sidebar-name pull-left">Recent Entries</div>
+          <div class="switch pull-right d-block d-md-none d-lg-none d-xl-none">
+            <span class="more-icon">+</span>
+          </div>
+        </div>
+        <div class="sidebar-nav-wrapper">
+          <ul class="sidebar-nav">
+            {% for post in posts %}
+              <li><a href="/blog/{{ post.slug }}">{{ post.title }}</a></li>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="text-page-content">
+        <h1>{{ post.title }}</h1>
+        <div class="d-block w-100 my-3">
+          <a name="post-{{ post.id }}"></a>
+          <div class="d-block w-100 my-2">{{ post.author if post.author else "" | safe }}</div>
+          <div class="d-block w-100">
+            {{ post.content | safe }}
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3 mb-4 d-block w-100 text-large text-center fw-bold">
+        <a href="/blog" class="text-decoration-none">Return to Blog Page</a>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+{% endblock %}

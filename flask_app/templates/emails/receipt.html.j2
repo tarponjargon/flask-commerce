@@ -1,0 +1,300 @@
+{% from 'macros/price.html.j2' import render_price %}
+<html>
+<head>
+<title>{{ config.STORE_NAME }} Catalog</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style>
+a:link {color:#c09f80;}
+a:visited {color:#c09f80;}
+</style>
+<base href="{{ config.IMAGE_BASE }}" />
+</head>
+
+<body bgcolor="#ffffff" leftmargin="0" marginwidth="0" marginheight="0" topmargin="0" text="#999999">
+
+<!--CAMPAIGN DETAILS-->
+<!--Source Code: S_ORDERTY1-->
+<!--Websource: S_ORDERTY1-->
+<!--Content: content=Sale-->
+<!--Coupon Code: ORDERTY1-->
+
+<br>
+<div align="center">
+<table width="600"  cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td align="left" width="400"><a href="{{ config.STORE_URL}}/?source_code=S_ORDERTY1&WEBSOURCE=S_ORDERTY1&COUPON_CODE=ORDERTY1&utm_medium=EMAIL&utm_source=S_ORDERTY1&utm_campaign=S_ORDERTY1"><img src="{{ config.IMAGE_BASE }}/assets/images/logo.svg" width="400" alt="{{ config.STORE_NAME }}&reg; Home" style="display: block;"></a></td>
+<td align="right" width="200"><img src="/assets/images/securelock.jpg" alt="{{ config.STORE_NAME }}&reg; Home" border="0" style="display: block;"></td>
+</tr>
+</table>
+
+<br>
+<div align="center"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:25px;line-height:28px; text-decoration:none;"><b>Thank You for ordering from {{ config.STORE_NAME }}</b></font></div>
+<br>
+
+
+<table cellpadding="0" cellspacing="0" border="0" width="640">
+<tr>
+<td width="640" align="left" style="min-width:640px;" bgcolor="#FFFFFF">
+<font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:18px; text-decoration:none;">
+Dear {{ order.get('bill_fname') }}:
+<br><br>
+Thank you for your recent order. As a small token of our appreciation, we'd like to offer you 10% off your next purchase. You can visit <a href="{{ config.STORE_URL }}" style="color:#c09f80;">{{ config.STORE_NAME }}</a> right now to take advantage of this special offer.
+<br><br>
+If you have questions about your order or anything else at all, our customer service representatives are here to help. You can click here to <a href="{{ config.STORE_URL }}/contact" style="color:#c09f80;">contact {{ config.STORE_NAME }} Customer Service</a> via email, or call us at <br>{{ config.STORE_CUSTOMER_SERVICE }}.</font>
+</td>
+</tr>
+</table>
+
+
+
+
+</div>
+{% endif %}
+
+
+<!-- ORDER SUMMARY START -->
+<table width="640" cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td colspan="4" align="left" style="padding: 15px 0 15px 0;"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:25px;line-height:28px; text-decoration:none;"><b>Order ID {{config.ORDER_PREFIX}}{{ order.get('order_id') }}</b></font></td>
+</tr>
+<tr>
+<td align="left" width="70%" style="border-bottom: 1px solid #000000"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:16px; text-decoration:none;" color="#000000"><b>Your Items</b></font></td>
+<td align="center" width="10%" style="border-bottom: 1px solid #000000"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:16px; text-decoration:none;" color="#000000"><b>Qty.</b></font></td>
+<td align="right" width="10%" style="border-bottom: 1px solid #000000"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:16px; text-decoration:none;" color="#000000"><b>Price</b></font></td>
+<td align="right" width="10%" style="border-bottom: 1px solid #000000"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:16px; text-decoration:none;" color="#000000"><b>Total</b></font></td>
+</tr>
+
+<tr>
+<td colspan="4"></td>
+</tr>
+
+{% for item in order.get('items') %}
+<tr>
+<td align="left" width="70%" style="padding: 10px 0 10px 0;">
+
+<table width="100%" border="0">
+<tr>
+<td align="left" valign="middle" width="30">
+  <img
+    src="{{ config.IMAGE_BASE }}{{ item.get('image') }}"
+    alt="{{ item.get('name') | sanitize }}"
+    class="img-fluid cart-thumb"
+  />
+</td>
+<td align="left" valign="middle" style="padding-left: 5px">
+<font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">
+{{ item.get('name') }} ({{ item.get('skuid') }})
+{% if item.get('personalization') and item.get('personalization') | length %}
+<br />
+<div class="text-muted my-1">
+  {% for qtyeach in item.get('personalization') %}
+    {% set qtyloop = loop %}
+    {% if qtyloop.index <= item.get('quantity') %}
+      {% for prompt in qtyeach %}
+        {{ prompt.get('prompt') }}{% if item.get('quantity') > 1 %}({{ qtyloop.index }}){% endif %}:
+        {{ prompt.get('value') | sanitize }}<br />
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if item.get('prop65') %}
+<div style='width: 100%;font-size: 11px;line-height: 16px;display:block;overflow:hidden;padding: 10px 0;'>
+{{item.get('prop65')}}
+</div>
+{% endif %}
+
+
+</font>
+</td>
+</tr>
+</table>
+</td>
+<td align="center" width="10%"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;"><b>{{ item.get('quantity') }}</b></font></td>
+<td align="right" width="10%"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">{{ render_price(item) }}</font></td>
+<td align="right" width="10%"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">{{ item.total_price | format_currency }}</font></td>
+
+</tr>
+<tr>
+<td colspan="4" width="100%" style="border-top:1px solid #ccc;"></td>
+</tr>
+{% endfor %}
+
+</table>
+<table width="640" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 0;">
+<tr>
+<td align="left" width="74%" valign="top">
+<table border="0" cellspacing="3" cellpadding="0">
+
+<tr>
+<td align="left"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;"><b>Delivery Method</b>:</font></td>
+<td align="left"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">&nbsp;{{ order.selected_method.ship_method_name }}</font></td>
+</tr>
+
+{% if order.notes %}
+<tr>
+<td align="left" colspan="2"><br><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">
+{{ order.notes }}
+</font>
+</td>
+</tr>
+{% endif %}
+</table>
+</td>
+
+<td align="right" width="26%">
+<table width="100%" border="0" cellspacing="3" cellpadding="0">
+<tr>
+<td align="left"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">Subtotal</font></td>
+<td align="right"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">{{ order.total_subtotal | format_currency }}</font></td>
+</tr>
+{% if order.total_discount %}
+<tr>
+<td align="left"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:green;font-size:14px;line-height:22px; text-decoration:none;">Discount</font></td>
+<td align="right"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:green;font-size:14px;line-height:22px; text-decoration:none;">-{{ order.total_discount | format_currency }}</font></td>
+</tr>
+{% endif %}
+<tr>
+<td align="left"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">{{ 'Post-discount' if order.get('total_discount') else ' Merchandise'}} Subtotal</font></td>
+<td align="right"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">{{ (order.get('total_subtotal')-order.get('total_discount')) | format_currency }}</font></td>
+</tr>
+<tr>
+<td align="left"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">Shipping & Processing</font></td>
+<td align="right"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">
+{{ order.total_shipping | format_currency }}
+</font></td>
+</tr>
+<tr>
+<td align="left"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">Est. Tax</font></td>
+<td align="right"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">{{ order.total_tax | format_currency }}</font></td>
+</tr>
+{% if order.surcharge %}
+<tr>
+<td align="left"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">Surcharge</font></td>
+<td align="right"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">{{ order.total_surcharge | format_currency }}</font></td>
+</tr>
+{% endif %}
+{% if order.surcharge %}
+<tr>
+<td align="left"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">Credit</font></td>
+<td align="right"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">-{{ order.total_credit | format_currency }}</font></td>
+</tr>
+{% endif %}
+<tr>
+<td align="left"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;"><b>Order Total</b></font></td>
+<td align="right"><font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;"><b>{{ order.total_order | format_currency }}</b></font></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<!-- ORDER SUMMARY END -->
+
+<!--billing/shipping table-->
+<table width="640" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 0;">
+<tr>
+<td align="left" valign="top" width="300" style="border-bottom: 1px solid #000000">
+<font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:16px; text-decoration:none;" color="#000000"><b>Billing Address</b></font>
+</td>
+<td width="40"></td>
+<td align="left" valign="top" width="300" style="border-bottom: 1px solid #000000">
+<font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:16px; text-decoration:none;" color="#000000"><b>Shipping Address</b></font>
+</td>
+</tr>
+<tr>
+<td align="left" valign="top" style="padding-top:10px">
+<font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;" color="#000000">
+{{ order.get('bill_fname') }} {{ order.get('bill_lname') }} <br>
+{{ order.get('bill_street') }} <br>
+{{ order.get('bill_street2') + '<br />' if order.get('bill_street2') else '' }}
+{{ order.get('bill_city') }},
+{{ order.get('bill_state') }}
+{{ order.get('bill_postal_code') }}{{ '-'+order.get('bill_zip_4') if order.get('bill_zip_4') else '' }}
+{{ order.get('bill_country') }}<br>
+{{ order.get('bill_phone') }}
+</font>
+</td>
+
+<td></td>
+
+<td align="left" valign="top" style="padding-top:10px">
+<font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;" color="#000000">
+{{ order.get('ship_fname') }} {{ order.get('ship_lname') }} <br>
+{{ order.get('ship_street') }} <br>
+{{ order.get('ship_street2') + '<br />' if order.get('ship_street2') else '' }}
+{{ order.get('ship_city') }},
+{{ order.get('ship_state') }}
+{{ order.get('ship_postal_code') }}{{ '-'+order.get('ship_zip_4') if order.get('ship_zip_4') else '' }}
+{{ order.get('ship_country') }}
+</font>
+</td>
+</tr>
+</table>
+
+
+<table cellpadding="0" cellspacing="0" border="0" width="640" style="margin: 10px 0 20px 0;">
+<tr>
+<td align="left">
+<font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">
+If you have questions about your order or anything else at all, our customer service representatives are here to help. You can click here to <a href="{{ config.STORE_URL }}/contact" style="color:#c09f80;">contact {{ config.STORE_NAME }} Customer Service</a> via email, or call us at <br>{{ config.STORE_PHONE }}.
+<br><br>
+<font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:14px;line-height:22px; text-decoration:none;">
+<b>Your Order ID: {{config.ORDER_PREFIX}}{{ order.get('order_id') }}</b>
+<br><br>
+{% if order.get('comments') %}
+<b>Comments</b>:<br>{{ order.get('comments') }}
+<br><br>
+{% endif %}
+
+{% if order.get('gift_message1') %}
+<b>Gift Message</b>:
+<br>
+{{ order.get('gift_message1') + '<br />' if order.get('gift_message1') else '' }}
+{{ order.get('gift_message2') + '<br />' if order.get('gift_message2') else '' }}
+{{ order.get('gift_message3') + '<br />' if order.get('gift_message3') else '' }}
+{{ order.get('gift_message4') + '<br />' if order.get('gift_message4') else '' }}
+{{ order.get('gift_message5') + '<br />' if order.get('gift_message5') else '' }}
+{{ order.get('gift_message6') + '<br />' if order.get('gift_message6') else '' }}
+
+{% endif %}
+
+<br />
+<b>Order Date</b>:{{ order.get('date').strftime("%m/%d/%Y") }}
+<br><br>
+
+{% if order.get('source_code') %}
+<b>Source Code</b>: {{ order.get('source_code') }}
+<br><br>
+{% endif %}
+</font>
+
+<div align="center"><b>Special Preferred Customer Bonus</b></div>
+To thank you for being a good customer, we want to give you a Special Bonus of 10% Off your next order. You can visit our website at <a href="{{ config.STORE_URL }}/?source_code=S00000A&WEBSOURCE=S_ORDERTY1&COUPON_CODE=ORDERTY1&utm_medium=EMAIL&utm_source=S00000A&utm_campaign=S00000A"> {{ config.STORE_URL }}/</a> right now to take advantage of this special offer. With thousands of extraordinary items to choose from, you are sure to find something you'd like, or a perfect gift for a friend.
+<br><br>
+Again thank you for ordering from us.
+<br><br>
+Sincerely,
+<br><br>
+Your friends at {{ config.STORE_NAME }}
+<br><br>
+<i>P.S. This offer is good for a limited time, so don't delay!</i><br><br>
+</font>
+</td>
+</tr>
+<tr>
+<td align="center">
+<a href="{{ config.STORE_URL }}/?source_code=S_ORDERTY1&WEBSOURCE=S_ORDERTY1&COUPON_CODE=ORDERTY1&utm_medium=EMAIL&utm_source=S_ORDERTY1&utm_campaign=S_ORDERTY1" target="_blank" rel="noopener noreferrer nofollow"><img src="{{ config.IMAGE_BASE }}/graphics/checkout/SIGORDERTY1.jpg" width="400" height="200" border="0" alt="10% Off Your Next Order"></a>
+
+<br><br>
+
+<a href="{{ config.STORE_URL }}/?source_code=S_ORDERTY1&WEBSOURCE=S_ORDERTY1&COUPON_CODE=ORDERTY1&utm_medium=EMAIL&utm_source=S_ORDERTY1&utm_campaign=S_ORDERTY1" target="_blank" rel="noopener noreferrer nofollow"><img src="{{ config.IMAGE_BASE }}/assets/images/logo.svg" width="276" border="0" style="display:block;color:#000000;font-weight:bold;font-size:15px;font-family: Arial, Times New Roman, serif;" alt="{{ config.STORE_NAME }}"></a>
+<br>
+<font face="Arial, Verdana, Helvetica, sans-serif" style="color:#000000;font-size:15px;line-height:20px; text-decoration:none;"><b>Call us at: {{ config.STORE_PHONE }}<br><a href="{{ config.STORE_URL }}/>source_code=S_ORDERTY1&WEBSOURCE=S_ORDERTY1&COUPON_CODE=ORDERTY1&utm_medium=EMAIL&utm_source=S_ORDERTY1&utm_campaign=S_ORDERTY1"><font color="006aae">{{ config.STORE_URL }}/</b></a></font>
+
+</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

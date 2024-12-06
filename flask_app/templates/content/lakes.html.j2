@@ -1,0 +1,59 @@
+{% set skuid = sanitize(request.args.get('LAKESKUID')) %}
+{% set lc = sanitize(request.args.get('LC')) %}
+{% set lakeletter = sanitize(request.args.get('LAKELETTER')) %}
+{% set selected_id = session_safe_get("DATA4_" + skuid + "_" + lc) %}
+
+<html>
+<head>
+<title>Personalize Your Item</title>
+<style>
+  body {
+    font-family: Arial, Helvetica, Sans-Serif
+  }
+</style>
+</head>
+<body>
+  <div>
+    <table width="450">
+      <tr>
+        <td>
+          {% for letter in get_alphabet() %}
+            <a href="/lakes?LAKESKUID={{ skuid }}&LAKELETTER={{ letter }}&LC={{ lc }}">{{ letter }}</a>&nbsp;
+          {% endfor %}
+        </td>
+      </tr>
+    </table>
+    <table width="450" cellpadding="6" style="border-bottom: 1px solid #CCC">
+      <tr>
+        <td><b>Lake ID</b></td>
+        <td><b>Lake Name</b></td>
+        <td><b>County / State</b></td>
+      </tr>
+    </table>
+    <table width="450" cellpadding="6">
+      {% for lake in get_lakes(lakeletter) %}
+        {% set data1 = "DATA1_" + skuid + "_" + lc %}
+        {% set data2 = "DATA2_" + skuid + "_" + lc %}
+        {% set data3 = "DATA3_" + skuid + "_" + lc %}
+        {% set data4 = "DATA4_" + skuid + "_" + lc %}
+        <tr>
+          <td>
+            <a name="{{ lake.get('lake_id') }}"></a>
+            <b>
+              <a href="/cart?{{ data1 }}={{ lake.get('lake_name') }}&{{ data2 }}={{ lake.get('lake_county') }}&{{ data3 }}={{ lake.get('lake_state') }}&{{ data4 }}={{ lake.get('lake_id') }}&LAKELETTER_{{ skuid }}_{{ lc }}={{ lakeletter }}" target="_top">
+                {{ lake.get('lake_id') }}
+              </a>
+            </b>
+          </td>
+          <td>{{ lake.get('lake_name') }}
+            {% if str(lake.get('lake_id')) == selected_id %}
+              <b>(your selection)</b>
+            {% endif %}
+          </td>
+          <td>{{ lake.get('lake_county') }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</body>
+</html>

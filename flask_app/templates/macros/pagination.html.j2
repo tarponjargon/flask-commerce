@@ -1,0 +1,92 @@
+{% macro render_pagination(base_url, total_pages = 1) -%}
+{% set page = 1%}
+{% if is_int(request.args.get('page')) %}
+{% set page = int(request.args.get('page')) %}
+{% endif %}
+
+<style>
+  .paging-midpage {
+    display: none!important;
+  }
+</style>
+
+<div class="pagination-wrapper ">
+  <ul class="pagination ss__pagination">
+    <li>
+      {% if page <= 1 %}
+        <span
+          class="text-muted"
+          aria-label="No previous pages"
+          title="No previous pages"
+          aria-hidden="true"
+          style="cursor: default;"
+        ><i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+        </span>
+      {% else %}
+        <a
+          href="{{ base_url }}&page={{ page-1 }}"
+          class="ss__pagination__prev text-decoration-none blue-link"
+          aria-label="Previous"
+          title="Previous"
+        ><i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+        </a>
+      {% endif %}
+    </li>
+    {% for i in range(total_pages) %}
+      {% if page == i+1 %}
+        <li class="current active">
+          <span class="text-muted ss__pagination__page">
+            {{ '... &nbsp;' if i > 3 and i < total_pages }}
+            <u>{{ i+1 }}</u>
+          </span>
+        </li>
+      {% else %}
+        <li class="{{ 'paging-midpage' if i > 3 and i < total_pages }}">
+          <a
+            class="blue-link ss__pagination__page"
+            href="{{ base_url }}&page={{ i+1 }}"
+          >
+            {{ i+1 }}
+          </a>
+        </li>
+      {% endif %}
+    {% endfor %}
+    {% if total_pages > 4 and page != total_pages %}
+      <li>
+        ...
+      </li>
+    {% endif %}
+    <li aria-hidden="true">
+      <span class="text-muted">of</span>
+    </li>
+    <li>
+      <a
+        class="blue-link"
+        href="{{ base_url }}&page={{ total_pages }}"
+      >
+        {{ total_pages }}
+      </a>
+    </li>
+    <li>
+      {% if page == total_pages %}
+        <span
+          class="text-muted"
+          aria-label="Results end"
+          title="Results end"
+          aria-hidden="true"
+          style="cursor: default;"
+        ><i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+        </span>
+      {% else %}
+        <a
+          href="{{ base_url }}&page={{ page+1 }}"
+          class="text-decoration-none blue-link ss__pagination__next"
+          aria-label="Next"
+        >
+          <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+        </a>
+      {% endif %}
+    </li>
+  </ul>
+</div>
+{% endmacro %}

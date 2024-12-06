@@ -1,0 +1,24 @@
+<style>
+  .ss__inline-banner {
+    visibility: hidden;
+  }
+</style>
+<script>
+  const plpBanner = {{ plp_banner | tojson | safe }};
+  document.addEventListener('ssAfterLoad', function() {
+    document.querySelectorAll('.ss__inline-banner').forEach(function(bannerEl) {
+      bannerEl.querySelector('a').setAttribute('href', plpBanner.link);
+      bannerEl.querySelector('img').setAttribute('title', plpBanner.title);
+      bannerEl.querySelector('img').setAttribute('alt', plpBanner.title);
+      const replaceBannerImage = function(url) {
+        const newBanner = new Image();
+        newBanner.src = url;
+        newBanner.onload = function() {
+          bannerEl.querySelector('img').replaceWith(newBanner);
+          bannerEl.style.visibility = 'visible';
+        };
+      }
+      replaceBannerImage("{{ config.IMAGE_BASE }}/graphics/homepage/banners/" + plpBanner.filename);
+    });
+  });
+</script>

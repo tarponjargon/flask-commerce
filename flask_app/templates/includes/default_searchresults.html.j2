@@ -1,0 +1,58 @@
+{% from 'macros/pagination.html.j2' import render_pagination with context %}
+{% from 'macros/errors.html.j2' import render_errors %}
+{% set base_url = sanitize(request.path + "?q=" + request.args.get("q")) %}
+<main class="container">
+	<div class="minheight">
+		<div class="row">
+			<div class="col-12">
+
+        {% if errors | length %}
+
+          {# errors sent from application back-end here #}
+          {{ render_errors(errors) }}
+
+        {% else %}
+          <div class="row">
+            <div class="col-6 d-flex justify-content-start">
+              <h1 class="category-caption">
+                {{ "No " if not search.get('total_products') else '' }}
+                Search Results for "{{ request.args.get('q') | sanitize }}"
+              </h1>
+            </div>
+            {% if search.get('pages') > 1 %}
+            <div class="col-6 d-flex justify-content-end">
+                {{ render_pagination( base_url, search.get('pages') ) }}
+            </div>
+            {% endif %}
+          </div>
+
+          {% if search.get('total_products') %}
+            {% include "partials/category.html.j2" %}
+          {% else %}
+
+            Sorry, we couldn't find what you were looking for.
+
+
+            <div class="w-100 mt-4">
+              {# <!--
+              <div class="fullwidth__holder">
+                <div id="recs-container" class="certona-carousel minheight minheigt-800 loading-mask"></div>
+              </div>
+              --> #}
+            </div>
+
+            {% endif %}
+
+          <div class="row">
+            {% if search.get('pages') > 1 %}
+            <div class="col-12 d-flex justify-content-end mb-4">
+                {{ render_pagination( base_url, search.get('pages') ) }}
+            </div>
+            {% endif %}
+          {% endif %}{# end if/else for errors #}
+
+        </div>
+      </div>
+		</div>
+	</div>
+</main>

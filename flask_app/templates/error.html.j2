@@ -1,0 +1,14 @@
+{% extends "base.html.j2" %}
+{% from 'macros/errors.html.j2' import render_errors %}
+{% set title %}{{ config.STORE_NAME }} - Error{% endset %}
+{% set page = '404' %}
+
+{% block content %}
+
+<main>
+  <div class="container minheight minheight-400">
+    <h1>Problem!</h1>
+    {{ render_errors(errors) }}
+  </div>
+</main>
+{% endblock %}

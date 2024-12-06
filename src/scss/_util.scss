@@ -1,0 +1,529 @@
+.font-smaller {
+  font-size: 0.7rem;
+}
+
+.font-small {
+  font-size: 0.9rem;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.text-md {
+  font-size: 1.3rem;
+}
+.text-lg {
+  font-size: 2rem;
+}
+
+.text-larger {
+  font-size: 1.1rem;
+}
+
+.text-large {
+  font-size: 1.3rem;
+}
+.text-huge {
+  font-size: 1.7rem;
+}
+
+.text-small {
+  font-size: 0.9rem;
+}
+
+.text-smaller {
+  font-size: 0.7rem;
+}
+
+.pull-right {
+  float: right;
+}
+.pull-left {
+  float: left;
+}
+
+.btn-outline-primary {
+  border-color: $brand-primary !important;
+}
+
+.btn-outline-info {
+  border-color: $brand-info !important;
+}
+
+.alert {
+  opacity: 0;
+  z-index: 999999;
+  font-size: 1.5em;
+  padding: 24px;
+  &.alert-dismissible {
+    .close {
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      padding: 0;
+    }
+  }
+}
+
+// for unbxd results and facets, some elements need to be a tags but shouldn't appear as links or be clickable
+.dead-link {
+  text-decoration: none !important;
+  cursor: default !important;
+  color: $gray-darker;
+}
+
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.fadeIn {
+  opacity: 1 !important;
+  animation: fadein 0.2s linear;
+  visibility: visible !important;
+}
+@keyframes fadeout {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.fadeInFast {
+  opacity: 1;
+  animation: fadein 0.1s linear;
+  visibility: visible !important;
+}
+.fadeOut {
+  opacity: 0;
+  transition: visibility 0s 1s, opacity 0.2s linear;
+  visibility: hidden !important;
+}
+
+
+// shows a loading animation.  should be used in conjunction with the JS function removeMask()
+.loading-mask {
+  height: 300px;
+  overflow: hidden;
+  background-position: 50%;
+  background-image: url(../images/loading-drip.gif);
+  background-repeat: no-repeat;
+  background-size: 74px;
+  @media only screen and (min-width: 1024px) {
+    height: 660px;
+    &.mask-fixed {
+      height: 300px;
+    }
+    &.mask-100 {
+      height: 100px;
+    }
+    &.mask-200 {
+      height: 200px;
+    }
+    &.mask-300 {
+      height: 300px;
+    }
+    &.mask-400 {
+      height: 400px;
+    }
+    &.mask-450 {
+      height: 450px;
+    }
+    &.mask-500 {
+      height: 500px;
+    }
+    &.mask-600 {
+      height: 600px;
+    }
+    &.mask-700 {
+      height: 700p;
+    }
+    &.mask-800 {
+      height: 800px;
+    }
+  }
+}
+
+// reserves some vertical space to try to reduce page jank on loading
+.minheight {
+	min-height: 300px;
+	@media only screen and (max-width: 768px) {
+		min-height: 150px;
+	}
+	@media only screen and (max-width: 575px) {
+		min-height: 110px;
+	}
+	@media only screen and (max-width: 1023px) {
+		&.minheight-100 {
+			min-height: 100px;
+		}
+		&.minheight-200 {
+			min-height: 200px;
+		}
+		&.minheight-300 {
+			min-height: 300px;
+		}
+		&.minheight-400 {
+			min-height: 300px;
+		}
+		&.minheight-450 {
+			min-height: 350px;
+		}
+	}
+	@media only screen and (min-width: 1024px) {
+		min-height: 660px;
+		&.minheight-fixed {
+			min-height: 300px;
+		}
+		&.minheight-100 {
+			min-height: 100px;
+		}
+		&.minheight-200 {
+			min-height: 200px;
+		}
+		&.minheight-300 {
+			min-height: 300px;
+		}
+		&.minheight-400 {
+			min-height: 400px;
+		}
+		&.minheight-450 {
+			min-height: 450px;
+		}
+		&.minheight-500 {
+			min-height: 500px;
+		}
+		&.minheight-600 {
+			min-height: 600px;
+		}
+		&.minheight-700 {
+			min-height: 700p;
+		}
+		&.minheight-800 {
+			min-height: 800px;
+		}
+	}
+}
+
+.page-spinner {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-left: -39px;
+  margin-top: -39px;
+  z-index: 999;
+}
+
+.page-spinner:before {
+  position: absolute;
+  z-index: 10000;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.page-spinner .oc3-logo {
+  width: 103px;
+  z-index: 10001;
+  margin: 8px 0 0 -13px;
+  padding: 0;
+  color: #3d3d3d;
+  text-shadow: 0 0 10px #fff;
+}
+
+.page-spinner .oc3-logo img {
+  width: 100%;
+  height: 100%;
+}
+
+.page-spinner .oc3-logo,
+.page-spinner .loading {
+  position: absolute;
+}
+
+.page-spinner .loading {
+  border-radius: 50%;
+  z-index: 10000;
+  width: 78px;
+  height: 78px;
+  border: 0.5rem solid rgba(255, 255, 255, 0.7);
+  border-top-color: rgba(86, 115, 133, 0.7);
+  animation: anim-rotate 1.5s infinite linear;
+  animation-timing-function: ease-in-out;
+  box-shadow: inset 0 0 3px #000;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.old {
+  text-decoration: line-through;
+  color: $dark-gray-alt;
+  font-weight: 600;
+  margin-right: 10px;
+}
+.new {
+  color: $price-sale;
+  font-weight: 600;
+  text-decoration: none;
+}
+.btn {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.btn-check:checked+.btn, :not(.btn-check)+.btn:active, .btn:first-child:active, .btn.active, .btn.show {
+  background-color: $brand-primary !important;
+  border-color: $brand-primary !important;
+}
+
+.btn-primary, .btn-outline-info {
+  &:focus {
+    border-color: #4391FE;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    background-color: $primary-btn-hover;
+    color: $white;
+    font-style: normal;
+    text-decoration: none;
+  }
+}
+
+.bg-dark-gray {
+  background-color: $gray-dark !important;
+}
+.primary-color {
+  color: $brand-primary;
+}
+.btn-default {
+  color: $gray;
+  background-color: $white;
+  border-color: #ccc;
+}
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active,
+.btn-default.active,
+.open .dropdown-toggle.btn-default {
+  color: $gray;
+  background-color: #ebebeb;
+  border-color: #adadad;
+}
+.btn {
+  &:focus {
+    border: 1px solid red;
+    box-shadow: none;
+  }
+  text-transform: uppercase;
+}
+.button-primary {
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: $brand-info !important;
+  white-space: normal;
+  border: 1px solid $border;
+  color: $white !important;
+  font-family: "Nunito", Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 2px;
+  //text-transform: none;
+  font-size: 16px;
+  white-space: nowrap;
+  border-color: $brand-info;
+  &:hover {
+    background-color: $primary-btn-hover !important;
+    color: $white;
+    font-style: normal;
+    text-decoration: none;
+  }
+  &:focus {
+    outline-color: red;
+  }
+}
+.button-secondary {
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  line-height: 1.42857143;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: $dirty-white;
+  color: $gray;
+  font-family: "Nunito", Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 2px;
+  text-transform: none;
+  font-size: 16px;
+  white-space: nowrap;
+  border: 1px solid $divider;
+  &:hover {
+    background-color: $prod-button-hover;
+    color: $gray;
+    font-style: normal;
+    text-decoration: none;
+  }
+}
+.button-orange {
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: $brand-warning;
+  white-space: normal;
+  border: 1px solid $brand-warning;
+  color: #fff;
+  font-family: "Nunito", Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 2px;
+  text-transform: none;
+  font-size: 16px;
+  white-space: nowrap;
+  border-color: $brand-warning;
+  &:hover,
+  &:focus {
+    border-color: #c14e00;
+    background-color: #c14e00;
+    color: #fff;
+    font-style: normal;
+    text-decoration: none;
+  }
+  &.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.65;
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+}
+.button-semi-dark-grey {
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: #d5d5d5;
+  white-space: normal;
+  border: 1px solid #afafaf;
+  color: #444;
+  font-family: "Nunito", Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 2px;
+  text-transform: none;
+  font-size: 16px;
+  white-space: nowrap;
+  border-color: #d5d5d5;
+  &:hover {
+    border-color: #bcbcbc;
+    background-color: #bcbcbc;
+    color: #444;
+    font-style: normal;
+    text-decoration: none;
+  }
+}
+
+//spam honeypot needs to be hidden field
+#form-email-again {
+  display: none;
+}
+
+// cro-metrics mobile nav refresh
+.show {
+  display: block;
+}
+.no-scroll {
+  overflow: hidden !important;
+  height: 100% !important;
+  position: fixed !important;
+  width: 100% !important;
+}
+.hidden {
+  display: none !important;
+}
+.slide-left {
+  transform: translateX(0);
+  transition: transform 0.2s ease-in-out;
+}
+.fixed {
+	overflow: hidden !important;
+	height: 100% !important;
+	position: fixed !important;
+	width: 100% !important;
+}

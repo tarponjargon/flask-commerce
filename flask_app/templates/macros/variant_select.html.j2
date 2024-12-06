@@ -1,0 +1,46 @@
+{% macro render_variant_select(product) -%}
+{% set skuid = product.get('skuid') %}
+{% set multi_dd = 'multi-dd' if product.get('variant_sets') | length > 1 else '' %}
+
+<div class="quantity d-block w-100">
+  <div class="w-100 my-2">
+    {% for variant_set in product.get('variant_sets') %}
+      <select
+        class="form-select sel{{ loop.index}} {{multi_dd}} mb-1"
+        aria-label="{{ variant_set.option_type.name }}"
+        data-menu-type="{{ variant_set.option_type.name }}"
+        name="OPTIONED_{{ skuid }}"
+        id="{{ skuid }}_{{ skuid }}_{{ loop.index }}"
+        data-menu-index="{{ loop.index }}"
+      >
+        <option value="">Select {{ variant_set.option_type.name }}</option>
+          {% for variant in variant_set.variants %}
+          {% set invmessage = "" %}
+          {% if variant.backorder %}
+            {% set invmessage = "Available " + variant.backorder %}
+          {% endif %}
+          {% if product.get('preorder') %}
+            {% set invmessage = "Ships " + variant.backorder %}
+          {% endif %}
+          <option
+            data-pricechange="{{ variant.pricechange }}"
+            value="{{ variant.code }}"
+            {{ 'disabled' if variant.notstocked else '' }}
+            data-invmessage="{{ invmessage }}"
+            data-invlevel=""
+          >{{ variant.description }} {{ invmessage }}
+          </option>
+        {% endfor %}
+      </select>
+
+      {% if loop.index > 1 %}
+        {# disable 2nd 3rd, etc drop-down boxes.  Dynamically populated/enabled by javascript #}
+        <script type="text/javascript">
+          document.getElementById("{{ skuid }}_{{ skuid }}_{{ loop.index }}").disabled=true;
+        </script>
+      {% endif %}
+
+    {% endfor %}
+  </div>
+</div>
+{% endmacro %}

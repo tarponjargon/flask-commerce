@@ -1,0 +1,83 @@
+{% extends "base.html.j2" %}
+{% set title %}Subscribe to Our List{% endset %}
+{% set page = 'generalform' %}
+
+{% block content %}
+
+<main class="container">
+	<div class="row">
+		<div class="col-12">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="/">Home</a></li>
+					<li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+				</ol>
+			</nav>
+		</div>
+		<div class="col-12 mb-4">
+			<h1 class="customer-service">{{ title }}</h1>
+		</div>
+
+		<div class="col-12 col-md-6" data-js="general-form-container">
+			<div class="card h-100" data-js="general-form-content">
+				<div class="card-header"><h2 class="my-0">Get {{ config.STORE_NAME }} deals delivered to your inbox!</h2></div>
+				<div class="card-body p-4">
+					<h5 class="card-title">
+						Enter your e-mail address to subscribe to our list for promotions, discounts and special offers.
+					</h5>
+
+					<div data-js="general-form-error" class="card text-white bg-danger my-4 mx-0 mx-md-4 error-card" style="display: none">
+						<div class="card-body">
+							<p class="card-text"></p>
+						</div>
+					</div>
+
+						<div class="card-body">
+							<p class="card-text">
+								<form data-js="general-form" method="post" action="ajax_optchange">
+									<input type="hidden" name="optin" value="yes" />
+									<input type="hidden" name="request" value="optinrequest" />
+									<div class="form-group row">
+										<div class="col-12 new-mandatory-input-wrapper">
+											<input
+												type="email"
+												class="form-control"
+												required="required"
+												title="Enter a valid e-mail address"
+												placeholder="Your E-Mail"
+												name="bill_email"
+												value="{{ session_safe_get('bill_email') }}"
+											/>
+										</div>
+									</div>
+
+									<div class="form-group row">
+										<div class="col-12 not-mandatory">
+											<button
+												type="submit"
+												class="button-primary submit-button"
+												id="general-submit-{{ get_random_string() }}"
+											>
+												SUBSCRIBE
+											</button>
+										</div>
+									</div>
+								</form>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div data-js="general-success-content" style="display: none">
+					<div class="card text-white bg-success my-4 mx-0 mx-md-4">
+						<div class="card-header"><h2 class="text-white">Subscription Successful</h2></div>
+						<div class="card-body">
+							<p class="card-text text-larger">Your subscription was successful.  Thank you!</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+{% endblock %}

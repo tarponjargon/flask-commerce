@@ -1,0 +1,79 @@
+{% extends "base.html.j2" %}
+
+{% set page = 'category' %}
+{% if category.title_tag %}
+  {% set title %}{{category.title_tag}}{% endset %}
+{% else %}
+  {% set title %}{{ category.category_name}} at {{ config.STORE_NAME }}{% endset %}
+{% endif %}
+{% if category.meta_desc_tag %}
+  {% set metadesc %}{{category.meta_desc_tag}}{% endset %}
+{% else %}
+  {% set metadesc %}Explore {{ category.category_name }} items at {{ config.STORE_NAME }}. Shop Now!{% endset %}
+{% endif %}
+{% set customcanonical = config['STORE_URL'] + category.canonical if category.canonical else "" %}
+{% set searchspring_attrs %}gtmbreadcrumb="{{ get_breadcrumb_string(category.breadcrumb, ' / ') | sanitize }}" category = "{ name: {{ get_breadcrumb_string(category.breadcrumb, ' / ') | sanitize }} }"{% endset %}
+{% set body_attrs %}data-category-banner="{{ category.category_banner }}"
+    data-category-banner-mobile="{{ category.category_banner_mobile }}"
+    data-category-heading="{{ category.h1_tag if category.h1_tag else category.category_name }}"
+    data-custom-canonical="{{ customcanonical }}"{% endset %}
+{% set category_ld_json = category.ld_json %}
+{% set category_map = category.get("category_map") %}
+{% set products = category.get('products', []) %}
+{% from 'macros/highlighted_category_reviews.html.j2' import render_category_highlighted_reviews with context %}
+{% block content %}
+
+<script type=text/javascript>
+  var categoryMap = {{ category_map | serialize | tojson | safe }};
+</script>
+
+<style>
+  #searchspring-ss_hierarchy_container {
+    display: none;
+  }
+</style>
+
+{% if plp_banner %}
+{% include "includes/plp_banner.html.j2" %}
+{% endif %}
+
+{% if category.category_intro %}
+  <template id="category-intro-template">
+    {{ category.category_intro }}
+  </template>
+{% endif %}
+
+
+{% if get_search_state() %}
+  {% include "includes/vendor_productlisting.html.j2" %}
+{% else %}
+  {% include "includes/default_productlisting.html.j2" %}
+{% endif %}
+
+<div class="container">
+  <div class="fullwidth__holder">
+    <div
+      id="recs-container"
+    ></div>
+  </div>
+</div>
+
+{% if category.get('category_copy') %}
+<div class="container w-100 d-block mt-2">
+  {{ category.get('category_copy') }}
+</div>
+{% endif %}
+
+{% if highlighted_reviews | length %}
+{{ render_category_highlighted_reviews(highlighted_reviews) }}
+{% endif %}
+
+{% if category.get('category_code') == 'clothing' %}
+{% include "includes/category_faq_clothing.html.j2" %}
+{% endif %}
+
+{% if category.get('category_code') == 'jewelry' %}
+{% include "includes/category_faq_jewelry.html.j2" %}
+{% endif %}
+
+{% endblock %}

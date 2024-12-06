@@ -1,0 +1,38 @@
+{% for address in addresses %}
+  <input type="hidden" data-js="addressbook-field" data-address="{{ address.get('id') }}" data-name="ship_fname" name="ship_fname_{{ loop.index }}" value="{{ address.get('ship_fname') }}" />
+  <input type="hidden" data-js="addressbook-field" data-address="{{ address.get('id') }}" data-name="ship_lname" name="ship_lname_{{ loop.index }}" value="{{ address.get('ship_lname') }}" />
+  <input type="hidden" data-js="addressbook-field" data-address="{{ address.get('id') }}" data-name="ship_street" name="ship_street_{{ loop.index }}" value="{{ address.get('ship_street') }}" />
+  <input type="hidden" data-js="addressbook-field" data-address="{{ address.get('id') }}" data-name="ship_street2" name="ship_street2_{{ loop.index }}" value="{{ address.get('ship_street2') }}" />
+  <input type="hidden" data-js="addressbook-field" data-address="{{ address.get('id') }}" data-name="ship_city" name="ship_city_{{ loop.index }}" value="{{ address.get('ship_city') }}" />
+  <input type="hidden" data-js="addressbook-field" data-address="{{ address.get('id') }}" data-name="ship_state" name="ship_state_{{ loop.index }}" value="{{ address.get('ship_state') }}" />
+  <input type="hidden" data-js="addressbook-field" data-address="{{ address.get('id') }}" data-name="ship_postal_code" name="ship_postal_code_{{ loop.index }}" value="{{ address.get('ship_postal_code') }}" />
+  <input type="hidden" data-js="addressbook-field" data-address="{{ address.get('id') }}" data-name="ship_country" name="ship_country_{{ loop.index }}" value="{{ address.get('ship_country') }}" />
+{% endfor %}
+
+<div class="card border-dark mb-3 addressbook">
+  <div class="card-body">
+    <div class="card-text position-relative">
+      <div class="row">
+        <div class="col-12 col-md-11">
+          <select class="form-select" name="addressbook_address" data-js="addressbook-address">
+            <option value="">Select from addressbook</option>
+            {% for address in addresses %}
+              <option
+                value="{{ address.get('id') }}"
+                {{'selected' if address.get('id') == session_safe_get('addressbook_address') else '' }}
+              >
+              {{ address.get('ship_fname') }}
+              {{ address.get('ship_lname') }}
+              {{ address.get('ship_street') }}, {{ address.get('ship_city') }}
+              {{ address.get('ship_state') }}, {{ address.get('ship_postal_code') }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 col-md-1 d-flex align-items-center justify-content-end">
+          <a href="javascript:void(0);" style="display: none" class="reset-address" id="reset-shipping-address-link">Reset</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

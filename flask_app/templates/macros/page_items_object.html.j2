@@ -1,0 +1,16 @@
+{% macro render_page_items_object(product, index, list) -%}
+<script>
+  if (typeof window.pageItemsObject !== 'undefined') {
+    window.pageItemsObject['{{ product.get('skuid') }}'] = {
+        'name': "{{ product.name | sanitize }}",
+        'id': "{{ product.get('skuid') }}",
+        'price': {{ product.get('price') }},
+        'category': "{{ replace_double_quote(get_breadcrumb_string(product.get('breadcrumb', []), ' > ')) }}",
+        'list': "{{ list }}",
+        'position': {{ index }},
+        'url': "{{ product.get('url') }}",
+        'maxq': {{ product.get('maxq', 0) }}
+      }
+  }
+</script>
+{%- endmacro %}

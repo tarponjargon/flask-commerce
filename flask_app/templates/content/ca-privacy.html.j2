@@ -1,0 +1,96 @@
+{% extends "base.html.j2" %}
+{% set title %}Your California Privacy Rights{% endset %}
+{% set page = 'caprivacy' %}
+
+{% block content %}
+
+
+<main class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Your California Privacy Rights</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="col-md-12">
+      <h1 class="customer-service">Your California Privacy Rights</h1>
+    </div>
+
+    <div class="col-md-12">
+      <p>If you are a California resident, the California Consumer Privacy Act (CCPA) provides you with certain rights regarding your personal information. This section describes your CCPA rights and how to exercise them.</p>
+      <ul>
+        <li>You have the right to request that we disclose certain information to you about our collection and use of your personal information over the past 12 months. Once we receive and verify your request, we will disclose to you:</li>
+      </ul>
+      <ul>
+        <ul>
+          <li>The categories of personal information we collected about you.</li>
+          <li>The categories of sources from which the personal information is collected.</li>
+          <li>The specific pieces of personal information we collected about you.</li>
+          <li>Our business or commercial purpose for collecting or selling any personal information.</li>
+          <li>The purposes for which the categories of personal information we collected will be used.</li>
+          <li>The categories of third parties with whom we share personal information.</li>
+          <li>If we sold or disclosed your personal information for a business purpose; and, if so, any categories of personal information that were sold or disclosed, and the categories of any third parties to whom personal information was sold or disclosed.</li>
+        </ul>
+      </ul>
+      <ul>
+        <li>
+          You have the right to request that we delete any of your personal information that we collected from you and retained, subject to certain exceptions. Once we receive and verify your request, we will delete (and direct our service providers to delete) your personal information from our records, unless an exception applies.
+          <ul>
+            <li>
+              We may deny your deletion request if retaining the information is necessary for us or our service providers to:
+              <ul>
+                <li>Complete the transaction for which we collected the personal information, provide a good or service that you requested, take actions reasonably anticipated within the context of our ongoing business relationship with you, or otherwise perform our agreement with you.</li>
+                <li>Detect security incidents, protect against malicious, deceptive, fraudulent, or illegal activity, or prosecute those responsible for such activities.</li>
+                <li>Debug products to identify and repair errors that impair existing intended functionality.</li>
+                <li>Exercise free speech, ensure the right of another consumer to exercise their free speech rights, or exercise another right provided for by law.</li>
+                <li>Comply with the California Electronic Communications Privacy Act.</li>
+                <li>Enable internal uses that are reasonably aligned with consumer expectations based on your relationship with us.</li>
+                <li>Comply with a legal obligation.</li>
+                <li>Make other internal and lawful uses of that information that are compatible with the context in which you provided it.</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p>To exercise the rights described above, please submit a verifiable request to us by calling us at {{ config.STORE_CUSTOMER_SERVICE }}, or by <a href="/ca-consumer-privacy">clicking here to contact us</a>.</p>
+      <p>Only you or a person that you authorize to act on your behalf may make a verifiable consumer request related to your personal information. However, you may also make a verifiable consumer request on behalf of your minor child.</p>
+      <p>You may make a verifiable consumer request up to two times within a 12-month period, without charge. Unfortunately, we cannot respond to your request or provide you with personal information if we cannot verify your identity or authority to make the request and confirm that the personal information relates to you. Making a verifiable consumer request does not require you to create an account with us. We will only use personal information provided in a verifiable consumer request to verify the requestor's identity or authority to make the request.</p>
+      <p>We try to respond to a verifiable consumer request within 45 days of its receipt.  If we require more time, we will inform you of the reason and extension time period (up to 90 days). If you have an account with us, we will deliver our response to that account. If you do not have an account with us, we will deliver our response by mail or electronically, at your option. Any disclosures we provide will only cover the 12-month period preceding receipt. The response we provide will also explain any reasons we cannot comply with a request, if applicable. </p>
+      <p>If you wish to opt-out of the sale of personal information, please <a href="/ca-do-not-sell">fill out this form</a>. If exercised, the decision to opt-out will be valid for 12 months, at which time we may request that you authorize the sale of personal information again.</p>
+      <p>We will not discriminate against you for exercising any of your CCPA rights. Unless permitted by the CCPA, we will not:</p>
+      <ul>
+        <li>Deny you goods or services.</li>
+        <li>Charge you different prices or rates for goods or services, including through discounts or other benefits, or imposing penalties.</li>
+        <li>Provide you a different level or quality of goods or services.</li>
+        <li>Suggest that you may receive a different price or rate for goods or services or a different level or quality of goods or services.</li>
+      </ul>
+      <p>We may offer you certain financial incentives permitted by the CCPA that can result in different prices, rates, or quality levels. Any CCPA-permitted financial incentive we offer will reasonably relate to your personal information's value and contain written terms that describe the program's material aspects. Participation in a financial incentive program requires your prior opt in consent, which you may revoke at any time.</p>
+
+      <div class="table-responsive" style="margin-top:20px;">
+        <h2>Below are the metrics for all CCPA requests received by {{ config.STORE_NAME }} in the {{ datetime.now().strftime('%Y') }} calendar year</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Requests to Opt-Out Received and Complied</th>
+              <th>Mean Number of Days to Respond Opt-Out</th>
+              <th>Requests to Know or Delete,  Received and Complied</th>
+              <th>Mean Number of Days to Respond, Request to Know or Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <td>1622</td>
+            <td>2</td>
+            <td>2</td>
+            <td>90</td>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+</main>
+
+{% endblock %}

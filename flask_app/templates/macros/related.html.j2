@@ -1,0 +1,17 @@
+{% from 'macros/page_items_object.html.j2' import render_page_items_object with context %}
+{% from 'macros/quick_add_item.html.j2' import quick_add_item with context %}
+{% macro render_related(related) -%}
+<div id="related-target">
+  <div class="w-100 mx-0 mx-lg-4">
+    <h2 class="you-may-enjoy">
+      RELATED PRODUCTS
+    </h2>
+    {% for product in related %}
+      {% if not product.get('nla') %}
+        {{ render_page_items_object(product, loop.index, "DETAIL RELATED ITEMS") }}
+        {{ quick_add_item(product) }}
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{%- endmacro %}

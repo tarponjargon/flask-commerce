@@ -1,0 +1,12 @@
+{% set heading_banners = get_heading_banners() %}
+{% if heading_banners and heading_banners | length %}
+<div class="offer_banner" role="region" aria-roledescription="carousel">
+  {% for banner in heading_banners %}
+  <div class="w-100 offer-slide">
+    <a
+      href="{{ banner.get('banner_link') }}"
+      ><span class="d-none d-md-block">{{ banner.get('banner_text') }}</span><span class="d-block d-md-none font-small">{{ banner.get('banner_mobile_text') }}</span></a>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,42 @@
+{% from 'macros/pagination.html.j2' import render_pagination with context %}
+
+<main class="container">
+	<div class="minheight">
+		<div class="row">
+			<div class="col-lg-12">
+				<nav class="bg-white" aria-label="breadcrumb">
+					<ol class="breadcrumb mb-1 mb-xl-3">
+						<li class="breadcrumb-item"><a href="/">Home</a></li>
+            {% for breadcrumb in category.breadcrumb %}
+              <li class="breadcrumb-item active" aria-current="page">
+                <span typeof="v:Breadcrumb">
+                  <a href="{{ breadcrumb.path }}" rel="v:url" property="v:title">{{ breadcrumb.category_name }}</a>
+                </span>
+              </li>
+            {% endfor %}
+					</ol>
+				</nav>
+			</div>
+			<div class="col-12">
+        <div class="row">
+          <div class="col-6 d-flex justify-content-start">
+            <h1 class="category-caption">{{ category.get('category_name') }}</h1>
+          </div>
+          {% if category.get('pages') > 1 %}
+          <div class="col-6 d-flex justify-content-end">
+              {{ render_pagination( sanitize(request.path + "?cat=1"), category.get('pages') ) }}
+          </div>
+          {% endif %}
+        </div>
+        {% include "partials/category.html.j2" %}
+        <div class="row">
+          {% if category.get('pages') > 1 %}
+          <div class="col-12 d-flex justify-content-end mb-4">
+              {{ render_pagination( sanitize(request.path + "?cat=1"), category.get('pages') ) }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+		</div>
+	</div>
+</main>

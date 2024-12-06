@@ -1,0 +1,84 @@
+{% set page = 'buildorder' %}
+{% set updatepage = '/quickorder' %}
+{% from 'macros/cart_items.html.j2' import render_cart_items with context %}
+{% from 'macros/quick_add_item.html.j2' import quick_add_item with context %}
+
+<div class="col-12">
+  <div id="cart-container">
+
+    {# if there are valid skus, save to sessionstorage to track attribution #}
+    {% if validskus | length > 0 %}
+      {% for sku in validskus %}
+        <script>
+          sessionStorage.setItem('{{ sku }}', JSON.stringify({
+            'item_list_name': "Quick Order",
+            'item_list_id': "Quick Order",
+            'timestamp': Date.now(),
+          }))
+        </script>
+      {% endfor %}
+    {% endif %}
+
+    {# if the cart lineitem limit is reached, alert the customer and tell which skues weren't added #}
+    {% if overlimit | length > 0 %}
+    <div class="well error-item-container">
+      <h3>The following items were not added to your cart because the limit of {{ config.LINEITEM_LIMIT }} cart items has been reached.  Please complete your current order and place another:</h3>
+      <ul>
+          {% for sku in overlimit %}
+            <li>{{ sku }}</li>
+          {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {# if there are skus entered that aren't found, list them for the shopper #}
+    {% if invalidskus | length > 0 %}
+    <div class="well error-item-container">
+      <h3>The following items are not available:</h3>
+      <ul>
+          {% for sku in invalidskus %}
+            <li>{{ sku }}</li>
+          {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {# prompt customer for options if any optioned items are selected #}
+    {% if optioned | length > 0 %}
+      <div class="well bg-white" data-js="unconfigured-skuids">
+        <h3>Please select options for the following item(s)	:</h3>
+        {% for product in optioned %}
+          {{ quick_add_item(product) }}
+        {% endfor %}
+      </div>
+      {% if optioned | length > 1 %}
+        <div class="w-100 text-center my-4">
+          <button class="btn btn-info btn-block btn-xl" id="quick-add-all-btn">UPDATE ALL ITEMS <i class="fa fa-arrow-up"></i></button>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {# the cart #}
+    {% if not g.cart.is_empty() %}
+    <div class="w-100">
+      <h4 class="ms-2 quick-add-cart-heading">Your Cart Items</h4>
+      {{ render_cart_items(g.cart, cart) }}
+
+
+      <div class="cart-shipping-details">
+        <div class="row m-0">
+          <div class="col-lg-4">
+            {% include "includes/tax_calculator.html.j2" %}
+          </div>
+          <div class="col-lg-4">
+          </div>
+          <div class="col-lg-4">
+            {% include "includes/cart_summary.html.j2" %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>

@@ -1,0 +1,936 @@
+
+// hack to fix this problem with fancybox https://github.com/fancyapps/fancybox/issues/2182
+// @function max($numbers...) {
+// 	@return m#{a}x(#{$numbers});
+// }
+
+// @function min($numbers...) {
+// 	@return m#{i}n(#{$numbers});
+// }
+// @import "~@fancyapps/fancybox/dist/jquery.fancybox.css";
+
+
+/*product page*/
+.size-sel {
+	background-color: white;
+	border: 1px solid $gray-light;
+  min-width: 88px;
+  border-radius: 5px;
+  font-weight: 700;
+  box-shadow: 0 0 5px 0 $gray-lighter;
+  transition: .2s linear;
+	display: inline-block;
+	font-size: 15px;
+	margin: 0.25em;
+	padding: 1em 1.5em;
+  text-align: center;
+	cursor: pointer;
+
+	&:hover {
+		background-color: $brand-info-hover;
+		border: 1px solid transparent;
+		color: white;
+	}
+	&.selected,
+  &[data-option-selected="1"] {
+		background-color: $brand-info;
+		border: 1px solid transparent;
+		color: white;
+	}
+	&.disabled, &[data-option-nla="1"] {
+		border: 1px solid #ccc;
+		background: linear-gradient(to top right, #fff calc(50% - 1px), #ccc, #fff calc(50% + 1px));
+		color: #ccc;
+    cursor: not-allowed;
+    pointer-events: all !important;
+	}
+
+  @media (max-width: 400px) {
+    min-width: auto;
+    padding: 10px;
+  }
+
+
+}
+
+.product-details {
+	.product-title {
+		.product-name {
+			font-family: "Nunito", Helvetica, sans-serif;
+			font-weight: 300;
+			font-style: normal;
+			color: #333;
+			line-height: 150%;
+			font-size: 32px;
+			margin: 15px 0;
+			@media screen and (max-width: 767px) {
+				margin: 14px 0 14px 0;
+				font-size: 18px;
+			}
+		}
+	}
+  .product-author {
+    font-size: 1.1rem;
+    margin: -15px 0 0 0;
+    line-height: normal;
+  }
+	.product-price {
+		text-align: left;
+		margin: 0;
+		font-size: 28px;
+		color: #333;
+		font-weight: 600;
+		@media screen and (max-width: 767px) {
+			font-size: 14px;
+		}
+		.price-original {
+			color: $dark-gray-alt;
+			text-decoration: line-through;
+			text-decoration-color: $dark-gray;
+			margin: 0 10px 0 0;
+			// @media screen and (max-width: 767px) {
+			// 	font-size: 14px;
+			// }
+		}
+		.price-sale {
+			color: $price-sale;
+		}
+	}
+	.product-rating {
+		padding: 15px 0 15px 0;
+		display: block;
+		.pr-rating-stars {
+			display: inline-block;
+			vertical-align: middle;
+			padding: 0 15px 0 0;
+		}
+		.pr-snippet-read-and-write {
+			display: inline-block;
+			vertical-align: middle;
+			.pr-snippet-review-count {
+				font-size: 14px !important;
+				padding: 0 10px 0 0;
+				color: $brand-info;
+			}
+			.pr-snippet-write-review-link {
+				font-size: 14px !important;
+				padding: 0 0 0 10px;
+				color: $brand-info;
+				border-left: 1px solid #d5d5d5;
+			}
+		}
+	}
+
+	.social-block {
+		min-height: 37px;
+    .pinterest-button {
+      margin-top: -3px;
+    }
+	}
+	.horizontal-divider {
+		border-top: 1px #d5d5d5 solid;
+	}
+  .product-sku-wrapper {
+		display: inline-block;
+		.sku {
+      font-family: "Nunito", Helvetica, sans-serif;
+			font-weight: 400;
+			font-style: normal;
+			vertical-align: middle;
+			color: $dark-gray-alt;
+      border-right: none;
+      margin: 7px 0 0 0;
+			font-size: 14px;
+			padding: 0 7px 0 0;
+			@media screen and (max-width: 767px) {
+				font-size: 12px;
+				padding: 0 10px 0 0;
+				margin: 10px 8px 0 0;
+			}
+		}
+	}
+	.product-format-wrapper {
+		display: inline-block;
+		.format {
+      font-family: "Nunito", Helvetica, sans-serif;
+			font-weight: 400;
+			font-style: normal;
+			vertical-align: middle;
+			color: $dark-gray-alt;
+			font-size: 14px;
+			padding: 0 7px 0 0;
+			padding: 0 7px 0 7px;
+			@media screen and (max-width: 767px) {
+				font-size: 12px;
+				padding: 0 10px 0 0;
+				margin: 10px 8px 0 0;
+			}
+		}
+	}
+	.product-pages-wrapper {
+		display: inline-block;
+		.pages {
+      font-family: "Nunito", Helvetica, sans-serif;
+			font-weight: 400;
+			font-style: normal;
+			vertical-align: middle;
+			color: $dark-gray-alt;
+			font-size: 14px;
+			padding: 0 7px 0 0;
+			margin: 7px 7px 0 0;
+			@media screen and (max-width: 767px) {
+				font-size: 12px;
+				padding: 0 10px 0 0;
+				margin: 10px 8px 0 0;
+			}
+		}
+	}
+	.product-year-wrapper {
+		display: inline-block;
+		.year {
+      font-family: "Nunito", Helvetica, sans-serif;
+			font-weight: 400;
+			font-style: normal;
+			vertical-align: middle;
+			color: $dark-gray-alt;
+			font-size: 14px;
+			padding: 0 7px 0 0;
+			margin: 7px 7px 0 0;
+			@media screen and (max-width: 767px) {
+				font-size: 12px;
+				padding: 0 10px 0 0;
+				margin: 10px 8px 0 0;
+			}
+		}
+	}
+	.product-publisher-wrapper {
+		display: inline-block;
+		.publisher {
+      font-family: "Nunito", Helvetica, sans-serif;
+			font-weight: 400;
+			font-style: normal;
+			vertical-align: middle;
+			color: $dark-gray-alt;
+			font-size: 14px;
+			padding: 0 7px 0 0;
+			margin: 7px 7px 0 0;
+			@media screen and (max-width: 767px) {
+				font-size: 12px;
+				padding: 0 10px 0 0;
+				margin: 10px 8px 0 0;
+			}
+		}
+	}
+	.product-isbn-wrapper {
+		display: inline-block;
+		.isbn {
+      font-family: "Nunito", Helvetica, sans-serif;
+			font-weight: 400;
+			font-style: normal;
+			vertical-align: middle;
+			color: $dark-gray-alt;
+			font-size: 14px;
+			padding: 0 7px 0 0;
+			margin: 7px 7px 0 0;
+			@media screen and (max-width: 767px) {
+				font-size: 12px;
+				padding: 0 10px 0 0;
+				margin: 10px 8px 0 0;
+			}
+		}
+	}
+	.product-description {
+		padding: 10px 0 10px 0;
+		@media screen and (max-width: 767px) {
+			padding: 10px 0 18px 0;
+		}
+		.product-description-text {
+			font-family: "Nunito", Helvetica, sans-serif;
+			font-weight: 400;
+			font-style: normal;
+			font-size: 16px;
+			.more-span {
+				.more-link {
+					font-family: "Nunito", Helvetica, sans-serif;
+					font-weight: 400;
+					font-style: normal;
+					display: inline-block;
+					white-space: nowrap;
+					cursor: pointer;
+					font-size: 16px;
+				}
+				.more-arrow {
+					display: inline-block;
+					font: normal normal normal 14px/1 FontAwesome;
+					font-size: inherit;
+					text-rendering: auto;
+					-webkit-font-smoothing: antialiased;
+					font-size: 12px;
+				}
+			}
+		}
+	}
+	.variants-wrapper {
+		margin: 0 0 20px 0;
+		padding: 0 0 0 0;
+		background-color: #f3f3f3;
+	}
+	.quantity {
+		padding: 15px 0 20px 0;
+		margin: 0 0 0 0;
+		display: flex;
+		align-items: center;
+		background-color: #f3f3f3;
+		@media screen and (max-width: 767px) {
+			padding: 10px 15px 10px 15px;
+			//margin: 0 -15px 0 -15px;
+		}
+		.quantity-label {
+			font-size: 18px;
+			padding: 0 10px 0 20px;
+			font-family: "Nunito", Helvetica, sans-serif;
+			font-weight: 400;
+			font-style: normal;
+			@media screen and (max-width: 767px) {
+				padding: 0 10px 0 0;
+				font-size: 13px;
+			}
+		}
+		.input-group-wrapper {
+			display: inline-flex;
+			width: 100%;
+			.input-group {
+				display: table;
+				.quantity-field {
+					display: table-cell;
+					height: 52px;
+					width: 80px;
+					font-size: 24px;
+					padding: 5px;
+					vertical-align: middle;
+					text-align: center;
+          border-radius: 3px;
+					// @media screen and (max-width: 767px) {
+					// 	height: 32px;
+					// 	width: 70px;
+					// 	font-size: 16px;
+					// }
+				}
+				.add-to-cart-button-in-stock {
+					display: table-cell;
+					width: 100%;
+					padding: 0px 20px 0 18px;
+					vertical-align: middle;
+					.button-primary {
+						font-size: 24px;
+						height: 52px;
+						font-family: "Nunito", Helvetica, sans-serif;
+						font-weight: 400;
+						font-style: normal;
+						border-radius: 3px;
+						padding: 0 20px 0 18px;
+						background-color: $brand-info;
+						border-color: $brand-info;
+						margin-top: -2px;
+						//max-width: 185px;
+						// @media screen and (max-width: 767px) {
+						// 	height: 32px;
+						// 	width: 113px;
+						// 	font-size: 12px;
+						// }
+					}
+				}
+			}
+		}
+	}
+	.divider-wrapper {
+		background-color: #f3f3f3;
+		padding: 0 20px 0 20px;
+		margin: 0 0 0 0;
+		@media screen and (max-width: 767px) {
+			padding: 0 15px 0 15px;
+			margin: 0 -15px 0 -15px;
+		}
+	}
+	.product-stock-status {
+		padding: 15px 0 15px 0;
+		margin: 0 0 15px 0;
+		background-color: #f3f3f3;
+    text-align: left;
+    border: 1px solid $gray-lighter;
+		font-size: 14px;
+		@media screen and (max-width: 767px) {
+			font-size: 10px;
+			padding: 7px 15px 7px 15px;
+		}
+		&.product-status-in-stock {
+			.stock-status {
+				color: #009b33;
+			}
+		}
+		&.product-status-preorder {
+			.stock-status {
+				color: #f99e00;
+			}
+		}
+		&.product-status-backorder {
+			.stock-status {
+				color: #e60000;
+			}
+		}
+		.stock-status {
+			font-size: 16px;
+			padding: 0 10px 0 20px;
+			text-decoration: underline;
+			font-family: "Nunito"-Medium, Helvetica, sans-serif;
+			font-weight: 600;
+			font-style: normal;
+			text-decoration: underline;
+			margin-right: 5px;
+			white-space: nowrap;
+			float: left;
+			@media screen and (max-width: 767px) {
+				font-size: 10px;
+				padding: 0 5px 0 0;
+			}
+		}
+		.stock-status-details {
+			font-family: "Nunito", Helvetica, sans-serif;
+			font-weight: 400;
+			font-style: normal;
+			.stock-message-highlight {
+				padding: 0 0 0 5px;
+				font-family: "Nunito"-Bold, Helvetica, sans-serif;
+				font-weight: 700;
+				font-style: normal;
+				font-size: 16px;
+				@media screen and (max-width: 767px) {
+					font-size: 10px;
+				}
+			}
+		}
+	}
+
+  .options-matrix {
+    background-color: #f3f3f3;
+    h3 {
+      font-size: 1.5rem;
+    }
+  }
+
+	.product-itunes-wrapper {
+		height: 58px;
+		display: inline-block;
+		width: 50%;
+		background-color: #f3f3f3;
+		@media screen and (max-width: 767px) {
+			height: 50px;
+		}
+		.product-itunes-panel {
+			font-size: 16px;
+			padding: 15px 0 24px 20px;
+			margin: 0 0 0 0;
+			height: 58px;
+			background-color: #f3f3f3;
+			@media screen and (max-width: 767px) {
+				font-size: 13px;
+				background-color: #f3f3f3;
+				padding: 15px 15px 15px 15px;
+				margin: 0 -15px 0 -15px;
+				height: 50px;
+			}
+		}
+	}
+	.product-add-to-space-wrapper {
+		line-height: 58px;
+		height: 58px;
+		font-size: 14px;
+		margin: 0 0 0 0;
+		background-color: #f3f3f3;
+		display: inline-block;
+		float: right;
+		vertical-align: middle;
+		width: 50%;
+		@media screen and (max-width: 767px) {
+			display: inline-block;
+			float: right;
+			vertical-align: middle;
+			line-height: 50px;
+			height: 50px;
+			font-size: 10px;
+			width: 50%;
+			background-color: #f3f3f3;
+			margin: 0 -15px 0 0;
+		}
+		.add-to-wishlist-selector {
+			margin: 0 30px 0 0;
+			float: right;
+			.profile-icon {
+				width: 15px;
+				height: auto;
+				display: inline-block;
+				@media screen and (max-width: 767px) {
+					width: 10px;
+				}
+			}
+		}
+	}
+}
+h2.you-may-enjoy {
+	font-family: "Nunito", Helvetica, sans-serif;
+	font-weight: 300;
+	font-style: normal;
+	font-size: 24px;
+	display: block;
+	height: 100%;
+	float: left;
+	margin-bottom: 0;
+	padding: 45px 15px 32px 0;
+	width: 100%;
+}
+.product-tabs {
+	margin-left: 0;
+	margin-right: 0;
+	padding: 20px 0 0 0;
+	@media screen and (max-width: 767px) {
+		padding: 5px 0 0 0;
+	}
+	.nav-tabs {
+		& > li {
+			& > a {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background-color: $gray-lighter;
+				color: $brand-primary;
+				height: 100%;
+				border-radius: 0;
+				font-size: 20px;
+				padding: 10px 0 10px 0;
+				line-height: 1.42857143;
+				height: 50px;
+				position: relative;
+				margin-right: 2px;
+				&.active {
+					background-color: $brand-primary;
+					color: #fff;
+					&:after {
+						content: "";
+						position: absolute;
+						bottom: -8px;
+						left: 50%;
+						border-width: 8px 8px 0;
+						border-style: solid;
+						border-color: $brand-primary transparent;
+						display: block;
+						width: 0;
+						margin-left: -10px;
+					}
+				}
+			}
+		}
+	}
+	.card-header {
+		background-color: $brand-primary;
+		position: relative;
+		h2, h5 {
+			@media screen and (max-width: 767px) {
+				font-size: 1rem;
+			}
+			a {
+				color: #fff;
+				display: block;
+				text-decoration: none;
+			}
+		}
+		&.active {
+			&:after {
+				content: "";
+				position: absolute;
+				bottom: -8px;
+				left: 50%;
+				border-width: 8px 8px 0;
+				border-style: solid;
+				border-color: $brand-primary transparent;
+				display: block;
+				width: 0;
+				margin-left: -10px;
+			}
+		}
+	}
+	.tab-content {
+		padding: 10px;
+		text-align: center;
+		@media screen and (max-width: 767px) {
+			padding: 10px 0;
+			//margin: 0 -15px;
+		}
+		& > .tab-pane {
+			padding: 10px;
+			@media screen and (max-width: 767px) {
+				padding: 0px;
+			}
+		}
+		.text-content-tab {
+			text-align: left;
+			font-size: 1.2rem;
+			.desc-note {
+				margin: 10px 0;
+				font-weight: bold;
+				font-size: 1.3rem;
+			}
+			font[color="red"] strong {
+				color: #de0000;
+			}
+		}
+		.video-container {
+			position: relative;
+			padding-bottom: 300px;
+			//padding-top: 30px;
+			height: 0;
+			overflow: hidden;
+			.frame {
+				width: 296px;
+				height: 166px;
+				padding: 5px 0 0 0;
+				@media screen and (min-width: 768px) {
+					width: 512px;
+					height: 288px;
+				}
+			}
+			// iframe,
+			// object,
+			// embed {
+			// 	position: absolute;
+			// 	top: 0;
+			// 	left: 0;
+			// 	width: 100%;
+			// 	height: 100%;
+			// }
+		}
+	}
+	.nav-tabs {
+		display: none;
+	}
+
+	@media screen and (min-width: 768px) {
+		.nav-tabs {
+			display: flex;
+		}
+
+		.card {
+			border: none;
+		}
+
+		.card .card-header {
+			display: none;
+		}
+
+		.card .collapse {
+			display: block;
+		}
+	}
+
+	@media screen and (max-width: 767px) {
+		.tab-pane {
+			display: block !important;
+			opacity: 1;
+		}
+	}
+}
+.video-link {
+	margin-top: 20px;
+	padding: 20px 0;
+	display: block;
+	border-top: 1px solid $divider;
+	.video-scroll-thumbnail {
+		img {
+			width: 100px;
+			height: auto;
+		}
+	}
+}
+
+.product-carousel {
+  .slider-single {
+    & > div:nth-child(n+2) img {
+      display: none;
+     }
+
+     &.slick-initialized > div:nth-child(n+2) img {
+      display: block
+    }
+  }
+  .slider-nav {
+    max-height: 140px;
+    overflow: hidden;
+    visibility: hidden;
+
+    &.slick-initialized {
+      max-height: initial;
+      visibility: visible;
+    }
+    .slick-slide {
+      cursor: pointer;
+      &.is-active {
+        border-bottom: 1px solid $brand-primary;
+      }
+    }
+
+    // .slick-next:before {
+    //   font-family: "FontAwesome";
+    //   content: "\f105";
+    //   color: $dark-gray;
+    //   font-size:54px;
+    // }
+    // .slick-prev:before {
+    //   font-family: "FontAwesome";
+    //   content: "\f104";
+    //   color: $dark-gray;
+    //   font-size:54px;
+    // }
+
+    .slick-arrow {
+      // background: transparent!important;
+      &.disabled {
+        cursor: not-allowed;
+      }
+    }
+    .slick-next:not(.disabled):before,
+    .slick-prev:not(.disabled):before {
+      opacity:1;
+    }
+  }
+}
+
+// or remove original style
+.product-details {
+	.product-title {
+		.product-name {
+			@media screen and (max-width: 767px) {
+				font-size: 22px;
+			}
+		}
+	}
+	.product-price {
+		@media screen and (max-width: 767px) {
+			font-size: 20px;
+		}
+	}
+  .product-secondary-price {
+    background-color: #f3f3f3;
+  }
+	.product-stock-status {
+		padding: 15px 0 15px 20px;
+	}
+	.product-stock-status {
+		font-weight: 500;
+		font-size: 1.4rem;
+	}
+	.quantity {
+		select.multi-dd {
+			margin-bottom: 10px;
+		}
+	}
+
+	@media screen and (min-width: 765px) and (max-width: 991px) {
+		.add-btn-vis-fix {
+			display: none;
+		}
+	}
+	@media screen and (max-width: 400px) {
+		.add-btn-vis-fix {
+			display: none;
+		}
+	}
+}
+
+.quick-add-detail-container {
+  [data-js="detail-item-price"] {
+    text-align: center;
+    h3 {
+      font-size: 1.1rem;
+    }
+  }
+  a {
+    text-decoration: none;
+  }
+}
+
+[data-view="detail"] .quick-add-detail-container .quick-add-remove {
+	display: none;
+}
+
+.pr-rating-stars i {
+	margin: 7px 0;
+}
+
+.sticky-atc {
+  position: fixed;
+  bottom: 0;
+  background: #F1F1F1;
+  left: 0;
+  right: 0;
+  padding: 10px 20px;
+  z-index: 1000;
+
+  .sticky-atc-btn {
+    font-size: 24px;
+    height: 54px;
+    border-radius: 3px;
+    background-color: $brand-info;
+    border-color: $brand-info;
+    width: 100%;
+    color: white;
+
+    @media (max-width: 400px) {
+      .add-btn-vis-fix {
+        display: none;
+      }
+    }
+  }
+}
+
+.modal-open {
+  .sticky-atc {
+    display: none!important;
+  }
+}
+
+// "unlicensed cloudzoom" fix.  not sure why it's showing, we have a license
+.cloudzoom-blank > [style$="background-color: rgb(221, 0, 0);"] {
+  display: none;
+}
+
+// vertical positioning of carousel
+
+.vertical-carousel {
+  position: relative;
+  .slider-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px !important;
+    overflow: hidden;
+    height: calc(100% - 54px);
+    background: #fff;
+    margin: 0 0 0 -15px;
+  }
+  .slick-prev,
+  .slick-next {
+    left: calc(50% - 19px);
+    transform: translate(-50%, 0);
+    top: inherit;
+  //   background: transparent;
+  //   width: 60px;
+  //   text-align: center;
+  //   border: none
+  }
+  .slick-prev{
+    top: 0;
+    transform: rotate(90deg);
+    // &::before {
+    //   font-family: "FontAwesome";
+    //   content: "\f104";
+    //   color: $dark-gray;
+    //   font-size: 54px;
+    // }
+  }
+  .slick-next {
+    top: calc(100% - 31px);
+    transform: rotate(90deg);
+    // &::before {
+    //   font-family: "FontAwesome";
+    //   content: "\f105";
+    //   color: $dark-gray;
+    //   font-size: 54px;
+    // }
+  }
+  .slider-nav .slick-list.draggable{
+    padding: 0 !important;
+  }
+  .slick-dots{
+    width: calc(100% - 90px);
+  }
+  @media only screen and (min-width: 1024px){
+    .minheight.minheight-450 {
+        padding-left: 90px;
+    }
+  }
+}
+
+
+/* select optiones reminder */
+.select-options-reminder {
+  position: absolute;
+  width: 100vw;
+  left: -88px;
+  display: flex;
+  justify-content: center;
+  bottom: 71px;
+
+  .body {
+    margin: auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    background: #d9d9d9;
+    background: #fff;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    width: 335px;
+    height: 72px;
+    color: #9c2626;
+    text-align: center;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px; /* 111.111% */
+    text-transform: uppercase;
+
+    .close {
+      position: absolute;
+      right: 10px;
+      top: 5px;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -10px; /* Adjust based on the size of the triangle */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent; /* Adjust size of the triangle */
+      border-right: 10px solid transparent; /* Adjust size of the triangle */
+      border-top: 10px solid #fff; /* Color and size of the triangle */
+      /* Optionally, add a border to the triangle for consistency */
+      border-top-color: #fff;
+    }
+  }
+
+  &.hide {
+    display: none;
+  }
+}
+
+.img-overlay-wrap {
+  position: relative;
+  display: inline-block; /* <= shrinks container to image size */
+  transition: transform 150ms ease-in-out;
+}
+
+.img-overlay-wrap img { /* <= optional, for responsiveness */
+   display: block;
+   max-width: 100%;
+   height: auto;
+}
+
+.img-overlay-wrap svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+}

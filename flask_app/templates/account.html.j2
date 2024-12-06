@@ -1,0 +1,10 @@
+{% extends "base.html.j2" %}
+{% set title %}Welcome to Your Account at {{ config.STORE_NAME }}{% endset %}
+{% set page = 'members' %}
+{% block content %}
+
+<main class="account-container">
+  <div data-view="account" class="loading-mask"></div>
+</main>
+
+{% endblock %}

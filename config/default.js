@@ -1,0 +1,21 @@
+// configuration variables for the front-end app that are common to all environemnts
+module.exports = {
+  storeName: "FlaskCommerce",
+  storeUrl: "https://flaskcommerce.thewhiteroom.com",
+  imageBase: "https://flaskcommerce.thewhiteroom.com",
+  storeAddress1: "1234 Test Street",
+  storeCity: "Springfield",
+  storeState: "MA",
+  storeZip: "01101",
+  storePhone: "800-123-4567",
+  storePhoneMobile: "800-123-4567",
+  siteCode: "flaskcommerce",
+  masterBrand: "Master Brands",
+  signupCoupon: "EMSYAY",
+  captureModalDelay: 5000,
+  alertTimeout: 3500,
+  sessionTimeout: 1800,
+  orderPrefix: "H",
+  missingImage: "/assets/images/default_image.png",
+  debounceDefault: 40,
+};

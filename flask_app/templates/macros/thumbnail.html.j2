@@ -1,0 +1,81 @@
+{% from 'macros/price.html.j2' import render_price %}
+{% macro render_thumbnail(product) -%}
+  <div class="product-wrapper h-100">
+    <div
+      class="product"
+      data-id="{{ product.get('skuid') }}"
+      data-name="{{ product.get('name') }}"
+      data-price="{{ product.get('price') }}"
+      data-url="{{ product.get('url') }}"
+    >
+      <div class="product-image">
+        <a
+          href="{{ product.get('url') }}"
+          class="search-product-link"
+          data-skuid="{{ product.get('url') }}"
+        >
+          <img
+            src="{{ image_path(product.get('images', {}).get('smlimg', "")) }}"
+            alt="{{ product.get('name') | sanitize }}"
+            class="img-fluid"
+            onerror="imageError(this)"
+          >
+        </a>
+      </div>
+      {% if product.get('badges') %}
+        <div class="badge-wrapper">
+          {% for badge in product.get('badges') %}
+          <div class="badges {{badge}}"></div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <div class="product-title">
+        <a
+          class="search-product-link"
+          href="{{ product.get('url') }}"
+          data-skuid="{{ product.get('skuid') }}"
+        >
+        <span>{{ product.get('name') }}</span>
+        </a>
+      </div>
+      <div class="product-price">
+        {{ render_price(product) }}
+      </div>
+
+      <div class="rating text-center">
+        {% if product.get('pr_rating') %}
+          <img
+            src="/assets/images/stars/{{ product.get('pr_rating') | format_rating }}.png"
+            alt="Rating: {{ product.get('pr_rating') | format_rating }}"
+          />
+        {% endif %}
+      </div>
+
+      <div class="product-buttons">
+        <a
+          class="search-product-link"
+          data-skuid="{{ product.get('skuid') }}"
+          href="{{ product.get('url') }}"
+        >({{ product.get('skuid') }})</a>	|
+
+        {% if product.get('variant_sets') %}
+          <a
+            data-skuid="{{ product.get('skuid') }}"
+            href="{{ product.get('url') }}"
+          >
+            ADD <span class="d-none d-xl-inline-block">TO CART</span>
+          </a>
+        {% else %}
+          <a
+            onClick="directAdd('{{ product.get('skuid') }}');return false;"
+            class="search-product-link rec-product-link"
+            data-skuid="{{ product.get('skuid') }}"
+            href="/add?item={{ product.get('skuid') }}""
+          >
+            ADD <span class="d-none d-xl-inline-block">TO CART</span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{%- endmacro %}

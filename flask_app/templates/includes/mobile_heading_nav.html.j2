@@ -1,0 +1,9 @@
+{% cache None %}
+<ul class="mobile_cat">
+  {% for cat in get_mobile_heading_nav() %}
+    <li>
+      <a href="{{ cat.path }}">{{ cat.category_name }}</a>
+    </li>
+  {% endfor %}
+</ul>
+{% endcache %}

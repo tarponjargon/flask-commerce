@@ -1,0 +1,23 @@
+{% extends "base.html.j2" %}
+{% set title %}{{ lp.heading }} at {{ config.STORE_NAME }}{% endset %}
+{% set page = 'lp' %}
+
+{% block content %}
+<main class="container minheight minheight-600">
+  <div class="row">
+    <div class="col-lg-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ lp.heading }}</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="col-lg-12">
+      <h1>{{ lp.heading }}</h1>
+      {{ lp.content }}
+    </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,276 @@
+{% from 'macros/price.html.j2' import render_price %}
+{% macro render_cart_items(cart, page="cart") -%}
+
+<a name="cartitems"></a>
+<div class="lineitems">
+  <div class="lineitem-headings row">
+    <div class="col-md-7 lineitem-heading-product">Item</div>
+    <div class="col-md-2 lineitem-heading-qty">Quantity</div>
+    <div class="col-md-2 lineitem-heading-price">Price</div>
+    <div class="col-md-1 lineitem-heading-total">Total</div>
+  </div>
+
+  {% for item in cart.get_items() %}
+
+    {% set product = item.get("product") %}
+    {% set skuid = item.get("skuid") %}
+    {% set base_skuid = product.get("skuid") %}
+
+    {# I'm mimicking the old hazel method of giftwrap <-> item reconciliation, where all the logic lives in this template.
+      TODO: move the logic to a controller
+    #}
+    {% set is_giftwrap = product.get('is_giftwrap') %}
+    {% set gw_sku = product.get('skuid') if is_giftwrap else item.get_giftwrap_skuid() %}
+    {% set wrapped_skus = session_safe_get('wrapped_' + gw_sku, "") if gw_sku else [] %}
+    {% set gw_item = cart.get_item_by_skuid(gw_sku, {}) %}
+    {% set add_qty = gw_item.get('quantity', 0) + item.get('quantity') %}
+    {% set remove_qty = gw_item.get('quantity', item.get('quantity')) - item.get('quantity') %}
+    {% set current_path = sanitize(request.path) %}
+    {% if current_path == '/buildorder' %}
+    {% set current_path = 'quickorder' %}
+    {% endif %}
+
+    <script type="text/javascript">
+      window.cartItemsObject['{{ skuid }}'] = {
+        'name': '{{ item.get("name") | sanitize }}',
+        'id': '{{ base_skuid }}',
+        'price': '{{ item.get("price") }}',
+        'category': "{{ replace_double_quote(get_breadcrumb_string(product.get('breadcrumb', []), ' > ')) }}",
+        'variant' : '',
+        'quantity': {{ item.get("quantity", 1) }},
+        'dimension1' : '{{ skuid }}'
+      };
+    </script>
+
+    <div
+      class="lineitem-wrapper"
+      data-js="lineitem"
+      data-lineitem-skuid="{{ skuid }}"
+      data-lineitem-price="{{ product.get('price') }}"
+    >
+      <div class="lineitem row" data-js="row">
+        <div class="col-4 col-md-2 d-flex align-items-center justify-content-center position-relative">
+          <a href="{{ product.get('url') }}">
+          <img
+            src="{{ item.get('image') }}"
+            alt="{{ item.get('name') | sanitize }}"
+            class="img-fluid cart-thumb"
+            onerror="imageError(this)" />
+          </a>
+
+          {# if giftbag is available show button #}
+          {% if page != 'receipt' and item.get_giftwrap_skuid() %}
+							<a href="javascript:;" data-js="gift-options-trigger" class="gift-options-container">
+                {% if item.get('skuid') in wrapped_skus %}
+                  Gift-Bagged
+                {% else %}
+                  <span class='gifttext'>Add </span>Gift Bag
+                {% endif %}
+							</a>
+          {% endif %}
+
+        </div>
+        <div class="lineitem-product col-8 col-md-10 position-relative">
+          <div class="row">
+            <div class="lineitem-product-description col-md-6">
+              <a class="product-title" href="{{ product.get('url') }}">{{ product.get('name') }}</a>
+              <div class="text-muted my-1">Item #: {{ skuid }}</div>
+              {% if item.get('variant_data') %}
+                {% for variant in item.get('variant_data') %}
+                  <div class="optionsText">
+                    {{ variant.get('type', 'Option') }}: {{ variant.get('description') }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+
+							{# gift wrap messaging #}
+              {% if is_giftwrap %}
+                  {% if wrapped_skus and wrapped_skus | length %}
+                    {% set wrapped_list = split_to_list(wrapped_skus) %}
+                    {% set wrapped_items = cart.get_items_by_skuid_list(wrapped_list) %}
+                    {% if wrapped_items | length %}
+                      Gift-Bagged items:<br />
+                      {% for wrapped_item in wrapped_items %}
+                        ({{ wrapped_item.get('quantity') }}) {{ wrapped_item.get('name') }}<br />
+                      {% endfor %}
+                    {% endif %}
+                  {% else %}
+                    <div class="my-1 text-danger">
+                      Note - There are no items associated with the gift bag, please remove this item from your order.
+                      If desired, re-add by checking the "Gift Bag" box on items in your cart.
+                    </div>
+                  {% endif %}
+              {% endif %}
+
+              {% if item.get('personalization') and item.get('personalization') | length %}
+                <br />
+                <strong>
+                  Personalization
+                  {% if page != 'receipt' %}
+                    <a href="javascript:;"
+                      data-last-added="{{ item.get('skuid') }}"
+                      data-return="{{ current_path }}"
+                      data-js="edit-personalization"
+                    >(Click to edit)</a>
+                  {% endif %}
+                </strong>
+                <div class="text-muted my-1">
+                  {% for qtyeach in item.get('personalization') %}
+                    {% set qtyloop = loop %}
+                    {% if qtyloop.index <= item.get('quantity') %}
+                      {% for prompt in qtyeach %}
+                        {{ prompt.get('prompt') }}{% if item.get('quantity') > 1 %}({{ qtyloop.index }}){% endif %}:
+                        {{ prompt.get('value') | sanitize }}<br />
+                      {% endfor %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              {% if page != 'receipt' %}
+                <div class="stock-status-wrapper my-1 my-md-4">
+                  <div class="product-stock-status">
+                    <span class="{{ item.get('availability', {}).get('css_class') }}">
+                      {{ item.get('availability', {}).get('description')  }}
+                    </span>
+                  </div>
+                </div>
+              {% endif %}
+
+              {# group/qty pricing message #}
+              {% if product.get('discount_desc') and not item.get('is_tweaked') %}
+              <div class="product-message my-1 my-md-4">
+                <span class="text-warning">
+                  <strong>{{ product.get('discount_desc') }}</strong>
+                </span>
+              </div>
+              {% endif %}
+
+              {# item-level tweak promo messages #}
+              {% if item.get('promo_message') and item.get('is_tweaked') %}
+              <div class="product-message my-1 my-md-4">
+                <span class="text-warning">
+                  <strong>{{ item.get('promo_message') }}</strong>
+                </span>
+              </div>
+              {% endif %}
+
+							{% if product.get('promo_exclude') %}
+								<div class="product-message my-1 my-md-4 text-warning">
+                  This item is not eligible for coupon code discounts.
+								</div>
+              {% endif %}
+
+              {# CA PROP65 message - if applicable #}
+							{% if page == 'confirmation' %}
+								{% if (session.get('bill_state') == 'CA' or session.get('ship_state') == 'CA') %}
+                {% set prop65 = item.get_prop65_message(item.get('skuid')) %}
+                  {% if prop65 %}
+                    <div style='width: 100%;font-size: 11px;line-height: 16px;display:block;overflow:hidden;padding: 10px 0;'>
+                      {{prop65}}
+                    </div>
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+
+            </div>
+            <div class="lineitem-qty col-md-2">
+              <div class="lineitem-qty-line mt-2 mt-md-0 {{ 'pt-2' if page == 'receipt' else '' }}">
+                <span class="d-md-none">Qty: &nbsp;</span>
+                {% if page == 'receipt' or is_giftwrap %}
+                  <div class="w-100 ps-md-4" data-js="{{ 'giftwrap-quantity' if is_giftwrap else '' }}">
+                    {{ item.get('quantity') }}
+                  </div>
+                {% else %}
+                  <form
+                    method="GET"
+                    data-js="quantity"
+                    action="{{ current_path }}"
+                    >
+                    <input
+                      type="number"
+                      name="PRODUCT_{{ skuid }}"
+                      class="quantity-field"
+                      min="1"
+                      max="{{ product.get('maxq') if product.get('maxq') else str(config.DEFAULT_MAXQ) }}"
+                      value="{{ item.get('quantity') }}"
+                      data-orig-quantity="{{ item.get('quantity') }}"
+                      data-js="quantity-field"
+                      aria-label="Quantity"
+                      data-gift-wrapped="{{ gw_sku if item.get('skuid') in wrapped_skus }}"
+                      >
+                  </form>
+                {% endif %}
+              </div>
+              {% if page != 'receipt' %}
+                <div class="my-4 d-none d-md-block">
+                  <a
+                    title="remove from cart"
+                    class="blue-link cart-product-btn remove-btn remove-from-cart text-decoration-none"
+                    href="{{ current_path }}?PRODUCT_{{ skuid }}=0{{ '&wrapped_' + item.get('skuid') + '=' if is_giftwrap  else '' }}"
+                    >
+                  <i class="fa fa-times-circle"></i>
+                  <span>Remove</span>
+                  </a>
+                </div>
+              {% endif %}
+            </div>
+            <div class="lineitem-price product-price col-md-2">
+              <span class="d-md-none">Price: </span>
+              {{ render_price(item) }}
+            </div>
+            <div class="lineitem-total col-md-2">
+              <span class="d-md-none">Total: </span>
+              {{ item.get_total_price() | format_currency }}
+            </div>
+          </div>
+          {% if page != 'receipt' %}
+            <a
+              href="{{ current_path }}?PRODUCT_{{ skuid }}=0"
+              title="remove item"
+              class="remove-item-icon-mobile d-md-none"
+            ><i class="fa fa-times-circle"></i></a>
+          {% endif %}
+        </div>
+      </div>
+
+      {# gift wrap logic - mimics the way hazel worked #}
+      {% if page != 'receipt' and item.get_giftwrap_skuid() %}
+        {% set gw_price = item.get_giftwrap_price() %}
+        {% set wrapped_sku_removed = wrapped_skus.replace(';' + skuid, '') %}
+        <div class="row gift-options-content-container" data-js="gift-options" style="display: none;">
+          <div class="row p-4">
+            <div class="col-3 col-md-2 d-flex align-items-center justify-content-center">
+              <img src="{{ config.IMAGE_BASE }}/assets/images/gift-bags.jpg" width="115" height="115" alt="Gift Bag" class="img-fluid">
+            </div>
+            <div class="col-7 col-md-7 d-flex align-items-center justify-content-start gift-text">
+              {% if item.get('skuid') in wrapped_skus %}
+                <a
+                  href="{{ current_path }}?PRODUCT_{{ gw_sku }}={{ remove_qty }}&wrapped_{{ gw_sku }}={{ wrapped_sku_removed | sanitize }}#cartitems">
+                  <img src="{{ config.IMAGE_BASE }}/assets/images/check_yes.png" width="16" height="16" class="img-fluid" alt="this item is gift bagged">
+                  Gift-Bagged
+                </a>
+              {% else %}
+              <a
+                class="text-decoration-none"
+                href="{{ current_path }}?PRODUCT_{{ gw_sku }}={{ add_qty }}&wrapped_{{ gw_sku }}={{ wrapped_skus | sanitize }};{{ skuid }}#cartitems"
+              >
+                <img src="{{ config.IMAGE_BASE }}/assets/images/check_no.png" width="16" height="16" class="img-fluid" alt="Click to gift bag this item">
+                Gift Bag <span class="d-none d-md-inline">this item </span>for just {{ gw_price | format_currency }}
+              </a>
+              {% endif %}
+            </div>
+            <div class="col-md-2 d-none d-md-flex align-items-center justify-content-start gift-price-ea gift-text">
+              {{ gw_price | format_currency }}
+            </div>
+            <div class="col-2 col-md-1 d-flex align-items-center justify-content-end gift-text">
+              {{ gw_price | format_currency }}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  {% endfor %}
+</div>
+{%- endmacro %}

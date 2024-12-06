@@ -1,0 +1,138 @@
+{% from 'macros/price.html.j2' import render_price %}
+{% from 'macros/variant_select.html.j2' import render_variant_select %}
+{% from 'macros/availability.html.j2' import render_availability %}
+{% macro quick_add_item(product, update_page='/cart', removeskuid=None) -%}
+{% set skuid = product.get('skuid') %}
+
+<div data-detail-skuid="{{ skuid }}" class="quick-add-detail-container">
+  <form
+    class="position-relative"
+    method="POST"
+    data-js="order-form"
+    role="form"
+    data-add-item="{{ skuid }}"
+    data-item-name="{{ product.get('name') | sanitize }}"
+  >
+    <div class="row my-4 w-100">
+      <div class="col-3 col-md-2 d-flex align-items-center justify-content-center pr-0">
+        <a href="{{ product.get('url') }}">
+          {% set smlimg = product.get('images', {}).get('smlimg') %}
+          {% if smlimg %}
+            {% set dims = image_size('/graphics/products/small/' + smlimg) %}
+          {% else %}
+            {% set dims = [0, 0] %}
+          {% endif %}
+          <img
+            src="{{ image_path(product.get('images', {}).get('smlimg', '')) }}"
+            alt="{{ product.get('name')  }}"
+            class="img-fluid cart-thumb"
+            onerror="imageError(this)"
+            {{ 'width="' + str(dims[0]) + '"' if dims[0] else '' }}
+            {{ 'height="' + str(dims[1]) + '"' if dims[1] else '' }}
+          />
+        </a>
+      </div>
+
+      <div class="col-9 col-md-10 p-md-0 pl-md-3 d-flex align-items-center justify-content-center">
+        <div class="row w-100">
+          <div class="col-12 col-md-4">
+            <div class="w-100">
+              <h3>
+                <a
+                  onClick="productClick(event, window.pageItemsObject['{{ skuid }}'])"
+                  href="{{ product.get('url') }}?inkref=quickaddname"
+                >
+                  {{ product.get('name') }}
+                </a>
+              </h3>
+            </div>
+            <div class="w-100">
+              <div class="sku">Item #: {{ skuid }}</div>
+            </div>
+            <div class="product-stock-status w-100">
+              {{ render_availability(product.get('availability', {})) }}
+            </div>
+            {% if product.get('discount_desc') %}
+              <div class="text-warning w-100 mt-2">{{ product.get('discount_desc') }}</div>
+            {% endif %}
+          </div>
+
+          <div class="col-12 col-md-1 d-flex align-items-center justify-content-start pt-2 p-md-1">
+            {% set qty_fieldname = 'PRODUCT_' + skuid %}
+            {% if product.get('variant_sets', []) | length %}
+              {% set qty_fieldname = 'OPTIONED_QUANTITY_' + skuid %}
+            {% endif %}
+            <input
+              type="number"
+              class="form-control w-auto"
+              data-js="quantity"
+              min="1"
+              max="{{ product.get('maxq') if product.get('maxq') else str(config.DEFAULT_MAXQ)}}"
+              data-maxq="{{ product.get('maxq') if product.get('maxq') else str(config.DEFAULT_MAXQ)}}"
+              name="{{ qty_fieldname }}"
+              value="1"
+              id="{{ qty_fieldname }}"
+              aria-label="Quantity"
+            />
+          </div>
+          <div class="col-12 col-md-3 d-flex align-items-center justify-content-center p-md-1">
+            {% if product.get('variant_sets') %}
+              {{ render_variant_select(product) }}
+            {% endif %}
+          </div>
+
+          <div
+            class="col-12 col-md-1 d-flex align-items-center justify-content-start pb-2 p-md-1 pl-md-3"
+            data-js="detail-item-price"
+          >
+            <h3>
+              {{ render_price(product) }}
+            </h3>
+          </div>
+
+          <div class="col-12 col-md-2 d-flex align-items-center justify-content-center p-md-1">
+
+          {# add hidden fields to remove any missing-optioned skus.  #}
+          {% if removeskuid %}
+          <input type="hidden" name="PRODUCT_{{ removeskuid }}" value="0" data-js="remove-from-cart" />
+          {% endif %}
+
+            {# <!--
+            <button
+              class="button-primary submit-button btn-block"
+              type="submit"
+              data-js="add-button"
+              id="add-button-{{ get_random_string() }}"
+            >
+              ADD
+            </button>
+            --> #}
+
+            <div class="card text-white bg-danger my-2 p-3 error-card">
+              <div class="card-body p-1">
+                <p class="card-text">
+                  We are temporarily unable to accept orders
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="quick-add-remove">
+      <a
+        data-js="remove-skuid"
+        title="remove this product"
+        class="text-decoration-none"
+        href="{{ update_page }}?PRODUCT_{{ removeskuid if removeskuid else skuid }}=0"
+      >
+        <span class="d-none d-md-inline">Remove</span>
+        <i class="fa fa-times-circle"></i>
+      </a>
+    </div>
+  </form>
+
+</div>
+
+{% endmacro %}

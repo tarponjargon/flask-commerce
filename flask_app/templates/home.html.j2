@@ -1,0 +1,224 @@
+{% set page = 'index' %}
+{% extends "base.html.j2" %}
+{% set title %}{{ config.STORE_TAGLINE }}{% endset %}
+{% from 'macros/homepage_accordion.html.j2' import render_accordion with context %}
+
+{% block content %}
+
+<main>
+  <h1 class="visually-hidden">{{config.STORE_NAME}} Home Page</h1>
+
+  {# Homepage hero slider #}
+  {% for slide in slides %}
+    {% if loop.index > 1 %}
+      <link rel="prefetch" href="{{ config.IMAGE_BASE }}/graphics/homepage/slides/{{ slide.filename }}" as="image">
+      <link rel="prefetch" href="{{ config.IMAGE_BASE }}/graphics/homepage/slides/{{ slide.mobile_filename }}" as="image">
+    {% endif %}
+  {% endfor %}
+  <div class="container-banner">
+    <section class="header-banner home-hero-banner d-block">
+      <div class="header_slider">
+        {% for slide in slides %}
+          <div class="slider_item">
+            {# open the <a> tag ONLY of there's no imagemap #}
+            {% if not slide.imagemap %}
+            <a href="{{ slide.link }}" class="item" data-test="hp-item">
+            {% endif %}
+              <span class="visually-hidden">{{ slide.title }}</span>
+              {% set dims = image_size('/graphics/homepage/slides/' + slide.filename) %}
+              <img
+                onerror="this.onerror=null;this.src='/graphics/dot_clea.gif'"
+                class="desktop_banner img-fluid"
+                {{ 'src' if loop.index == 1 else 'data-lazy'}}="{{ config.IMAGE_BASE | replace('65', '90') }}/graphics/homepage/slides/{{ slide.filename }}"
+                alt="{{ slide.title }}"
+                id="image-{{ get_random_string() }}"
+                {{ 'width="' + str(dims[0]) + '"' if dims[0] else '' }}
+                {{ 'height="' + str(dims[1]) + '"' if dims[1] else '' }}
+                {{ 'usemap="#' + slide.filename  + '"' if slide.imagemap else '' }}
+              >
+              {{ slide.imagemap if slide.imagemap else '' }}
+            {# close the <a> tag ONLY of there's no imagemap #}
+            {% if not slide.imagemap %}
+            </a>
+            {% endif %}
+
+            {# open the <a> tag for mobile ONLY of there's no imagemap #}
+            {% if not slide.imagemap_mobile %}
+            <a href="{{ slide.link }}" class="item" data-test="hp-item">
+            {% endif %}
+              {% set dims = image_size('/graphics/homepage/slides/' + slide.mobile_filename) %}
+              <img
+                onerror="this.onerror=null;this.src='/graphics/dot_clea.gif'"
+                class="mobile_banner img-fluid"
+                {{ 'src' if loop.index == 1 else 'data-lazy'}}="{{ config.IMAGE_BASE | replace('65', '90') }}/graphics/homepage/slides/{{ slide.mobile_filename }}"
+                alt="{{ slide.title }}"
+                id="image-{{ get_random_string() }}"
+                {{ 'width="' + str(dims[0]) + '"' if dims[0] else '' }}
+                {{ 'height="' + str(dims[1]) + '"' if dims[1] else '' }}
+                {{ 'usemap="#' + slide.mobile_filename  + '"' if slide.imagemap_mobile else '' }}
+              >
+              {{ slide.imagemap_mobile if slide.imagemap_mobile else '' }}
+            {# close the <a> tag ONLY of there's no imagemap #}
+            {% if not slide.imagemap_mobile %}
+            </a>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+
+  <div class="container">
+    {# Homepage feature banner aka "6-pack" #}
+    <section class="category_boxes">
+      <div class="row">
+        {% for banner in banners %}
+        <div class="col-md-4">
+          <a data-test="hp-item" class="text-decoration-none" href="{{ banner.link }}">
+            <h2 class="text-uppercase text-banner-header">{{ banner.title }}</h2>
+            {% set dims = image_size('/graphics/homepage/banners/' + banner.filename) %}
+            <img
+              src="{{ config.IMAGE_BASE }}/graphics/homepage/banners/{{ banner.filename }}"
+              onerror="imageError(this)"
+              class="img-fluid"
+              alt=""
+              {{ 'width="' + str(dims[0]) + '"' if dims[0] else '' }}
+              {{ 'height="' + str(dims[1]) + '"' if dims[1] else '' }}
+            /></a>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    {# Homepage category features aka "12-pack" #}
+    <section class="small_boxes">
+      <div class="row">
+        {% for category in categories %}
+          <div class="col-md-2 col-4">
+            <a data-test="hp-item" href="{{ category.link }}" title="{{ category.title }}">
+              <img
+                src="{{ config.IMAGE_BASE }}/graphics/products/small/{{ category.feature_image }}.jpg"
+                onerror="imageError(this)"
+                alt="Icon for {{ category.title }} Category"
+                style="max-height: 215px"
+                class="img-fluid"
+                width="215"
+                height="215"
+              />
+              <span>{{ category.title }}</span>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+
+   {# Homepage category accordion menus #}
+  <div class="container mobile-fullwidth">
+    <section class="nav_block">
+      <div class="row">
+        <div class="col-md-3">
+          <a href="#" class="additional_nav trigger" title="SHOP DVDs">
+            SHOP DVDs
+          </a>
+          <div class="menu_accordion">
+            {{ render_accordion("dvd")}}
+          </div>
+        </div>
+        <div class="col-md-3">
+          <a href="#" class="additional_nav trigger" title="SHOP GIFTS">
+            SHOP GIFTS
+          </a>
+          <div class="menu_accordion">
+            {{ render_accordion("gifts")}}
+          </div>
+        </div>
+        <div class="col-md-3">
+          <a href="#" class="additional_nav trigger" title="SHOP BY CATEGORY">
+            SHOP BY CATEGORY
+          </a>
+          <div class="menu_accordion">
+            {{ render_accordion("root")}}
+          </div>
+        </div>
+        <div class="col-md-3">
+          <a href="#" class="additional_nav trigger" title="GIFT CERTIFICATES">
+            GIFT CERTIFICATES
+          </a>
+          <div class="menu_accordion">
+            <a
+              href="/GC9999.html"
+              class="additional_nav additional_nav_category text-uppercase"
+              title="Gift Certificate - U.S.P.S."
+            >
+              GIFT CERTIFICATE - U.S.P.S.
+            </a>
+            <a
+              href="/EC9999.html"
+              class="additional_nav additional_nav_category text-uppercase"
+              title="GIFT CERTIFICATE - E-Mail"
+            >
+              GIFT CERTIFICATE - E-MAIL
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="container">
+
+    <div class="fullwidth__holder">
+      <div
+        id="recs-container"
+        class="certona-carousel minheight minheigt-800 loading-mask"
+        data-recs='[{"recommendationsType":"recommendations","reportingId":"Recommendations 1: HP","title": "You May Also Like"},{"recommendationsType":"category","category":"gifts","reportingId":"Recommendations 2: HP"},{"recommendationsType":"category","category":"shirts","reportingId":"Recommendations 3: HP"},{"recommendationsType":"category","category":"fun","reportingId":"Recommendations 4: HP"}]'
+      ></div>
+    </div>
+
+    {% include "includes/homepage_subscribe.html.j2" %}
+
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <div class="row align-items-center">
+          <div class="col-md-6 col-6">
+            <div class="catalog_image">
+              {% set catalog = get_catalog_image() %}
+              <img
+                src="{{ catalog.path }}"
+                alt=""
+                class="img-fluid"
+                {{ 'width="' + str(catalog.width) + '"' if catalog.width else '' }}
+                {{ 'height="' + str(catalog.height) + '"' if catalog.height else '' }}
+              />
+            </div>
+          </div>
+          <div class="col-md-6 col-6">
+            <div class="desktop_catalog">
+              <div class="catalog_line-one">NOW AVAILABLE</div>
+              {% set flip_catalog = get_flip_catalog() %}
+              <div class="catalog_line-two">{{ flip_catalog.get('drop_name') }} Catalog</div>
+              <a href="/catalogrequest" class="catalog_line-link" title="SEND ME A CATALOG">SEND ME A CATALOG</a>
+              <a data-js="virtual-catalog" class="catalog_line-link text-uppercase" href="/flipcatalog-modal">Browse our Digital Catalog</a>
+            </div>
+            <div class="mobile_catalog">
+              <a href="/catalogrequest" title="REQUEST A CATALOG" title="REQUEST A CATALOG">REQUEST A CATALOG</a>
+              <a data-js="virtual-catalog" class="d-block mt-3 text-uppercase" href="/flipcatalog-modal">Browse our Digital Catalog</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5 offset-md-1">
+        <div class="catalog_form">
+          <div class="catalog_cta">Order from our catalog. It's easy!</div>
+          <form method="GET" action="/quickorder">
+            <input type="text" name="includeskuids" placeholder="Enter item number(s) separated by a space" aria-label="Enter item number(s) separated by a space" />
+            <button type="submit" id="home-quickorder-btn">GO</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

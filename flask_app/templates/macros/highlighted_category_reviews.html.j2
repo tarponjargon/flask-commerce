@@ -1,0 +1,47 @@
+{% macro render_category_highlighted_reviews(reviews) -%}
+<div class="container">
+  <link href="https://staticw2.yotpo.com/aGMCR1r9Pbh7jVJSOsda3XGLqi7YDLp1qHiWXHE8/widget.css?widget_version=2022-12-18_11-24-50" rel="stylesheet">
+  <div class="yotpo yotpo-main-widget">
+    <div class="main-widget yotpo-display-wrapper">
+
+      <h2>Customer Reviews</h2>
+      <hr class="my-4" />
+
+      <div class="yotpo-nav-content">
+        {% for review in reviews %}
+            <div class="yotpo-reviews yotpo-active" data-host-widget="main_widget" role="tabpanel">
+                <div class="yotpo-review yotpo-regular-box yotpo-regular-box-filters-padding" data-review-id="{{ review.get('review_id') }}">
+                    <div class="yotpo-header yotpo-verified-buyer">
+                        <span class="yotpo-icon-profile yotpo-header-element pull-left">
+                            <span class="yotpo-user-letter">{{ review.get('user_letter') }}</span> <span class="yotpo-icon yotpo-icon-circle-checkmark yotpo-action-hover" data-type="toggleFade" data-target="yotpo-tool-tip" data-target-container="yotpo-header"></span>
+                        </span>
+                        <div class="yotpo-header-element">
+                            <span class="y-label yotpo-user-name yotpo-font-bold pull-left" aria-level="3">{{ review.get('name') }}</span>
+                            reviewed
+                            <a href="/{{ review.get('skuid') }}.html">{{ review.get('product_name') }}</a>
+                            <div class="yotpo-clr"></div>
+                            <div class="yotpo-review-stars">
+                                {% for i in range(int(review.get('rating'))) %}
+                                  <span class="yotpo-icon yotpo-icon-star rating-star pull-left"></span>
+                                {% endfor %}
+                                <span class="sr-only">{{ review.get('rating') }} star rating</span>
+                            </div>
+                            <div class="yotpo-clr"></div>
+                        </div>
+                    </div>
+                    <div class="yotpo-main">
+                        <div class="content-title yotpo-font-bold" role="heading" aria-level="3">{{ review.get('title') }}</div>
+                        <div class="yotpo-clr"></div>
+                        <div class="yotpo-review-wrapper">
+                            <span class="sr-only" id="{{ review.get('review_id') }}-ada-summary-text">Review by {{ review.get('name') }}</span> <span class="sr-only" id="{{ review.get('review_id') }}-ada-title-text">review stating {{ review.get('title') }}</span>
+                            <div class="content-review" id="{{ review.get('review_id') }}">{{ review.get('review') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{%- endmacro %}

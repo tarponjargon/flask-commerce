@@ -1,0 +1,10 @@
+{% macro render_availability(availability) -%}
+<span
+  class="{{ availability.get('css_class') }}"
+  data-js="detail-item-availability"
+  data-default-availability-string="{{ availability.get('description') }}"
+  data-default-availability-class="{{ availability.get('css_class') }}"
+  >
+  {{ availability.get('description') }}
+</span>
+{%- endmacro %}

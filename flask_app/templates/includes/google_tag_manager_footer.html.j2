@@ -1,0 +1,14 @@
+<script>
+if (typeof window.pageItemsObject !== 'undefined' && Object.keys(window.pageItemsObject).length) {
+  var impressions = [];
+  Object.keys(window.pageItemsObject).forEach(function(key) {
+    impressions.push(window.pageItemsObject[key]);
+  });
+  window.dataLayer.push({
+    'event': 'productImpressions',
+    'ecommerce': {
+      'impressions': impressions
+    }
+  });
+}
+</script>

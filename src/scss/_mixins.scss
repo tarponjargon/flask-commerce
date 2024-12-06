@@ -1,0 +1,84 @@
+  @mixin linearGradient($top, $bottom){
+    background: $top; /* Old browsers */
+    background: -moz-linear-gradient(top,  $top 0%, $bottom 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$top), color-stop(100%,$bottom)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  $top 0%,$bottom 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  $top 0%,$bottom 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  $top 0%,$bottom 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  $top 0%,$bottom 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+}
+ @mixin breakpoint($point) {
+   @if $point == desktop {
+     @media (max-width: 70em) { @content ; }
+  }
+   @else if $point == threerow {
+     @media (max-width: 980px) { @content ; }
+  }
+   @else if $point == device {
+     @media (max-device-width: 1024px) { @content ; }
+  }
+    @else if $point == tablet-landscape {
+     @media (max-width: 1024px) { @content ; }
+  }
+  @else if $point == first-bootstrap {
+     @media (max-width: 992px) { @content ; }
+  }
+  @else if $point == tablet-portrait {
+     @media (max-width: 768px) { @content ; }
+  }
+  @else if $point == min-tablet-portrait {
+     @media (min-width: 767px) { @content ; }
+  }
+   @else if $point == phablet {
+     @media (max-width: 650px)  { @content ; }
+  }
+  @else if $point == mobileonly {
+     @media (max-width: 480px)  { @content ; }
+
+  }
+  @else if $point == smallmobile {
+     @media (max-width: 370px)  { @content ; }
+
+  }
+}
+@mixin calc($key, $value) {
+    #{$key}: -webkit-calc(#{$value});
+    #{$key}: -moz-calc(#{$value});
+    #{$key}: calc(#{$value});
+}
+
+@mixin thumb-height {
+  min-height: 325px;
+  @media (max-width: 320px) {
+    min-height: auto;
+  }
+  @media (min-width: 320px) {
+    min-height: 200px;
+  }
+  @media (min-width: 768px) {
+    min-height: 325px;
+  }
+  // chrome fix
+  @media (min-width: 991px) and (max-width: 991px) {
+    min-height: auto;
+  }
+  // safari only - but at this breakpoint
+  @media screen and (min-color-index: 0) and (-webkit-min-device-pixel-ratio: 0) {
+    @media (min-width: 768px) {
+      min-height: auto;
+    }
+  }
+  @media (min-width: 992px) {
+    min-height: 216px;
+  }
+  @media (min-width: 1200px) {
+    min-height: 260px;
+  }
+  @media (min-width: 1400px) {
+    min-height: 306px;
+  }
+  @media (min-width: 1500px) {
+    min-height: 325px;
+  }
+}

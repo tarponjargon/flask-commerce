@@ -1,0 +1,30 @@
+{% extends "base.html.j2" %}
+
+{% from 'macros/personalization_prompts.html.j2' import render_prompts with context %}
+{% set page = 'missing_pers' %}
+{% set title %}Please enter personalization{% endset %}
+
+{% block content %}
+
+<main class="container">
+	<div class="shopping-cart-header">
+		<h1 class="header-title primary-color">{{ title }}:</h1>
+	</div>
+
+	<hr />
+
+	<div class="personalization">
+		<div class="personalization__inner">
+			<form method="POST" action="{{ request.path }}" onsubmit="spinButton('pers-submit-btn')">
+        {% for item in items %}
+          {{ render_prompts(item)}}
+        {% endfor %}
+			<div class="mb-4">
+				<button class="button-primary" id="pers-submit-btn" name="submit" value="Submit">PERSONALIZE</button>
+			</div>
+			</form>
+		</div>
+	</div>
+</main>
+
+{% endblock %}

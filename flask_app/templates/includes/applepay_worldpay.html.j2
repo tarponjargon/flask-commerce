@@ -1,0 +1,274 @@
+ <!-- Applepay /confirmation form submitted on completion of order -->
+ <form
+ data-js="applepay-confirm-form"
+ action="/complete"
+ method="POST"
+>
+  <input type="hidden" name="action" value="complete" />
+  <input type="hidden" id="responseap$paypageRegistrationId" name="worldpay_registration_id" value="{{ session_safe_get('worldpay_registration_id') }}" readOnly="true" />
+  <input type="hidden" id="responseap$checkoutId" name="worldpay_checkout_id" value="{{ session_safe_get('worldpay_vantiv_txn_id') }}" readOnly="true" />
+  <input type="hidden" id="responseap$vantivTxnId" name="worldpay_vantiv_txn_id" value="{{ session_safe_get('worldpay_vantiv_txn_id') }}" readOnly="true" />
+  <input type="hidden" id="responseap$expDate" name="card_date" value="{{ session_safe_get('worldpay_vantiv_txn_id') }}" readOnly="true"/>
+  <input type="hidden" id="responseap$expMonth" name="card_month" value="{{ session_safe_get('card_month') }}" readOnly="true"/>
+  <input type="hidden" id="responseap$expYear" name="card_year" value="{{ session_safe_get('card_year') }}" readOnly="true"/>
+  <input type="hidden" id="responseap$type" name="card_type" value="{{ session_safe_get('card_type') }}" readOnly="true"/>
+  <input type="hidden" id="responseap$aptype" name="payment_method" value="applepay" readOnly="true" />
+  <input type="hidden" name="request_type" value="order" readOnly="true" />
+  <input type="hidden" name="request" value="complete" readOnly="true" />
+</form>
+<script>
+   afterLoad('$', function() {
+       // Applepay with Eprotect methods
+
+       // Helper funcs to build form data from JSON
+       function buildFormData(formData, data, parentKey) {
+           if (data && typeof data === 'object' && !(data instanceof Date) && !(data instanceof File)) {
+               Object.keys(data).forEach(key => {
+                   buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key);
+               });
+           } else {
+               const value = data == null ? '' : data;
+               //console.log("parentKey", parentKey);
+               //console.log("value", value);
+               formData.append(parentKey, value);
+           }
+       }
+       function jsonToFormData(data) {
+           const formData = new FormData();
+           buildFormData(formData, data);
+           return formData;
+       }
+
+       // Validate on the server
+       validateMerchant = (validationURL) => {
+           return fetch("/api/checkout/start-applepay")
+           .then(res => res.json())
+           .catch(err => {
+               console.error("Error fetching merchant session", err);
+           });
+       };
+       // Retrieve Order ID
+       retrieveOrderID = () => {
+           return fetch("/api/checkout/get_order_id")
+           .then(res => res.json())
+           .catch(err => {
+               console.error("Error retrieving Order ID", err);
+           });
+       };
+       // Determine tax
+       determineTax = (shippingData) => {
+           const postData = jsonToFormData(shippingData);
+           const options = {
+               method: 'POST',
+               body: postData,
+           }
+           return fetch("/api/checkout/get_applepay_tax", options)
+           .then(res => res.json())
+           .catch(err => {
+               console.error("Error fetching determine tax", err);
+           });
+       };
+       // Payment completion
+       paymentCompletion = () => {
+           return fetch("/api/checkout/complete-applepay")
+           .then(res => res.json())
+           .catch(err => {
+               console.error("Error fetching payment completion", err);
+           });
+       };
+       // Payment authorized
+       paymentAuthorized = (paymentData) => {
+           const postData = jsonToFormData(paymentData);
+           const options = {
+               method: 'POST',
+               body: postData,
+           }
+           return fetch("/api/checkout/applepay_payment_authorized", options)
+           .then(res => res.json())
+           .catch(err => {
+               console.error("Error fetching payment authorized", err);
+           });
+       };
+       $( "apple-pay-button" ).on( "click", function(e) {
+           e.preventDefault();
+           if (!window.ApplePaySession)
+               return;
+           console.log("applepay button clicked");
+           // Define ApplePayPaymentRequest
+           const request = {
+               "countryCode": "US",
+               "currencyCode": "USD",
+               "requiredShippingContactFields": ['postalAddress','email', 'name', 'phone'],
+               "requiredBillingContactFields": ['postalAddress','email', 'name', 'phone'],
+               "merchantCapabilities": [
+                   "supports3DS"
+               ],
+               "supportedNetworks": [
+                   "visa",
+                   "masterCard",
+                   "amex",
+                   "discover"
+               ],
+               "total": {
+                   "label": "Order Total",
+                   "type": "final",
+                   "amount": "{{ g.cart.get_total() }}"
+               }
+           };
+           // Create ApplePaySession
+           const session = new ApplePaySession(3, request);
+           session.onvalidatemerchant = async event => {
+               // Call your own server to request a new merchant session w/ given URL
+               console.log('called validate merchant');
+               const merchantSession = await validateMerchant(event.validationURL);
+               session.completeMerchantValidation(merchantSession);
+           };
+           session.onpaymentmethodselected = async event => {
+               // Define ApplePayPaymentMethodUpdate based on the selected payment method.
+               console.log('called payment method selected');
+               const newItems = await paymentCompletion();
+               console.log('payment method result', newItems);
+               session.completePaymentMethodSelection(newItems);
+           };
+           session.onshippingmethodselected = event => {
+               // Define ApplePayShippingMethodUpdate based on the selected shipping method.
+               // No updates or errors are needed, pass an empty object.
+               console.log('called shipping method selected');
+               const update = {};
+               session.completeShippingMethodSelection(update);
+           };
+           session.onshippingcontactselected = async event => {
+               // Define ApplePayShippingContactUpdate based on the selected shipping contact.
+               console.log('called shipping contact selected', event.shippingContact);
+               const newItems = await determineTax(event.shippingContact);
+               console.log('shipping contact result', newItems);
+               session.completeShippingContactSelection(newItems);
+           };
+           session.onpaymentauthorized = async event => {
+               console.log('called payment authorized');
+               const payResult = await paymentAuthorized(event.payment);
+               console.log('payment authorized result', payResult);
+               if (payResult.success) {
+                   // Begin Worldpay processing on successful payResult call
+                   document.getElementById("responseap$paypageRegistrationId").value = "";
+                   document.getElementById("responseap$checkoutId").value = "";
+                   document.getElementById("responseap$vantivTxnId").value = "";
+                   document.getElementById("responseap$expMonth").value = "";
+                   document.getElementById("responseap$expYear").value = "";
+                   document.getElementById("responseap$expDate").value = "";
+                   document.getElementById("responseap$type").value = "";
+                   document.getElementById("responseap$aptype").value = "";
+                   const oidResult = await retrieveOrderID();
+                   console.log('order id result', oidResult);
+                   $.getScript("{{ config.WORLDPAY_APPLEPAY_JS }}")
+                   .done(function() {
+                       // Init ApplePay result
+                       var applePayResult = {
+                           "status": ApplePaySession.STATUS_FAILURE
+                       };
+                       const applePayData = {
+                           "data": event.payment.token.paymentData.data,
+                           "signature": event.payment.token.paymentData.signature,
+                           "version": event.payment.token.paymentData.version,
+                           "header": {
+                               "applicationData": null,
+                               "ephemeralPublicKey": event.payment.token.paymentData.header.ephemeralPublicKey,
+                               "publicKeyHash": event.payment.token.paymentData.header.publicKeyHash,
+                               "transactionId": event.payment.token.transactionIdentifier,
+                           }
+                       };
+
+                       var eProtectUrl = "{{ config.WORLDPAY_EPROTECT_URL }}";
+
+                       const eProtectRequest = {
+                         "paypageId": "{{ config.WORLDPAY_APPLEPAY_PAYPAGE_ID }}",
+                         "reportGroup": "{{ config.WORLDPAY_MERCHANTID }}",
+                         "orderId": "{{ config.ORDER_PREFIX }}"+oidResult['orderid'],
+                         "id": oidResult['orderid'],
+                         "checkoutIdMode": true,
+                         "applepay": applePayData,
+                         "url": eProtectUrl,
+                         "minPanLength": 16
+                       };
+
+                       new eProtect().sendToEprotect(eProtectRequest,
+                           {},
+                           // submitAfterEprotect
+                           function(response) {
+                               console.log('sendToEprotect response', response);
+                               if (response.paypageRegistrationId) document.getElementById("responseap$paypageRegistrationId").value = response.paypageRegistrationId;
+                               if (response.checkoutId) document.getElementById("responseap$checkoutId").value = response.checkoutId;
+                               if (response.vantivTxnId) document.getElementById("responseap$vantivTxnId").value = response.vantivTxnId;
+                               if (response.expDate) {
+                                   document.getElementById("responseap$expDate").value = response.expDate;
+                                   if (response.expDate.length == 4) {
+                                       document.getElementById("responseap$expMonth").value = response.expDate.substring(0, 2);
+                                       document.getElementById("responseap$expYear").value = response.expDate.substring(2);
+                                   }
+                               }
+                               if (response.type) document.getElementById("responseap$type").value = response.type;
+                               document.getElementById("responseap$aptype").value = 'applepay';
+                               //Submit the form
+                               applePayResult.status = ApplePaySession.STATUS_SUCCESS;
+                               session.completePayment(applePayResult);
+                               console.log("done", response.paypageRegistrationId, response.vantivTxnId);
+                               $('[data-js="applepay-confirm-form"]').submit();
+                           },
+                           // onErrorAfterEprotect
+                           function(response) {
+                               console.log('onErrorAfterEprotect', response);
+                               session.completePayment(applePayResult);
+                               if (response.paypageRegistrationId) document.getElementById("responseap$paypageRegistrationId").value = response.paypageRegistrationId;
+                               if (response.checkoutId) document.getElementById("responseap$checkoutId").value = response.checkoutId;
+                               if (response.vantivTxnId) document.getElementById("responseap$vantivTxnId").value = response.vantivTxnId;
+                               if (response.type) document.getElementById("responseap$type").value = response.type;
+                               document.getElementById("responseap$aptype").value = 'applepay';
+                               // session.completePayment(applePayResult);
+                               if (response.response === "871" ||
+                                   response.response === "872" ||
+                                   response.response === "873" ||
+                                   response.response === "874" ||
+                                   response.response === "876"
+                                 ) {
+                                     //Recoverable error caused by user mis-typing their credit card
+                                     alert("Please try a different credit card or payment type with applepay.");
+                               } else if (
+                                   response.response === "881" ||
+                                   response.response === "882" ||
+                                   response.response === "883"
+                                 ) {
+                                     //Recoverable error caused by user mis-typing their credit card cvv code
+                                     alert("Please check and re-enter your card validation code and try again.");
+                               } else {
+                                     //Non-recoverable or unknown error code
+                                     //alert("We are experiencing technical difficulties. Please call us at to complete your order");
+                                     //You may also want to submit the vantivTxnId and response received, plus information you have about the consumer to your servers to facilitate debugging, i.e., customer ip address, user agent and time
+                                     console.error('worldpay non-recoverable error CART: {{ get_cart_id() }}', response, eProtectRequest);
+                               }
+                           },
+                           // timeoutOnEprotect
+                           function(response) {
+                               console.log('timeoutOnEprotect', response);
+                               session.completePayment(applePayResult);
+
+                               //alert("We are experiencing technical difficulties. Please try again or call us to complete your order");
+                               //You may also want to submit information you have about the consumer to your servers to facilitate debugging like customer ip address, user agent, and time
+                               console.error('worldpay payment request timed out after ' + response.responseTime + 'ms CLIENT: CART: {{ get_cart_id() }}', response);
+                           },
+                           15000);
+                   })
+                   .fail(function() {
+                       window.payframeClient = 'fail';
+                       console.error('worldpay payment payframeClient failed');
+                   });
+               }
+           };
+           session.oncancel = event => {
+               // Payment cancelled by WebKit
+               console.log("applepay checkout canceled");
+           };
+
+           session.begin();
+       });
+   });
+ </script>

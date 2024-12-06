@@ -1,0 +1,30 @@
+{% extends "base.html.j2" %}
+{% set title %}No Products Found at {{ config.STORE_NAME }}{% endset %}
+{% set page = 'noresults' %}
+{% block content %}
+<main class="container">
+  <div class="shopping-cart-header">
+    <h1 class="header-title primary-color">No Products Found</h1>
+  </div>
+
+  <hr />
+
+  <h2 class="mb-3">
+    We are unable to find products that match your search.
+    {% if request.args.get('spsg') %}
+    Did you mean <a href="/find?q={{ request.args.get('spsg') | sanitize }}">"{{ request.args.get('spsg') | sanitize }}"</a>?
+    {% else %}
+    Please try again with a different search term.
+    {% endif %}
+  </h2>
+
+  <div class="fullwidth__holder">
+    <div
+      id="recs-container"
+      class="certona-carousel minheight minheigt-800 loading-mask"
+      data-recs='[{"recommendationsType":"recommendations","reportingId":"Recommendations 1: No Search Results","title": "You May Like"},{"recommendationsType":"recommendations","reportingId":"Recommendations 2: No Search Results","title": "Customers Also Viewed"},{"recommendationsType":"recommendations","reportingId":"Recommendations 3: No Search Results","title": "Bestsellers"}]'
+    ></div>
+  </div>
+
+</main>
+{% endblock %}

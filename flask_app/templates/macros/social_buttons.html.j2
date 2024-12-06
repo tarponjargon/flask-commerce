@@ -1,0 +1,22 @@
+{% macro render_social_buttons(product) -%}
+  {% set pinimg = config.IMAGE_BASE + config.PRODUCT_IMAGE_PATH + 'large/' + product.get('images', {}).get('bigimg') %}
+  {% set url = config.STORE_URL + product.get('url') %}
+  <span class="me-2 pinterest-button">
+  <a
+    href="http://pinterest.com/pin/create/button/?media={{ pinimg }}&url={{ url }}%3Futm_campaign%3Dsigshare%26utm_source%3Dfacebook%26utm_medium%3Dproductpage%26websource%3Dsigshare%26source_code%3Dsigshare"
+    class="pin-it-button"
+    count-layout="none"
+  ></a>
+  </span>
+  <script async defer src="//assets.pinterest.com/js/pinit.js"></script>
+  <div
+    class="fb-like"
+    data-href="{{ url }}?utm_campaign=sigshare&utm_source=facebook&utm_medium=productpage&websource=sigshare&source_code=sigshare"
+    data-width="110"
+    data-layout="button_count"
+    data-action="like"
+    data-size="small"
+    data-show-faces="false"
+    data-share="true"
+  ></div>
+{%- endmacro %}

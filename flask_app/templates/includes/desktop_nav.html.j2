@@ -1,0 +1,128 @@
+{% cache None %}
+<div class="navbar-overlay" style="display: none;"></div>
+<nav class="category-nav">
+  <div class="container main-desk-nav" role="application">
+    <ul class="ps-0">
+      {% for cat in get_desktop_nav() %}
+        {% if cat.categories | length == 1 and cat.categories[0].count == cat.categories[0].hard_count  %}
+          <li class="menu-item">
+            <a
+              class="top-category-link top-cateogry-link-{{ cat.id }}"
+              href="{{ cat.categories[0].path }}"
+            ><span>{{ cat.name }}</span></a>
+          </li>
+
+        {% elif cat.name == 'All' %}
+          <li class="dropdown menu-item dropdown-all">
+            <a
+              role="button"
+              aria-expanded="false"
+              aria-haspopup="true"
+              aria-label="{{cat.name | sanitize}}. Press the Space key to show submenus."
+              class="top-category-link"
+              href="javascript:;"
+              style="cursor: default"
+            ><span>{{cat.name}}</span></a>
+            <ul class="dropdown-menu-container">
+              <li class="container">
+                <div class="chunk">
+                  {% for all_record in get_all_category_menu() %}
+                    <a
+                      tabindex="0"
+                      class="level-item-{{ all_record.category_style }}"
+                      href="{{ all_record.category_link }}"
+                    >{{ all_record.category_name }}</a>
+                  {% endfor %}
+                </div>
+
+              </li>
+            </ul>
+
+          </li>
+        {% else %}
+          <li class="dropdown menu-item">
+            <a
+              class="top-category-link"
+              href="{{ 'javascript:;' if cat.categories | length != 1 else cat.categories[0].path }}"
+              style="{{ 'cursor: default' if cat.categories | length != 1 else '' }}"
+            ><span>{{ cat.name }}</span></a>
+            <ul class="dropdown-menu-container dropdown-menu-container-{{ cat.id }}">
+              <li class="container">
+                <div class="chunk flex-grow-1">
+                  {% for category in cat.categories %}
+                      {% if cat.multi_level %}
+                        {# some nav categories are specified to show 2 levels deep #}
+                        {#-- list subcategories --#}
+                        {% for subcat in category.subcategories %}
+                          <a tabindex="0" class="level-item-{{ subcat.level + 2 }}" data-desktop-visible="{{ subcat.desktop_visible }}" href="{{ subcat.path }}">{{ subcat.category_name }}</a>
+                        {% endfor %}
+                        <a tabindex="0" class="level-item-2 see-all-link" href="{{ category.path }}">Shop All {{ category.category_name }}</a>
+                      {% else %}
+
+                        {# do not show multilevel #}
+                        {#-- list subcategories --#}
+                        {% for subcat in get_subcategories(category.category_code) %}
+                          <a tabindex="0" class="level-item-3" data-desktop-visible="{{ subcat.desktop_visible }}" href="{{ subcat.path }}">{{ subcat.category_name }}</a>
+                        {% endfor %}
+                        {#-- print a heading for each main category --#}
+                        <a tabindex="0" class="level-item-2 see-all-link" href="{{ category.path }}">Shop All {{ category.category_name }}</a>
+                      {% endif %}
+
+                  {% endfor %}
+                </div>
+
+                {#-- if there is an image --#}
+                {% if cat.banner_image and cat.banner_link %}
+                  <div class="chunk long-description text-center">
+                    <div>
+                      <a href="{{ cat.banner_link }}">
+                        {% set dims = image_size(cat.banner_image) %}
+                        <img
+                          src="/assets/images/loading-dots.gif"
+                          data-img="{{ config.IMAGE_BASE }}/{{ cat.banner_image }}"
+                          alt="{{ cat.banner_text if cat.banner_text else '' }}"
+                          {{ 'width="' + str(dims[0]) + '"' if dims[0] else '' }}
+                          {{ 'height="' + str(dims[1]) + '"' if dims[1] else '' }}
+                          class="img-fluid lazyload"
+                        />
+                        {% if cat.banner_text %}
+                          <br />
+                          <span class="d-block text-primary pt-1">{{ cat.banner_text }}</span>
+                        {% endif %}
+                    </a>
+                    </div>
+                  </div>
+                {% endif %}
+
+                {#-- if there is another image --#}
+                {% if cat.banner_image2 and cat.banner_link2 %}
+                  <div class="chunk long-description text-center">
+                    <div>
+                      <a href="{{ cat.banner_link2 }}">
+                        {% set dims = image_size(cat.banner_image2) %}
+                        <img
+                          src="/assets/images/loading-dots.gif"
+                          data-src="{{ config.IMAGE_BASE }}/{{ cat.banner_image2 }}"
+                          alt="{{ cat.banner_text2 if cat.banner_text2 else '' }}"
+                          {{ 'width="' + str(dims[0]) + '"' if dims[0] else '' }}
+                          {{ 'height="' + str(dims[1]) + '"' if dims[1] else '' }}
+                          class="img-fluid lazyload"
+                        />
+                        {% if cat.banner_text2 %}
+                          <br />
+                          <span class="d-block text-primary pt-1">{{ cat.banner_text2 }}</span>
+                        {% endif %}
+                    </a>
+                    </div>
+                  </div>
+                {% endif %}
+
+              </li>
+            </ul>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</nav>
+{% endcache %}

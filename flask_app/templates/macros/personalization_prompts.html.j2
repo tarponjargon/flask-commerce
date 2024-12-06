@@ -1,0 +1,14 @@
+{#-- this macro renders other macros depending on what type of personalized item this is --#}
+
+{% from 'macros/personalization_fields.html.j2' import render_fields with context %}
+{% from 'macros/personalization_lakes.html.j2' import render_lakes with context %}
+{% from 'macros/personalization_moonglow.html.j2' import render_moonglow with context %}
+{% macro render_prompts(item) -%}
+{% if item.get('product', {}).is_custom_lake() %}
+  {{ render_lakes(item) }}
+{% elif item.get('product', {}).is_custom_moonglow() %}
+  {{ render_moonglow(item) }}
+{% else %}
+  {{ render_fields(item) }}
+{% endif %}
+{%- endmacro %}

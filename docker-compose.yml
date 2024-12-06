@@ -1,0 +1,223 @@
+# this should be a non-site-specific file so the same one can be used across all brands
+# use environment variables
+
+version: "3.1"
+
+services:
+  redis_server:
+    image: redis
+    container_name: redis_server
+    restart: unless-stopped
+    command: --port ${REDIS_PORT}
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    volumes:
+      - ./.dev_redis:/data
+    networks:
+      - my_network
+
+  database_server:
+    image: mysql
+    container_name: ${MYSQL_HOST}
+    restart: unless-stopped
+    tty: true
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_TCP_PORT: 3306
+    volumes:
+      - ./dev-sql:/docker-entrypoint-initdb.d
+      - ./config/mysql-dev.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./.dev_db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    cap_add:
+      - SYS_NICE # trying to prevent mbind: Operation not permitted error
+    networks:
+      - my_network
+
+  application:
+    container_name: ${APP_HOST}
+    tty: true
+    build:
+      context: ./
+      dockerfile: ./config/Dockerfile-flask
+    command:
+      [
+        "./bin/wait-for-it.sh",
+        "${MYSQL_HOST}:3306",
+        "--",
+        "gunicorn",
+        "--config",
+        "./config/gunicorn.py",
+        "manage:app",
+      ]
+    environment:
+      ENV: "${ENV}"
+      STORE_CODE: "${STORE_CODE}"
+      REMOTE_HOST: "${REMOTE_HOST}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_HOST: "${MYSQL_HOST}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      FLASK_APP: "${FLASK_APP}"
+      APP_PORT: "${APP_PORT}"
+      SECRET_KEY: "${SECRET_KEY}"
+      RUN_HOST: "${RUN_HOST}"
+      REDIS_HOST: "${REDIS_HOST}"
+      REDIS_PORT: "${REDIS_PORT}"
+      REDIS_CACHE_DB: "${REDIS_CACHE_DB}"
+      REDIS_SESSION_DB: "${REDIS_SESSION_DB}"
+      SESSION_COOKIE_NAME: "${STORE_CODE}"
+      REDIS_CART_DB: "${REDIS_CART_DB}"
+      GUNICORN_WORKERS: "${GUNICORN_WORKERS}"
+      GUNICORN_THREADS: "${GUNICORN_THREADS}"
+      GUNICORN_LOGLEVEL: "${GUNICORN_LOGLEVEL}"
+      DEV_URL: "${DEV_URL}"
+      WEB_HOST: "${WEB_HOST}"
+      DEVSERVER_HOST: "${DEVSERVER_HOST}"
+      ERROR_NOTIFY_URL: "${ERROR_NOTIFY_URL}"
+      ERROR_NOTIFY_AUTH: "${ERROR_NOTIFY_AUTH}"
+      DEFAULT_GTM_ID: "${DEFAULT_GTM_ID}"
+      OBSCURE_SALT: "${OBSCURE_SALT}"
+      RANDOM_STRING: "${RANDOM_STRING}"
+      STORE_EMAIL: "${STORE_EMAIL}"
+      SURVEY_API_KEY: "${SURVEY_API_KEY}"
+      SURVEY_API_URL: "${SURVEY_API_URL}"
+      SURVEY_SEGMENT: "${SURVEY_SEGMENT}"
+      WORLDPAY_JS: "${WORLDPAY_JS}"
+      WORLDPAY_APPLEPAY_JS: "${WORLDPAY_APPLEPAY_JS}"
+      WORLDPAY_EPROTECT_URL: "${WORLDPAY_EPROTECT_URL}"
+      WORLDPAY_PAYPAGE_ID: "${WORLDPAY_PAYPAGE_ID}"
+      WORLDPAY_APPLEPAY_PAYPAGE_ID: "${WORLDPAY_APPLEPAY_PAYPAGE_ID}"
+      WORLDPAY_MERCHANTID: "${WORLDPAY_MERCHANTID}"
+      WORLDPAY_STYLE: "${WORLDPAY_STYLE}"
+      WPP_VERSION: "${WPP_VERSION}"
+      WPP_PAYMENTACTION: "${WPP_PAYMENTACTION}"
+      WPP_USER: "${WPP_USER}"
+      WPP_PWD: "${WPP_PWD}"
+      WPP_SIG: "${WPP_SIG}"
+      WPP_PAYPAL_URI: "${WPP_PAYPAL_URI}"
+      WPP_NVP_URI: "${WPP_NVP_URI}"
+      APPLEPAY_MERCHID_ENDPOINT: "${APPLEPAY_MERCHID_ENDPOINT}"
+      APPLEPAY_MERCHID: "${APPLEPAY_MERCHID}"
+      APPLEPAY_MERCHID_KEY: "${APPLEPAY_MERCHID_KEY}"
+      APPLEPAY_MERCHID_CERT: "${APPLEPAY_MERCHID_CERT}"
+      VERTEX_TOKEN_ENDPOINT: "${VERTEX_TOKEN_ENDPOINT}"
+      VERTEX_REST_ENDPOINT: "${VERTEX_REST_ENDPOINT}"
+      VERTEX_SALE_URI: "${VERTEX_SALE_URI}"
+      VERTEX_SCOPE: "${VERTEX_SCOPE}"
+      VERTEX_GRANT_TYPE: "${VERTEX_GRANT_TYPE}"
+      VERTEX_API_KEY: "${VERTEX_API_KEY}"
+      VERTEX_API_PASS: "${VERTEX_API_PASS}"
+      VERTEX_CLIENT_ID: "${VERTEX_CLIENT_ID}"
+      VERTEX_CLIENT_SECRET: "${VERTEX_CLIENT_SECRET}"
+      DEV_GTM_ID: "${DEV_GTM_ID}"
+      DEV_GA_MEASUREMENT_ID: "${DEV_GA_MEASUREMENT_ID}"
+      DEV_GA_MEASUREMENT_PROTOCOL_SECRET: "${DEV_GA_MEASUREMENT_PROTOCOL_SECRET}"
+      DEV_MAIL_SERVER: "${DEV_MAIL_SERVER}"
+      DEV_MAIL_PORT: "${DEV_MAIL_PORT}"
+      DEV_MAIL_USE_SSL: "${DEV_MAIL_USE_SSL}"
+      DEV_MAIL_USERNAME: "${DEV_MAIL_USERNAME}"
+      DEV_MAIL_PASSWORD: "${DEV_MAIL_PASSWORD}"
+      STAGING_GTM_ID: "${STAGING_GTM_ID}"
+      STAGING_GA_MEASUREMENT_ID: "${STAGING_GA_MEASUREMENT_ID}"
+      STAGING_GA_MEASUREMENT_PROTOCOL_SECRET: "${STAGING_GA_MEASUREMENT_PROTOCOL_SECRET}"
+      STAGING_MAIL_SERVER: "${STAGING_MAIL_SERVER}"
+      STAGING_MAIL_PORT: "${STAGING_MAIL_PORT}"
+      STAGING_MAIL_USE_SSL: "${STAGING_MAIL_USE_SSL}"
+      STAGING_MAIL_USERNAME: "${STAGING_MAIL_USERNAME}"
+      STAGING_MAIL_PASSWORD: "${STAGING_MAIL_PASSWORD}"
+      PROD_GTM_ID: "${PROD_GTM_ID}"
+      PROD_GA_MEASUREMENT_ID: "${PROD_GA_MEASUREMENT_ID}"
+      PROD_GA_MEASUREMENT_PROTOCOL_SECRET: "${PROD_GA_MEASUREMENT_PROTOCOL_SECRET}"
+      PROD_MAIL_SERVER: "${PROD_MAIL_SERVER}"
+      PROD_MAIL_PORT: "${PROD_MAIL_PORT}"
+      PROD_MAIL_USE_SSL: "${PROD_MAIL_USE_SSL}"
+      PROD_MAIL_USERNAME: "${PROD_MAIL_USERNAME}"
+      PROD_MAIL_PASSWORD: "${PROD_MAIL_PASSWORD}"
+
+    depends_on:
+      - database_server
+      - redis_server
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - ${HOME}/.ssh:/root/.ssh
+      - ./config:/project/config
+      - ./flask_app:/project/flask_app
+      - ./public_html:/project/public_html
+      - ./tmp:/project/tmp
+      - ./bin:/project/bin
+      - ./cgi-bin:/project/cgi-bin
+      - ./tests:/project/tests
+      - ./docs:/project/docs
+      - ./dev-sql:/project/dev-sql
+      - ./migrations:/project/migrations
+      - ./requirements.txt:/project/requirements.txt
+    restart: unless-stopped
+    networks:
+      my_network:
+
+  webserver:
+    container_name: webserver
+    hostname: ${WEB_HOST}
+    tty: true
+    build:
+      context: ./config
+      dockerfile: Dockerfile-apache
+    environment:
+      APP_HOST: ${APP_HOST}
+      APP_PORT: "${APP_PORT}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_HOST: "${MYSQL_HOST}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      REMOTE_HOST: "${REMOTE_HOST}"
+      ENV: "${ENV}"
+    depends_on:
+      - application
+    ports:
+      - "80:80"
+      # - "443:443"
+    volumes:
+      - ./apacheconf/apache-rewrites.inc.conf:/etc/apache2/conf-available/apache-rewrites.inc.conf
+      - ./apacheconf/htpasswd:/etc/apache2/conf-available/htpasswd
+      - ./apacheconf/receiptusers:/etc/apache2/conf-available/receiptusers
+      - ./apacheconf/apache-rewrites.inc.conf:/var/www/html/apacheconf/apache-rewrites.inc.conf
+      - ./cgi-bin:/var/www/html/cgi-bin
+      - ./config:/project/config
+      - ./bin:/var/www/html/bin
+      - ./hazel-cat:/var/www/html/hazel-cat
+      - ./public_html:/var/www/html/public_html
+      - ${HOME}/.ssh:/root/.ssh
+    restart: unless-stopped
+    networks:
+      my_network:
+        aliases:
+          - ${WEB_HOST}
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    tty: true
+    depends_on:
+      - database_server
+    ports:
+      - "8080:80"
+    logging:
+      driver: none
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      PMA_HOST: database_server
+    networks:
+      - my_network
+
+networks:
+  my_network:

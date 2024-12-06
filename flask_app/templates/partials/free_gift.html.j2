@@ -1,0 +1,129 @@
+
+{% from 'macros/variant_select.html.j2' import render_variant_select %}
+{% set products = g.prompt_free_gift %}
+<style>
+  .popup {
+    background:#fefefb url("/assets/images/popup.jpg") top center no-repeat;
+    max-width:530px;
+    margin:0;
+  }
+  .modal-header-row {
+    height: 77px;
+  }
+  .popup h1 {
+    font-family: "Nunito", Helvetica, sans-serif;
+    font-size: 2.5em;
+  }
+  .free-image-container {
+    width: 200px;
+    padding: 10px;
+  }
+  @media (max-width: 768px) {
+    .popup h1 {
+      font-size: 1.9em;
+    }
+  }
+  @media (max-width: 400px) {
+    .popup h1 {
+      font-size: 1.5em;
+    }
+  }
+  .popup h3 {
+    font-family: "Nunito", Helvetica, sans-serif;
+  }
+</style>
+<script>
+
+  function changeImage(menu) {
+    document.getElementById('free-item-image').src=menu.options[menu.selectedIndex].getAttribute('data-image');
+    document.getElementById('free-item-name').innerText = menu.options[menu.selectedIndex].getAttribute('data-name');
+    document.getElementById('free-item-origprice').innerText = menu.options[menu.selectedIndex].getAttribute('data-origprice');
+  }
+  function checkSelected(e) {
+    var menu = document.getElementById("OPTIONED_SELECT");
+    if (!menu.options[menu.selectedIndex].value) {
+      e.preventDefault();
+      alert("Please select an option");
+      return false;
+    } else {
+      e.preventDefault();
+      window.location = menu.options[menu.selectedIndex].value;
+    }
+  }
+  </script>
+<div class="popup" data-js="upsell-popup">
+  <form
+    method="GET"
+    {{ 'onsubmit="checkSelected(event)"' if products | length > 1 else 'action="/cart"' }}
+  >
+    {% if products | length == 1 %}
+    <input type="hidden" name="PRODUCT_{{ products[0].get('fullskuid') }}" value="1">
+    {% endif %}
+    <div class="row modal-header-row">
+      <div class="col-12 d-flex align-items-center justify-content-center">
+        <h1 id="pbs-smallModalLabel" class="text-white mt-2">ADD YOUR FREE ITEM!</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2 class="text-md my-2">Would you like to add this item?</h2>
+      </div>
+    </div>
+    <div class="row m-0">
+      <div class="col-12 col-sm-5 d-flex align-items-center justify-content-center free-image-container">
+        <img
+          src="{{ products[0].get('default_image') }}"
+          data-image="{{ products[0].get('default_image') }}"
+          alt="free gift image"
+          id="free-item-image"
+          class="img-fluid"
+          onerror="imageError(this)"
+        >
+      </div>
+      <div class="col-12 col-sm-7 d-flex align-items-center">
+        <div class="d-block w-100">
+          <h3 class="d-block w-100 text-md" id="free-item-name">Add this FREE gift!</h3>
+          <div data-js="detail-item-price">
+            <h3 class="text-muted text-lg d-inline">
+              <s id="free-item-origprice">{{ products[0].get('price') | format_currency }}</s>
+            </h3>
+            &nbsp;
+            <h3 class="text-warning text-lg d-inline">FREE</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if products | length > 1 %}
+    <div class="w-100 d-flex justify-content-center mt-">
+      <select onChange="changeImage(this)" class="form-select" style="width: auto" id="OPTIONED_SELECT">
+        <option
+          value=""
+          data-image="{{ products[0].get('default_image') }}"
+          data-name="Select your FREE GIFT below!"
+          data-desc=""
+          data-origprice="{{ products[0].get('price') | format_currency }}"
+        >Select One</option>
+        {% for product in products %}
+            <option
+            value="/cart?PRODUCT_{{ product.get('fullskuid') }}=1"
+            data-image="{{ product.get('image') }}"
+            data-name="{{ product.get('name') | sanitize }}"
+            data-desc=""
+            data-origprice="{{ product.get('price') | format_currency }}">
+              {{ product.get('name') }}
+            </option>
+        {% endfor %}
+      </select>
+    </div>
+    {% endif %}
+
+
+    <div class="row mt-4 mb-4">
+      <div class="col-12 d-flex justify-content-center">
+        <a data-dismiss="modal" href="#" class="btn btn-lg button-primary me-3">No, Thanks</a>
+        <button id="cart-upsell-yes-btn" type="submit" class="btn btn-lg button-primary">Yes, Please!</button>
+      </div>
+    </div>
+  </form>
+</div>

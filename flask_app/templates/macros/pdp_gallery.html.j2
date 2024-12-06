@@ -1,0 +1,68 @@
+{% macro render_gallery(images) -%}
+
+<div class="product-carousel">
+  <div class="w-100 slider-single minheight minheight-450" data-js="detail-image">
+    {% for image in images.get('gallery') %}
+      <div class="d-flex align-items-center justify-content-center">
+        {% if image.get('video') %}
+          <video
+            controls=""
+            class="video-responsive"
+            poster="{{ image_base }}/{{config.ZOOM_DIR}}/{{ image.image }}"
+          ><source
+            src="/graphics/products/video/{{ image.video }}"
+            type="video/mp4"
+          ></video>
+        {% else %}
+          {% set dims = image_size('/graphics/products/' + config.PDP_IMAGE_DIR + '/' + image.image) %}
+          <img
+            onerror="imageError(this)"
+            alt="{{ product.get('name') | sanitize }}"
+            class="img-fluid cloudzoom"
+            src="{{ image_base }}/{{config.PDP_IMAGE_DIR}}/{{ image.image }}"
+            data-image="{{ image.image }}"
+            data-zoom="{{ image_base }}/{{config.ZOOM_DIR}}/{{ image.image }}"
+            {{ 'width="' + str(dims[0]) + '"' if dims[0] else '' }}
+            {{ 'height="' + str(dims[1]) + '"' if dims[1] else '' }}
+          />
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  <div class="image-shown-caption w-100 d-flex justify-content-end text-muted">
+    <span data-js="image-shown" style="visibility: hidden;">
+      <span data-js="image-type"></span> Shown: <span data-js="image-desc"></span>
+    </span>
+  </div>
+  {% if images and images.get('gallery', []) | length > 1 %}
+    <div class="w-100 mb-4 slider-nav" data-js="gallery-images">
+      {% for image in images.get('gallery') %}
+        {% set dims = image_size('/graphics/products/small/' + image.image) %}
+        {% if image.get('video') %}
+          <div class="p-2 img-overlay-wrap">
+            <img
+              alt="Video {{ product.get('name') | sanitize }}"
+              data-image="{{ image.image }}"
+              src="{{ image_base }}/small/{{ image.image }}"
+            />
+            <svg class="svg-icon" opacity="85%" style="width: 60%; height: 60%;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path opacity='0.75' d="M514 912c-219.9 0-398.9-178.9-398.9-398.8S294 114.3 514 114.3c219.9 0 398.8 178.9 398.8 398.9C912.8 733.1 733.9 912 514 912z m0-701.5c-166.9 0-302.7 135.8-302.7 302.7S347.1 815.9 514 815.9s302.7-135.8 302.7-302.7S680.9 210.5 514 210.5z" fill="#BDD2EF" /><path opacity='0.75' d="M437.1 345.9L687 490.2c17.7 10.2 17.7 35.7 0 45.9L437.1 680.5c-17.7 10.2-39.8-2.6-39.8-23V368.9c0-20.4 22.1-33.2 39.8-23z" fill="#2867CE" /></svg>
+          </div>
+        {% else %}
+          <div class="p-2">
+            <img
+              onerror="imageError(this)"
+              alt="Alternate image {{ product.get('name') | sanitize }}"
+              data-image="{{ image.image }}"
+              class="img-fluid"
+              src="{{ image_base }}/small/{{ image.image }}"
+              {{ 'width="' + str(dims[0]) + '"' if dims[0] else '' }}
+              {{ 'height="' + str(dims[1]) + '"' if dims[1] else '' }}
+            />
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+{%- endmacro %}

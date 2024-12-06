@@ -1,0 +1,30 @@
+{% if g.messages.get('promo') %}
+
+<h3 class="text-danger coupon-messages text-larger font-weight-bold my-3">
+  {{ g.messages.get('promo') }}
+
+  {# prompt the customer for free gift, if eligible #}
+  {% if g.prompt_free_gift %}
+    <script type="text/javascript">
+      function freeGiftPromoWindow() {
+          $('#smallModal .modal-content').load('free-gift',
+          function () {
+              $('#smallModal').modal('show');
+          });
+          $('#smallModal').on('hide.bs.modal', function (e) {
+              $.get("/default?FG_REFUSED=1");
+          });
+      }
+    </script>
+    <a href="javascript:;" onclick="freeGiftPromoWindow()">Click here</a> to add your FREE item.
+    {% if not session_safe_get('FG_REFUSED') %}
+      <script type="text/javascript">
+        afterLoad("$", function() {
+          freeGiftPromoWindow();
+        });
+      </script>
+    {% endif %}
+  {% endif %}
+
+</h3>
+{% endif %}

@@ -1,0 +1,98 @@
+{% macro render_cart_items_object()  -%}
+{#
+  renders a javascript objects representing the cart cart inline (should be in <head>).
+  allows the cart to be accessibile to the JS thats runs in the view.
+  TODO: Needs a MAJOR refactor
+#}
+<script>
+  window.dataLayer = window.dataLayer || [];
+  window.pageItemsObject = window.pageItemsObject || {}; // collects product impressions (see footer)
+  window.cartItemsObject = window.cartItemsObject || {}; // collects items in cart (see below)
+  window.cartItemsArray = window.cartItemsArray || []; // array of cart items generated from cartItemsObject
+  window.cartItemsDelimited = window.cartItemsDelimited || {
+      skuids: [],
+      quantities: [],
+      prices: [],
+      base: []
+  };
+  window.itemsAdded = [];
+  window.itemsQtyChanged = [];
+  window.itemsRemoved = [];
+</script>
+<script type="text/javascript">
+{% for item in g.cart.get_items() %}{% set product = item.get("product") %}{% set skuid = item.get("skuid") %}{% set base_skuid = product.get("skuid") %}
+    window.cartItemsObject['{{ skuid }}'] = {
+      'name': '{{ item.get("name") | sanitize }}',
+      'id': '{{ base_skuid }}',
+      'price': '{{ item.get("price") }}',
+      'variant' : '',
+      'category': "{{ replace_double_quote(get_breadcrumb_string(product.get('breadcrumb', []), ' > ')) }}",
+      'quantity': {{ item.get("quantity", 0) }},
+      'dimension1' : '{{ skuid }}'
+    };
+{% endfor %}
+</script>
+{#
+  also make cart items available as an array
+  Also making an array of the cart items based on the object, needed in checkout steps (and elsewhere)
+  added window.cartItemsDelimited which is a collection used for reporting cart data in a delimited
+  format to certona
+#}
+<script>
+Object.keys(window.cartItemsObject).forEach(function(key) {
+  window.cartItemsArray.push(window.cartItemsObject[key]);
+  window.cartItemsDelimited['skuids'].push(key);
+  window.cartItemsDelimited['quantities'].push(window.cartItemsObject[key]['quantity']);
+  window.cartItemsDelimited['prices'].push(window.cartItemsObject[key]['price']);
+  (window.cartItemsDelimited['base'].indexOf(window.cartItemsObject[key]['id']) === -1) && window.cartItemsDelimited['base'].push(window.cartItemsObject[key]['id']);
+});
+{% if g.messages['added'] | length %}
+  {% for item in g.messages['added'] %}
+    window.itemsAdded.push({{ item | tojson }});
+  {% endfor %}
+  window.dataLayer.push({
+    'event': 'addToCart',
+    'ecommerce': {
+        'add': {
+            'products': window.itemsAdded
+        }
+    }
+  });
+  {% if not g.messages['updated'] | length %}
+    if (window.itemsAdded.length) {
+      window.dataLayer.push({
+          'event': 'newItemsAdded',
+          'newCartItems': window.itemsAdded
+      });
+    }
+  {% endif %}
+{% endif %}
+
+{% if g.messages['removed'] | length %}
+  {% for item in g.messages['removed'] %}
+    window.itemsRemoved.push({{ item | tojson }});
+  {% endfor %}
+  window.dataLayer.push({
+    'event': 'removeFromCart',
+    'ecommerce': {
+        'remove': {
+            'products': window.itemsRemoved
+        }
+    }
+  });
+{% endif %}
+
+{% if g.messages['updated'] | length %}
+  {% for updated in g.messages['updated'] %}
+    {% if updated['item'] %}
+      window.itemsQtyChanged.push({{ updated["item"] | tojson }});
+    {% endif %}
+  {% endfor %}
+  window.dataLayer.push({
+    'event': 'cartQtyChanged',
+    'changedItems': window.itemsQtyChanged
+  });
+{% endif %}
+
+</script>
+{%- endmacro %}

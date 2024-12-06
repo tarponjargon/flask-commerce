@@ -1,0 +1,23 @@
+{% extends "base.html.j2" %}
+
+{% set page = 'empty' %}
+{% set title %}Your Cart is Empty{% endset %}
+
+
+{% block content %}
+
+<main class="container">
+  <div class="shopping-cart-header">
+    <h1 class="header-title primary-color">Your Cart is Empty</h1>
+  </div>
+  <hr />
+  <div class="fullwidth__holder">
+    <div
+      id="recs-container"
+      class="certona-carousel minheight minheigt-800 loading-mask"
+      data-recs='[{"recommendationsType":"recommendations","reportingId":"Recommendations 1: Error Page","title": "You May Like"},{"recommendationsType":"recommendations","reportingId":"Recommendations 2: Error Page","title": "Customers Also Viewed"},{"recommendationsType":"recommendations","reportingId":"Recommendations 3: Error Page","title": "Bestsellers"}]'
+    ></div>
+  </div>
+</main>
+
+{% endblock %}

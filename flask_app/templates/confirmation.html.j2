@@ -1,0 +1,557 @@
+{% from 'macros/errors.html.j2' import render_errors %}
+{% from 'macros/cart_items.html.j2' import render_cart_items with context %}
+{% extends "checkout_base.html.j2" %}
+{% set title %}Order Confirmation at {{ config.STORE_NAME }}{% endset %}
+{% set page = 'confirmation' %}
+{% set updatepage = '/confirmation' %}
+{% block content %}
+
+<script>
+	window.dataLayer.push({
+		'event': 'checkout',
+		'ecommerce': {
+			'checkout': {
+				'actionField': { 'step': 4 },
+				'products': window.cartItemsArray
+			}
+		}
+	});
+</script>
+
+<main class="container" data-js="payment-content">
+  {% include "includes/checkout_nav.html.j2" %}
+
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="cd-breadcrumb triangle">
+        <li class="current"><a href="/checkout?returntologin=1" class="text-white">Sign in</a></li>
+        <li class="current">
+          <a href="/checkout" class="text-white">
+            <span class="d-none d-sm-inline">Billing &amp; Shipping</span>
+            <span class="d-sm-none">Addresses</span>
+					</a>
+        </li>
+        <li class="current"><a href="/payment" class="text-white">Payment</a></li>
+        <li class="active"><button type="submit" form="myform" class="text-white">Review</button></li>
+      </ol>
+    </div>
+	</div>
+
+  {% if errors | length %}
+    {# errors sent from application back-end here #}
+    {{ render_errors(errors) }}
+  {% else %}
+    {# errors sent from application front-end here #}
+    <div class="card text-white bg-danger mt-3 mx-3 error-card" style="display: none">
+      <div class="card-body">
+        <p class="card-text"></p>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-8 review-order">
+      <div class="row ms-0 me-0">
+        <div class="col-12">
+          <div class="checkout_login">
+            <h2 class="checkout__title">Review Your Order<br>
+              <span class="required">
+								By placing this order you agree to our
+								<a href="/privacy" target="_blank">privacy notice</a> and
+								<a href="/termsofuse" target="_blank">terms of use</a>.
+							</span>
+            </h2>
+          </div>
+
+          {% include "includes/cart_shipping_cutoffs.html.j2" %}
+
+				</div>
+
+				{#-- billing information --#}
+        <div class="col-12">
+          <div class="billing_info" id="billing_info">
+            <span class="section-title">Billing information</span>
+            <div class="edit_controls pull-right">
+							<a
+								class="blue-link"
+								href="javascript:;"
+								data-js="trigger-expand"
+								data-id="billing_info"
+							>
+								<span class="toggle-default">
+									<span class="custom-icon"><i class="fa fa-pencil"></i></span>Edit Address
+								</span>
+								<span class="toggle-view" style="display: none">
+									<i class="fa fa-close"></i> Close
+								</span>
+							</a>
+						</div>
+            <div class="toggle-default-animate data">
+							<span>
+                <strong>
+                  {{ session_safe_get('bill_fname') }} {{ session_safe_get('bill_lname') }}
+                </strong>
+              </span>
+							<span>{{ session_safe_get('bill_street') }}</span>
+							{% if session_safe_get('bill_street2') %}
+                <span>{{ session_safe_get('bill_street2') }}</span>
+              {% endif %}
+							<span>{{ session_safe_get('bill_city') }},
+                {{ session_safe_get('bill_state') }}
+                {{ session_safe_get('bill_postal_code') }}
+              </span>
+							{% if session_safe_get('bill_country') != 'USA' %}
+                <span>{{ session_safe_get('bill_country') }}</span>
+              {% endif %}
+							<span>{{ session_safe_get('bill_email') }}</span>
+            </div>
+            <div class="toggle-view-animate edit_data" style="display: none;">
+              <div class="row ms-0 me-0">
+                <div class="col-12 px-4 pb-4 pt-0">
+                  <h2 class="checkout__title">Edit Billing Address</h2>
+									<form
+										method="POST"
+										action="/confirmation"
+										onsubmit="spinButton('update-billing-button', 'UPDATING')"
+									>
+                    {% include "includes/billing_fields.html.j2" %}
+										<button
+											type="submit"
+											class="button-primary submit-button"
+											id="update-billing-button"
+										>UPDATE ADDRESS
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+				</div>
+
+
+				{#--  shipping information --#}
+				<div class="col-12 pt-4">
+					<div class="shipping_info" id="shipping_info">
+					<span class="section-title">Ship-To information</span>
+					<div class="edit_controls pull-right">
+						<a
+							class="blue-link"
+							href="javascript:void(0);"
+							data-js="trigger-expand"
+							data-id="shipping_info"
+						>
+							<span class="toggle-default">
+								<span class="custom-icon"><i class="fa fa-pencil"></i></span>Edit Address
+							</span>
+							<span class="toggle-view" style="display: none">
+								<i class="fa fa-close"></i> Close
+							</span>
+						</a>
+					</div>
+					<div class="toggle-default-animate data">
+            <span>
+              <strong>
+                {{ session_safe_get('ship_fname') }} {{ session_safe_get('ship_lname') }}
+              </strong>
+            </span>
+            <span>{{ session_safe_get('ship_street') }}</span>
+            {% if session_safe_get('ship_street2') %}
+              <span>{{ session_safe_get('ship_street2') }}</span>
+            {% endif %}
+            <span>
+              {{ session_safe_get('ship_city') }},
+              {{ session_safe_get('ship_state') }}
+              {{ session_safe_get('ship_postal_code') }}
+            </span>
+            {% if session_safe_get('ship_country') != 'USA' %}
+              <span>{{ session_safe_get('ship_country') }}</span>
+            {% endif %}
+					</div>
+					<div class="toggle-view-animate edit_data" style="display: none;">
+						<div class="row ms-0 me-0">
+						<div class="col-12 px-4 pb-4 pt-0">
+							<h2 class="checkout__title">Edit shipping Address</h2>
+							<form
+								method="POST"
+								action="/confirmation"
+								id="edit-shipping-form"
+							>
+                {% if session_safe_get('customer_id') %}
+                  {% include "includes/addressbook_menu.html.j2" %}
+                {% endif %}
+                {% include "includes/shipping_fields.html.j2" %}
+								<button
+									type="submit"
+									class="button-primary submit-button"
+									id="update-shipping-button"
+								>UPDATE ADDRESS
+							</form>
+						</div>
+						</div>
+					</div>
+					</div>
+				</div>
+
+        {#--   payment method ---#}
+        <div class="col-12 pt-4">
+          <div class="payment_method">
+            <span class="section-title">Payment Method</span>
+            <div class="edit_controls pull-right">
+							<a href="/payment" class="blue-link"><span class="custom-icon"><i class="fa fa-pencil"></i></span>Change Method</a>
+						</div>
+            <div class="data">
+							<span>
+                {% if session_safe_get('worldpay_registration_id') %}
+                  Credit Card<br />
+                {% elif session_safe_get('credit_code') %}
+                  Credit Card<br />
+                {% endif %}
+                {% if session_safe_get('WPP_TOKEN') %}
+                  PayPal<br />
+                {% endif %}
+                {% if session_safe_get('giftcertificate') %}
+                  Gift Certificate<br />
+                {% endif %}
+							</span>
+            </div>
+          </div>
+        </div>
+
+        {#--  edit shipping method --#}
+        <div class="col-12 pt-4">
+          <div class="shipping_method well" id="shipping_method">
+            <fieldset>
+              <legend class="section-title"><b>Change Your Shipping Method</b></legend>
+              <div class="edit_controls pull-right d-none d-sm-block">
+                <a
+                  class="blue-link"
+                  href="javascript:;"
+                  data-js="trigger-expand"
+                  data-id="shipping_method"
+                >
+                  <span class="toggle-default">
+                    <span class="custom-icon"><i class="fa fa-pencil"></i></span>Change Method
+                  </span>
+                  <span class="toggle-view" style="display: none">
+                    <i class="fa fa-close"></i> Close
+                  </span>
+                </a>
+              </div>
+              <div class="data toggle-default-animate">
+                {% set selected_method = g.cart.get_selected_shipping_method() %}
+                <span>{{ selected_method.get('ship_method_name') }} - {{ selected_method.get('ship_method_cost') | format_currency }}</span>
+              </div>
+              <div class="edit_data toggle-view-animate">
+                <a
+                  href="/shippinginfo"
+                  class="showmodal blue-link"
+                >
+                  Shipping rate chart
+                  <i class="fa fa-info-circle"></i>
+                </a>
+                <form method="POST" id="edit-method-form" action="/confirmation" >
+                  <div class="shipmethod">
+                    <ul>
+                      {% for method in g.cart.get_shipping_methods() %}
+                      {% set code = method.get('ship_method_code') %}
+                      <li data-children-count="1">
+                        <input type="radio" value="{{ code }}" id="p1" name="ship_method" {{ 'checked' if session_safe_get('ship_method') == code else '' }}>
+                        <label for="p1">
+                          <span class="method">
+                            {{ method.get('ship_method_name') }}
+                            -
+                            {{ method.get('ship_method_cost') | format_currency }}
+                          </span>
+                        </label>
+                        <span class="methodtext">
+                          {% if method.get('ship_method_delivery_desc') %}
+                            ({{ method.get('ship_method_delivery_desc') }} if received by 11AM EST)
+                          {% endif %}
+                          </span>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  <button
+                    class="btn btn-info"
+                    id="ship-method-update-button"
+                    type="submit"
+                  >Update Shipping Method</button>
+                </form>
+              </div>
+              <div class="edit_controls d-block d-sm-none text-left mt-3">
+                <a
+                  class="blue-link"
+                  href="javascript:;"
+                  data-js="trigger-expand"
+                  data-id="shipping_method"
+                >
+                  <span class="toggle-default">
+                    <span class="custom-icon"><i class="fa fa-pencil"></i></span>Change Method
+                  </span>
+                  <span class="toggle-view" style="display: none">
+                    <i class="fa fa-close"></i> Close
+                  </span>
+                </a>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        {#-- order notes --#}
+        {% set notes = get_order_notes() %}
+        {% if notes %}
+          <div class="col-12 pb-4">
+            <div class="payment_method">
+              <span class="section-title">Order Notes</span>
+              <div class="data">
+                {% for note in notes %}
+                  <span>{{ note }}<br /></span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+				{#-- cart summary (also used on cart page) --#}
+        <div class="col-12">
+          <div class="your-items-review">
+            <span class="section-title">Your Items</span>
+            <div class="product_review mt-4">
+              {{ render_cart_items(g.cart, page) }}
+            </div>
+          </div>
+				</div>
+
+				{#-- content panel, lowermost submit button and total --#}
+				<div class="col-12">
+					<div class="lower-total">
+							<form action="/complete" method="POST" id="myform" data-js="confirmation-form" name="confirmation_form"">
+							<input type="hidden" name="request_type" value="order">
+							<div class="row">
+								<div class="col-8">
+									<button
+										class="btn btn-block btn-lg btn-info submit-order-button"
+										type="submit"
+										id="lower-total-submit"
+										data-js="submit-order-button"
+									>PLACE <span class="d-none d-sm-inline-block"> YOUR </span> ORDER</button>
+								</div>
+								<div class="col-4 d-flex align-items-center justify-content-end">
+									<div class="item-cache">
+										<span class="total-label"><b><span class="d-none d-lg-inline-block">Order </span> Total:</b></span>
+										<span class="total-sum"><b>{{ g.cart.get_total() | format_currency }}</b></span>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="right-side-sign-in checkout__review">
+
+				{# right side order summary, comments field, and submit #}
+				<div class="total well">
+					<h3 class="total-heading my-2">Order Summary</h3>
+          <div class="total_holder">
+
+            {% if g.cart.get_discount() %}
+						<div class="total_line">
+							<div class="left">Subtotal ({{ g.cart.get_quantities() }}):</div>
+							<div class="right" data-test="undiscounted">{{ g.cart.get_subtotal() | format_currency }}</div>
+						</div>
+						<div class="total_line">
+							<div class="left text-success">Discount:</div>
+							<div class="right text-success" data-test="discount">-{{ g.cart.get_discount() | format_currency }}</div>
+						</div>
+            {% endif %}
+
+						<div class="total_line">
+							<div class="left"> {{ 'Post-discount' if g.cart.get_discount() else ' Merchandise'}} ({{ g.cart.get_quantities() }}):</div>
+							<div class="right" data-test="discounted">{{ g.cart.get_discounted() | format_currency }}</div>
+						</div>
+
+						<div class="total_line">
+							<div class="left">Shipping:</div>
+							<div class="right" data-test="shipping">{{ g.cart.get_shipping() | format_currency }}</div>
+						</div>
+						<div class="total_line">
+							<div class="left">Est. Tax:</div>
+							<div class="right" data-test="confirmation-tax">{{ g.cart.get_tax() | format_currency }}</div>
+						</div>
+						{% if g.cart.get_surcharge() %}
+						<div class="total_line">
+							<div class="left">Surcharge:</div>
+							<div class="right" data-test="surcharge">{{ g.cart.get_surcharge() | format_currency }}</div>
+						</div>
+						{% endif %}
+						{% if g.cart.get_credit() %}
+						<div class="total_line">
+							<div class="left text-success">Credit:</div>
+							<div class="right text-success" data-test="credit">-{{ g.cart.get_credit() | format_currency }}</div>
+						</div>
+						{% endif %}
+						<div class="total_line final">
+							<div class="left">Total:</div>
+							<div class="right" data-test="total">{{ g.cart.get_total() | format_currency }}</div>
+						</div>
+					</div>
+
+          {# AK/HI shipping surcharge note #}
+          {% if (session_safe_get('ship_state') == 'AK' or session_safe_get('HI')) %}
+            {% include "includes/ak_hi_surcharge.html.j2" %}
+          {% endif %}
+
+					<input
+						type="text"
+						name="COMMENTS"
+						form="myform"
+						class="form-control order-comments"
+						placeholder="Enter any order comments"
+						aria-label="Order Comments"
+					>
+					</div>
+					<button
+						class="d-none d-md-block sidebar-order btn btn-block btn-lg btn-info mb-4"
+						id="right-side-submit"
+						data-js="submit-order-button"
+					>PLACE YOUR ORDER</button>
+				</div>
+
+				{# review panel coupon/source/giftmessage container #}
+        <div class="club__offer">
+
+					{# coupon entry #}
+          {% if g.cart.get_gc_quantities() < g.cart.get_quantities() %}
+						<div class="coupon__entry">
+							<form
+								method="POST"
+								action="/confirmation"
+								id="checkout-coupon-entry"
+								onsubmit="spinButton('coupon-button', '')"
+							>
+								<span class="box__title"><b>Coupon Code:</b></span><br>
+								<div class="message">
+                  {% include "includes/coupon_message.html.j2" %}
+                </div>
+								<input
+									type="text"
+									id="billingPromo"
+									class="couponfield"
+									name="coupon_code"
+									value="{{ session_safe_get('coupon_code') }}"
+									placeholder="Coupon Code"
+									aria-label="Please enter a coupon code"
+									required="required"
+								/>
+								<button
+									type="submit"
+									id="coupon-button"
+									class="button-primary submit-button sidebar_club_offer"
+								>Apply</button>
+								<p class="field__info">(not required to complete your order)</p>
+							</form>
+						</div>
+					{% endif %}
+
+					{# source code entry #}
+					<div class="catalog__entry">
+						<form
+							method="POST"
+							action="/confirmation"
+							onsubmit="spinButton('catalog-code-button', '')"
+						>
+							<span class="box__title"><b>Catalog Code:</b></span><br>
+              {% if session_safe_get('source_code') %}
+								<div class="message">Thank you for entering your catalog code.</div>
+							{% endif %}
+							<input
+								type="text"
+								class="couponfield"
+								name="source_code"
+								value="{{ session_safe_get('source_code') }}"
+								placeholder="Catalog Code"
+								aria-label="Please enter a catalog code"
+								required="required"
+							>
+							<button
+								class="button-primary submit-button sidebar_club_offer"
+								type="suibmit"
+								id="catalog-code-button"
+							>Apply</button>
+							<p class="field__info">(not required to complete your order)
+							If you are shopping from a print catalog,
+							enter the code from the Blue Box on the back
+							of your catalog and click apply</p>
+						</form>
+					</div>
+
+					{# gift message entry #}
+					{% if not g.cart.has_drop_ship() %}
+					{% if g.cart.get_gc_quantities() < g.cart.get_quantities() %}
+						<div class="gift__entry">
+							<span class="title"><b>Gift Message:</b></span><br>
+							{% if (session_safe_get('gift_message1') or session_safe_get('gift_message2') or session_safe_get('gift_message3') or session_safe_get('gift_message4') or session_safe_get('gift_message5') or session_safe_get('gift_message6'))  %}
+								<div class="message"><p>Your gift message has been added. Click the button below to edit.</p></div>
+							{% endif %}
+							<p class="required__info">You may add a gift message free of charge. Enter up to 6 lines of copy, with 20 characters per line</p>
+							<button id="displayGift" class="click button-primary submit-button sidebar_club_offer">Click</button>
+							<div class="giftcode__input" id="toggleGift">
+								<form
+									method="post"
+									action="/confirmation"
+									onsubmit="spinButton('gift-message-button', 'Adding')"
+								>
+								<input type="hidden" name="request" value="ADDGM">
+									<ul>
+										<li data-children-count="1"><label for="giftmessage1">Line 1</label><input id="giftmessage1" type="text" value="{{ session_safe_get('GIFT_MESSAGE1') }}" name="GIFT_MESSAGE1" maxlength="20" aria-label="Gift Message Line 1" required="required" pattern="^[0-9A-Za-z\.!\?&\(\)\-':,\+@ /]+$" title="Please avoid using special characters" /></li>
+										<li data-children-count="1"><label for="giftmessage2">Line 2</label><input id="giftmessage2" type="text" value="{{ session_safe_get('GIFT_MESSAGE2') }}" name="GIFT_MESSAGE2" maxlength="20" aria-label="Gift Message Line 2" pattern="^[0-9A-Za-z\.!\?&\(\)\-':,\+@ /]+$" title="Please avoid using special characters" /></li>
+										<li data-children-count="1"><label for="giftmessage3">Line 3</label><input id="giftmessage3" type="text" value="{{ session_safe_get('GIFT_MESSAGE3') }}" name="GIFT_MESSAGE3" maxlength="20" aria-label="Gift Message Line 3" pattern="^[0-9A-Za-z\.!\?&\(\)\-':,\+@ /]+$" title="Please avoid using special characters" /></li>
+										<li data-children-count="1"><label for="giftmessage4">Line 4</label><input id="giftmessage4" type="text" value="{{ session_safe_get('GIFT_MESSAGE4') }}" name="GIFT_MESSAGE4" maxlength="20" aria-label="Gift Message Line 4" pattern="^[0-9A-Za-z\.!\?&\(\)\-':,\+@ /]+$" title="Please avoid using special characters" /></li>
+										<li data-children-count="1"><label for="giftmessage5">Line 5</label><input id="giftmessage5" type="text" value="{{ session_safe_get('GIFT_MESSAGE5') }}" name="GIFT_MESSAGE5" maxlength="20" aria-label="Gift Message Line 5" pattern="^[0-9A-Za-z\.!\?&\(\)\-':,\+@ /]+$" title="Please avoid using special characters" /></li>
+										<li data-children-count="1"><label for="giftmessage6">Line 6</label><input id="giftmessage6" type="text" value="{{ session_safe_get('GIFT_MESSAGE6') }}" name="GIFT_MESSAGE6" maxlength="20" aria-label="Gift Message Line 6" pattern="^[0-9A-Za-z\.!\?&\(\)\-':,\+@ /]+$" title="Please avoid using special characters" /></li>
+										<li data-children-count="1">
+											<button
+												class="btn btn-info"
+												type="submit"
+												id="gift-message-button"
+											>Enter</button>
+										</li>
+									</ul>
+								</form>
+							</div>
+						</div>
+          {% endif %}
+					{% endif %}
+
+				</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script type="text/javascript">
+  window.afterLoad('$', function() {
+    var idleSeconds = 82800;
+    var idleTimer;
+    function whenUserIdle(){
+      console.error("checkout timeout reached");
+      if (confirm("Your checkout session has timed out due to inactivity. Click OK to re-start checkout.")) {
+          window.location.href = '/checkout?worldpay_registration_id=';
+      } else {
+          window.location.href = '/?worldpay_registration_id=';
+      }
+    }
+    function resetTimer(){
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(whenUserIdle,idleSeconds*1000);
+    }
+    $(document).ready(function() {
+        resetTimer(); // Start the timer when the page loads
+    });
+  });
+</script>
+
+{% endblock %}

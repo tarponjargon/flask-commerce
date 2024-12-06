@@ -1,0 +1,18 @@
+{
+  "firstName": "Rory",
+  "lastName": "O'Connor",
+  "address1": "1373 Grant St.",
+  "address2": "Apt B",
+  "city": "Denver",
+  "state": "CO",
+  "zip": "80203",
+  "country": "USA",
+  "phone": "313-222-1212",
+  "email": "tarponjargon@gmail.com",
+  "password": "oconnor1",
+  "password2": "oconnor1",
+  "randomText": "Please ignore, this is just a test",
+  "searchTerm": "book",
+  "coupon": "EMSYAY",
+  "source": "MSIGTEST"
+}

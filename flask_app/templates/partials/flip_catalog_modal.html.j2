@@ -1,0 +1,69 @@
+<style>
+	.vc-container {
+		padding: 10px 30px 30px 30px;
+	}
+
+	.vc-container .catalogreq-link {
+		font-size: 2rem;
+		font-weight: 500;
+		margin-bottom: 20px;
+	}
+	.vc-container table {
+		margin-top: 15px;
+	}
+	.vc-container .tc-text {
+		padding: 3px 0 0 10px;
+	}
+</style>
+<div class="vc-container">
+	<div class="row">
+		<div class="col-12 text-center">
+			<div class="text-center catalogreq-link">
+				<a href="/catalogrequest">Click to order a physical catalog today <i class="fa fa-angle-double-right"></i></a>
+			</div>
+			<iframe style="width:1000px;height:571px" src="{{ flip_catalog.get('drop_link') }}" seamless="seamless" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" ></iframe>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-4">
+				<h2>How to Use</h2>
+				<p>Enjoy our our most recent catalog right now!</p>
+				<p>Use the icons below the catalog to enhance your browsing experience. Here's what they mean:</p>
+			</div>
+			<div class="col-sm-3">
+				<table>
+					<tr>
+						<td><img src="{{ config.IMAGE_BASE }}/assets/images/vc_enlarge.png" alt="Enlarge to fullscreen" /></td>
+						<td class="tc-text"> = &nbsp;Show full-screen</td>
+					</tr>
+					<tr>
+						<td><img src="{{ config.IMAGE_BASE }}/assets/images/vc_mag.png" alt="Enlarge text" /></td>
+						<td class="tc-text"> = &nbsp;Enlarge text</td>
+					</tr>
+					<tr>
+						<td><img src="{{ config.IMAGE_BASE }}/assets/images/vc_table.png" alt="Table of Contents" /></td>
+						<td class="tc-text"> = &nbsp;Table of Contents</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-sm-4">
+				<table>
+					<tr>
+						<td><img src="{{ config.IMAGE_BASE }}/assets/images/vc_autoplay.png" alt="Autoplay" /></td>
+						<td class="tc-text"> = &nbsp;Flip pages automatically</td>
+					</tr>
+					<tr>
+						<td><img src="{{ config.IMAGE_BASE }}/assets/images/vc_share.png" alt="Share" /></td>
+						<td class="tc-text"> = &nbsp;Share catalog</td>
+					</tr>
+					<tr>
+						<td><img src="{{ config.IMAGE_BASE }}/assets/images/vc_print.png" alt="Print catalog" /></td>
+						<td class="tc-text"> = &nbsp;Print catalog</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+</div>

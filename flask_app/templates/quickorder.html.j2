@@ -1,0 +1,79 @@
+{% from 'macros/cart_items.html.j2' import render_cart_items with context %}
+{% extends "base.html.j2" %}
+{% set title %}Quick Order & Tax Estimate{% endset %}
+{% set page = 'orderbuilder' %}
+{% set updatepage = '/quickorder' %}
+{% block content %}
+
+<main class="container minheight minheight-400" data-multidetail-type="order-builder">
+	<div class="shopping-cart-header">
+		<h1 class="header-title primary-color">{{ title }}</h1>
+	</div>
+	<hr class="mb-5">
+	<div class="row">
+		<div class="col-12 text-center">
+			<div class="row">
+				<div class="col-12 col-md-6">
+					<div class="well text-center">
+						<h2 class="text-md">Enter item numbers separated by a space</h2>
+						<form action="/quickorder" data-js="quick-order-form">
+							<div class="input-group">
+								<input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Item Number(s)"
+                  aria-label="Enter Item Number(s)"
+                  required="required"
+                  name="ADDSKUIDS"
+                  data-js="quick-order-field"
+                >
+                  <span class="input-group-append">
+                  <button
+                    class="btn btn-info"
+                    id="quick-order-add-button"
+                    type="submit"
+                    aria-label="Add Items"
+                  >ADD</button>
+                  </span>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+    {# if there are skus entered that aren't found, list them for the shopper #}
+    {% if invalidskus | length > 0 %}
+    <div class="well error-item-container">
+      <h3>The following items are not available:</h3>
+      <ul>
+          {% for sku in invalidskus %}
+            <li>{{ sku }}</li>
+          {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+		<div class="col-12">
+			<div id="cart-container">
+        {% if not g.cart.is_empty() %}
+          <h4 class="ms-2 quick-add-cart-heading">Your Cart Items</h4>
+          {{ render_cart_items(g.cart, page) }}
+          <div class="cart-shipping-details">
+            <div class="row m-0">
+              <div class="col-lg-4">
+                {% include "includes/tax_calculator.html.j2" %}
+              </div>
+              <div class="col-lg-4">
+              </div>
+              <div class="col-lg-4">
+                {% include "includes/cart_summary.html.j2" %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+			</div>
+		</div>
+	</div>
+</main>
+{% endblock %}

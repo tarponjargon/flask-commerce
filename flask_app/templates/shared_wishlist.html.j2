@@ -1,0 +1,19 @@
+{% extends "base.html.j2" %}
+{% set title %}Your Friend's Wishlist{% endset %}
+{% set page = 'sharedwishlist' %}
+
+{% block content %}
+
+<main data-js="sharedwishlist-container" class="container sharedwishlist-container minheight minheight-400">
+  <span
+    class="d-none"
+    data-js="sharedwishlist-data"
+    data-hwlid="{{ hwlid }}"
+  >
+  </span>
+  <div class="sharedwishlist-wrapper account-container loading-mask mask-300">
+    <div id="sharedwishlist-content"></div>
+  </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,118 @@
+{% macro render_moonglow(item) -%}
+{% set product = item.get('product', {}) %}
+{% set personalization = item.get('personalization', []) %}
+{% for qty in range(1, item.get('quantity')+1) %}
+
+  {# load any pre-existing personalization sets (from item) for this qty each #}
+  {% set qtyloop = loop %}
+  {% if personalization | length >= qtyloop.index %}
+    {% set eachqty_personalization = personalization[qtyloop.index0] %}
+  {% else %}
+    {% set eachqty_personalization = [] %}
+  {% endif %}
+
+  {% set data1 = 'DATA1_' + item.get('skuid') + '_' + str(qtyloop.index) %}
+  {% set data2 = 'DATA2_' + item.get('skuid') + '_' + str(qtyloop.index) %}
+  {% set data3 = 'DATA3_' + item.get('skuid') + '_' + str(qtyloop.index) %}
+  {% set default_month = session_safe_get(data1) if session_safe_get(data1) else datetime.now().strftime('%m') %}
+  {% set default_day = session_safe_get(data2) if session_safe_get(data2) else datetime.now().strftime('%d') %}
+  {% set default_year = session_safe_get(data3) if session_safe_get(data3) else datetime.now().strftime('%Y') %}
+
+  <div class="personalization__block row" id="moonglow-{{ qtyloop.index }}">
+    <div class="col-5">
+      <div class="w-100 text-center">
+        <img id="moonglow-image-{{ qtyloop.index }}" src="/assets/images/moonglow/zodiac_2A.jpg">
+        <div>Phase: <span id="moonglow-phase-{{ qtyloop.index }}">1st Quarter Waxing</span></div>
+      </div>
+    </div>
+    <div class="col-7">
+      <div class="w-100 mb-3">
+        <h2>Select your moon phase</h2>
+        <div>Change date to update the moon phase</div>
+      </div>
+      <div class="w-100">
+        <div class="float-start me-2">
+          <label for="moonglow-month-{{ qtyloop.index }}">Month</label>
+          <select class="form-select" id="moonglow-month-{{ qtyloop.index }}" name="{{ data1 }}">
+            {% for month in get_months() %}
+              <option value="{{ month.code }}" {{ 'selected' if month.code == default_month else ''}}>{{ month.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="float-start me-2">
+          <label for="moonglow-day-{{ qtyloop.index }}">Day</label>
+          <select class="form-select" id="moonglow-day-{{ qtyloop.index }}" name="{{ data2 }}">
+            {% for day in range(1,32) %}
+              {% set curday = str(day).zfill(2) %}
+              <option value="{{ curday }}" {{ 'selected' if curday == default_day else ''}}>{{ day }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="float-start">
+          <label for="moonglow-year-{{ qtyloop.index }}">Year</label>
+          <select class="form-select" id="moonglow-year-{{ qtyloop.index }}" name="{{ data3 }}">
+            {% for year in range(1919,2031) %}
+              <option value="{{ year }}" {{ 'selected' if str(year) == default_year else ''}}>{{ year }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 d-flex justify-content-between">
+      <div class="deliverytime"><b>Please note:</b> Delivery time for this item is {{ product.get('drop_ship_type', {}).get('description', '3-4 weeks') }}.&nbsp;</div>
+      <div class="text-small">Changed your mind? <a tabindex="-1" href="/cart?PRODUCT_{{ item.get('skuid') }}=0">Remove item</a></div>
+    </div>
+  </div>
+  <script>
+    (function() {
+      const moonPhases = {
+        'NL': "New Moon",
+        'CA': "1st Quarter Waxing",
+        '1A': "1st Quarter Waxing",
+        '2A': "1st Quarter Waxing",
+        '3A': "1st Quarter Waxing",
+        '4A': "2nd Quarter Waxing",
+        '5A': "2nd Quarter Waxing",
+        '6A': "2nd Quarter Waxing",
+        '7A': "2nd Quarter Waxing",
+        'PL': "Full Moon",
+        '7D': "3rd Quarter Waning",
+        '6D': "3rd Quarter Waning",
+        '5D': "3rd Quarter Waning",
+        '4D': "3rd Quarter Waning",
+        '3D': "4th Quarter Waning",
+        '2D': "4th Quarter Waning",
+        '1D': "4th Quarter Waning",
+        'CD': "4th Quarter Waning"
+      };
+
+      fetch('/api/moonglow')
+      .then(r => r.json())
+      .then(moonglow => {
+
+        const el = document.getElementById('moonglow-{{ qtyloop.index }}');
+        const updateMoonglow = () => {
+          const month = el.querySelector('#moonglow-month-{{ qtyloop.index }}').value;
+          const day = el.querySelector('#moonglow-day-{{ qtyloop.index }}').value;
+          const year = el.querySelector('#moonglow-year-{{ qtyloop.index }}').value;
+          const fulldate = month + day + year;
+          const code = moonglow[fulldate];
+          if (code) {
+            el.querySelector('#moonglow-phase-{{ qtyloop.index }}').innerText = moonPhases[code];
+            el.querySelector('#moonglow-image-{{ qtyloop.index }}').setAttribute('src', `/assets/images/moonglow/zodiac_${code}.jpg`)
+          }
+        };
+        // set initial state
+        updateMoonglow();
+
+        // listen for changes on selects
+        el.querySelectorAll('select').forEach(select => {
+          select.addEventListener('change',updateMoonglow);
+        });
+      })
+  })();
+
+
+  </script>
+{% endfor %}
+{%- endmacro %}

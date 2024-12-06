@@ -1,0 +1,406 @@
+{% set page = 'detail' %}
+{% set product_rich_snippet = product.get_rich_snippet() %}
+{% extends "base.html.j2" %}
+{% set title %}{{ product.get('title_tag') if product.get('title_tag') else product.get('name', "").replace('"', "'") }} | {{ config.STORE_NAME }}{% endset %}
+{% set image_base = config.IMAGE_BASE + config.PRODUCT_IMAGE_PATH %}
+{% set images = product.get('images', {}) %}
+{% set variants_to_images = product.get('variants_to_images') %}
+{% set variant_map = product.get('variant_map') %}
+{# if product is nla, not waitlist and has a default category canonicalize to the category (not the product) #}
+{% if product.get('nla') and not product.get('is_waitlist') and product.get('default_category') %}
+{% set canonical = product.get('default_category', {}).get('path') %}
+{% endif %}
+{% from 'macros/price.html.j2' import render_price %}
+{% from 'macros/rating.html.j2' import render_rating with context %}
+{% from 'macros/availability.html.j2' import render_availability %}
+{% from 'macros/highlighted_product_reviews.html.j2' import render_product_highlighted_reviews with context %}
+{% from 'macros/related.html.j2' import render_related with context %}
+{% from 'macros/pdp_gallery.html.j2' import render_gallery with context %}
+{% block content %}
+
+<script type=text/javascript>
+  var imageMap = {{ variants_to_images | serialize | tojson | safe }};
+</script>
+<script type=text/javascript>
+  var vMap = {{ variant_map | serialize | tojson | safe }};
+</script>
+
+<script>
+  window.dataLayer.push({
+    'event': 'productDetail',
+    'ecommerce': {
+      'detail': {
+           'products': [{
+             'name': "{{ product.get('name') | sanitize }}",
+             'id': "{{ product.get('skuid') | sanitize }}",
+             'price': {{ product.get('price') | sanitize }},
+             'category': "{{ replace_double_quote(get_breadcrumb_string(product.get('breadcrumb', []), ' > ')) }}",
+             'list': "{{ page }}"
+        }]
+      }
+    }
+  });
+</script>
+
+{% if not product.get('nla') %}
+<div class="sticky-atc d-block d-md-none" data-js="sticky-atc-container">
+  <button
+    class="sticky-atc-btn"
+    id="sticky-atc-button"
+  >ADD<span class="add-btn-vis-fix"> TO CART</span>
+</button>
+</div>
+{% endif %}
+<main class="container product-detail">
+  <div data-detail-skuid="{{ product.get('skuid') }}" class="row">
+    <div class="col-lg-12">
+      <nav class="bg-white" aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1 mb-xl-3">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          {% for breadcrumb in product.get('breadcrumb', []) %}
+            <li class="breadcrumb-item"><a href="{{ breadcrumb.path }}">{{ breadcrumb.category_name }}</a></li>
+          {% endfor %}
+          <li class="breadcrumb-item d-none d-md-inline"><a href="{{ product.get('url') }}">{{ product.get('name') }}</a></li>
+        </ol>
+      </nav>
+    </div>
+    <div class="col-md-6 pt-md-4" id="pdp-carousel-container">
+      <div class="product-title d-block d-md-none">
+        <h1 class="product-name">{{ product.get('h1_tag') if product.get('h1_tag') else product.get('name') }}{{ ": " + product.get('attributes', {}).get('subtitle') if product.get('attributes', {}).get('subtitle') else "" }}
+          <span data-selected-variants></span>
+        </h1>
+        {% if product.get('attributes', {}).get('author') %}<h2 class="product-author">Author: {{ product.get('attributes', {}).get('author') }}</h2>{% endif %}
+      </div>
+
+      {# product image gallery #}
+      {{ render_gallery(images) }}
+
+    </div>
+    <div class="col-md-6">
+      <div class="product-details">
+        <div class="product-title d-none d-md-block">
+          <h1 class="product-name">{{ product.get('h1_tag') if product.get('h1_tag') else product.get('name') }}{{ ": " + product.get('attributes', {}).get('subtitle') if product.get('attributes', {}).get('subtitle') else "" }}
+            <span data-selected-variants></span>
+          </h1>
+          {% if product.get('attributes', {}).get('author') %}<h2 class="product-author">Author: {{ product.get('attributes', {}).get('author') }}</h2>{% endif %}
+        </div>
+        <div class="product-price" data-js="detail-item-price">
+          {{ render_price(product) }}
+        </div>
+        <div class="product-rating">
+          <div class="pr-rating-stars">
+            {% if product.get('pr_rating') %}
+              {{ render_rating(product.get('pr_rating')) }}
+            {% else %}
+              <img src="{{ config.IMAGE_BASE }}/assets/images/stars.png" width="102" height="32" class="img-fluid" alt="Rating stars - no reviews">
+            {% endif %}
+          </div>
+          <div class="pr-snippet-read-and-write">
+            <a href="javascript:void(null)" class="pr-snippet-review-count" data-js="review-link">{{ product.get('pr_reviewcount', 'No') }} {{'Review' if product.get('pr_reviewcount', 0) == 1 else 'Reviews' }}</a>
+            <a href="javascript:void(0)" class="pr-snippet-write-review-link pr-underline" data-js="review-link">Write a Review</a>
+          </div>
+          <div class="horizontal-divider"></div>
+          <div class="product-sku-wrapper">
+            <div class="sku">Item #: {{ product.get('skuid') }}</div>
+          </div>
+
+          {% if product.get('attributes', {}).get('hardbackorpaperback') %}
+            <div class="product-format-wrapper">
+              <div class="format">Format: {{ product.get('attributes', {}).get('hardbackorpaperback') | capitalize }}</div>
+            </div>
+          {% endif %}
+
+          {% if product.get('attributes', {}).get('pages') %}
+            <div class="product-pages-wrapper">
+              <div class="pages">Pages: {{ product.get('attributes', {}).get('pages') }}</div>
+            </div>
+          {% endif %}
+
+          {% if product.get('attributes', {}).get('publicationyear') %}
+            <div class="product-year-wrapper">
+              <div class="year">Publication Date: {{ product.get('attributes', {}).get('publicationyear') }}</div>
+            </div>
+          {% endif %}
+
+          {% if product.get('attributes', {}).get('publisher') %}
+            <div class="product-publisher-wrapper">
+              <div class="publisher">Publisher: {{ product.get('attributes', {}).get('publisher') }}</div>
+            </div>
+          {% endif %}
+
+          {% if product.get('attributes', {}).get('hardbackorpaperback') and product.get('metadata', {}).get('upc') %}
+            <div class="product-isbn-wrapper">
+              <div class="isbn">ISBN: {{ product.get('metadata', {}).get('upc') }}</div>
+            </div>
+          {% endif %}
+
+          {% if product.get('discount_desc') %}
+          <div class="product-description">
+              <div class="text-warning product-description-text mt-2">{{ product.get('discount_desc') }}</div>
+          </div>
+          {% endif %}
+
+          {% if 'dvd;' in product.get('category', "")  or 'books;' in product.get('category', "") %}
+          <div class="product-description">
+            <span class="product-description-text">
+              {% if product.get('exclusive') %}
+                <span class="text-warning"><strong><em>EXCLUSIVE!</em></strong></span>&nbsp;
+              {% endif %}
+
+              {% if abbrev(product.get('description', "")) | length > config.ABBREV_LENGTH %}
+                {{ abbrev(product.get('description')) }}
+                <span class="more-span">
+                  <a class="more-link blue-link" id="more-link" href="#additional-information">
+                    <span>More</span>
+                    <i class="fa fa-caret-right more-arrow"></i>
+                  </a>
+                </span>
+              {% else %}
+                {{ product.get('description') }}
+              {% endif %}
+            </span>
+          </div>
+          {% endif %}
+
+          <form
+            method="POST"
+            data-js="order-form"
+            role="form"
+            id="product-order-form"
+            data-add-item="{{ product.get('skuid') }}"
+            data-item-name="{{ product.get('name') | sanitize }}"
+          >
+            <div class="product-stock-status">
+              {{ render_availability(product.get('availability', {})) }}
+            </div>
+
+            {% if product.get('nla') %}
+              {% if product.get('group_id') %}
+                <h4><a href="#" data-js="scrolltorelated">See similar items below that are available now!</a></h4>
+              {% endif %}
+            {% endif %}
+
+            {# waitlisting #}
+            {% if product.get('nla') and product.get('is_waitlist') %}
+              {% include "includes/in_stock_alert.html.j2" %}
+            {% endif %}
+
+            {% if not product.get('nla') %}
+              {% if product.get('variant_sets') %}
+                <div class="options-matrix p-4" data-js="options-matrix">
+                  {% for variant_set in product.get('variant_sets') %}
+                  {% set variant_set_loop = loop %}
+                  <div
+                    class="mb-4"
+                    data-menu-type="{{ variant_set.option_type.name }}"
+                    data-matrix-index="{{ loop.index0 }}"
+                  >
+                    <div>
+                      <div class="text-large">Select {{ variant_set.option_type.name }}: <span data-selected-name="{{ loop.index0 }}"></span></div>
+                      <hr class="mb-3" />
+                      {% for variant in variant_set.variants %}
+
+                        {% set invmessage = "" %}
+                        {% if variant.backorder %}
+                          {% set invmessage = "Available " + variant.backorder %}
+                        {% endif %}
+                        {% if product.get('preorder') %}
+                          {% set invmessage = "Ships " + variant.backorder %}
+                        {% endif %}
+
+                        <button type="button"
+                          class="size-sel"
+                          data-title="{{ variant_set.option_type.name + ': ' + variant.description + ' Not Available' if variant.notstocked else variant_set.option_type.name + ': ' + variant.description }}"
+                          data-pricechange="{{ variant.pricechange }}"
+                          data-origprice-pricechange="{{ variant.origprice_pricechange }}"
+                          data-option-name="{{ variant.description }}"
+                          data-option-code="{{ variant.code }}"
+                          data-option-index="{{ variant_set_loop.index0 }}"
+                          data-option-nla="{{ variant.notstocked }}"
+                          data-invmessage="{{ invmessage }}"
+                          data-option-selected="0"
+                        >
+                          {{ variant.description }} {{ invmessage }}
+                        </button>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              <div class="w-100 product-secondary-price pt-2">
+                <div class="product-price w-100 d-flex justify-content-center" data-js="detail-item-price">
+                  {{ render_price(product) }}
+                </div>
+                {% if product.get('discount_desc') %}
+                  <div class="text-warning product-description-text text-center mt-2">{{ product.get('discount_desc') }}</div>
+                {% endif %}
+              </div>
+              <div class="quantity">
+                <div class="quantity-label">Quantity:</div>
+                <div class="input-group-wrapper">
+                  <div class="input-group">
+                    <input
+                      type="number"
+                      class="quantity-field"
+                      data-js="quantity"
+                      min="1"
+                      max="{{ product.get('maxq') if product.get('maxq') else str(config.DEFAULT_MAXQ) }}"
+                      data-maxq="{{ product.get('maxq') if product.get('maxq') else str(config.DEFAULT_MAXQ) }}"
+                      name="PRODUCT_{{ product.get('skuid') }}"
+                      value="1"
+                      id="PRODUCT_{{ product.get('skuid') }}"
+                      aria-label="Quantity"
+                    >
+                    <div class="add-to-cart-button-in-stock">
+                      <button
+                        type="submit"
+                        class="btn btn-block btn-lg button-primary"
+                        id="add-to-cart-btn"
+                        data-js="add-button"
+                        aria-label="Add to Cart"
+                      >
+                        {{ '<span class="d-none d-xl-inline">PRE-ORDER: </span>' if product.get('preorder') else '' }}
+                        ADD<span class="add-btn-vis-fix">&nbsp;TO CART</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          </form>
+          {% if not product.get('nla') %}
+          <div class=" mt-1 d-flex align-items-center justify-content-end">
+            <a class="red blue-link text-decoration-none" href="javascript:;" id="wishlist-link">
+            <i id="wishlist-icon" class="fa fa-plus-circle"></i>
+            <span>Add to Wish List</span>
+            </a>
+          </div>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="product-tabs" id="product-tabs">
+    <ul class="nav nav-tabs nav-justified" id="productTabs" role="tablist">
+      <li class="nav-item" role="tab" aria-controls="additional-information" aria-selected="false">
+        <a class="nav-link active" id="additional-information-tab" href="#additional-information">
+        Additional Information
+        </a>
+      </li>
+      <li class="nav-item" role="tab" aria-controls="customer-review" aria-selected="false">
+        <a class="nav-link" id="customer-review-tab" href="#customer-review">
+        Customer Reviews
+        </a>
+      </li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+      <div class="card tab-pane fade active show" id="additional-information" aria-labelledby="additional-information-tab">
+        <div class="card-header active" id="heading-additional-information">
+          <h2 class="m-0">
+            <a class="collapse" href="#collapse-additional-information" data-parent="#myTabContent" aria-expanded="true" aria-controls="collapse-additional-information">
+            Additional Information
+            </a>
+          </h2>
+        </div>
+        <div id="collapse-additional-information" class="collapse show" data-js="tab-body" role="tabpanel" aria-labelledby="heading-additional-information">
+          <div class="card-body">
+            <div class="text-content-tab">
+              <p>
+                {% if product.get('exclusive') %}
+                  <span class="text-warning"><strong><em>EXCLUSIVE!</em></strong></span>
+                {% endif %}
+
+                {{ product.get("description") }}
+                {% if product.get("description2") %}
+                <br />
+                {{ product.get("description2") }}
+                {% endif %}
+
+                {% if product.get('restrict_ship') %}
+                  <div class="desc-note">Item can only be shipped within the Continental US.</div>
+                {% endif %}
+
+                {% if product.get('us_shipping_only') %}
+                  <div class="desc-note">Item can only be shipped to US destinations.</div>
+                {% endif %}
+
+                {% if product.get('shipping') %}
+                  <div class="desc-note">
+                    {% if product.get('shipping') == '+0' %}
+                      Item ships free.
+                    {% else %}
+                      Extra shipping charges for this item: ${{ product.get('shipping') }}
+                    {% endif %}
+                  </div>
+                {% endif %}
+
+                {% if product.get('promo_exclude') %}
+                  <div class="desc-note">This item is not eligible for coupon code discounts.</div>
+                {% endif %}
+
+                {% if product.get('institutional_edition') %}
+                  <div class="desc-note">
+                    This item is eligible for Standard shipping of $8.99.
+                  </div>
+                {% endif %}
+
+                {% if product.get('drop_ship', 0) > 0 %}
+                  <div class="desc-note">
+                    <b>Please note:</b> Delivery time for this item is {{ product.get('drop_ship_type', {}).get('description') }}.
+                  </div>
+                {% endif %}
+
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card tab-pane fade" id="customer-review" role="tabpanel" aria-labelledby="customer-review-tab">
+        <div class="card-header active" id="heading-customer-review">
+          <h2 class="m-0">
+            <a class="collapse" href="#collapse-customer-review" data-parent="#myTabContent" aria-expanded="false" aria-controls="collapse-customer-review">
+            Customer Reviews
+            </a>
+          </h2>
+        </div>
+        <div id="collapse-customer-review" class="collapse show" data-js="tab-body" role="tabpanel" aria-labelledby="heading-customer-review">
+          <div class="card-body">
+            <div class="review">
+              <div
+                class="yotpo yotpo-main-widget"
+                data-product-id="{{ product.get('skuid') }}"
+                data-name="{{ product.get('name') | sanitize }}"
+                data-url="{{ request.url | sanitize }}"
+                data-image-url="/graphics/products/regular/{{ images.get('image') }}"
+                data-description="{{ product.get('description') | sanitize }}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if highlighted_reviews | length %}
+    {{ render_product_highlighted_reviews(highlighted_reviews) }}
+  {% endif %}
+
+  {% if related | length %}
+    {{ render_related(related) }}
+  {% endif %}
+
+  <hr class="d-none d-lg-block">
+  <div class="fullwidth__holder">
+    <div
+      id="recs-container"
+      class="certona-carousel minheight minheigt-800 loading-mask"
+      data-recs='[{"skuid":"{{ product.get('skuid') }}","recommendationsType":"product","reportingId":"Recommendations 1: PDP","title": "You May Also Like"}]'
+    ></div>
+  </div>
+
+</main>
+
+{% endblock %}

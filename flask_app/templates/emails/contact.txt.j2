@@ -1,0 +1,5 @@
+This information request was just received on the {{ config.STORE_NAME }} site.
+Here is a summary of the information provided, please take appropriate action (if necessary)
+
+{% for line in model %}{% if line.get('value') %}{{ line.get('name') }} : {{ line.get('value') }} {% endif %}
+{% endfor %}

@@ -1,0 +1,93 @@
+{# this logic for noindex/canonical tags is copied from hazel verbatim #}
+{% set suppressccanonical = False %}
+
+{# do no index failover #}
+{% if config.FAILOVER %}
+{% set suppressccanonical = True %}
+{% set noindex = True %}
+{% endif %}
+
+{# if certain query parameters are in the url, noindex #}
+{% if request.args.get('ipi') or request.args.get('websource') or request.args.get('WEBSOURCE') %}
+{% set noindex = True %}
+{% endif %}
+
+{# certain pages we just don't want indexed (and don't need a canonical tag) #}
+{% if page in ['members','view','checkout','billingshipping','confirm','confirmaion','receipt','matches','failed','searchspring','login','vc_catalog','empty','missing_pers','search','lp'] %}
+{% set suppressccanonical = True %}
+{% set noindex = True %}
+{% endif %}
+
+{# do not index category when vendor search is off #}
+{% if page == 'category' and not get_search_state() %}
+{% set suppressccanonical = True %}
+{% set noindex = True %}
+{% endif %}
+
+{# check if this path is specified to be noindexed (in the noindex_overrides table) #}
+{% if has_noindex(request.path) %}
+{% set noindex = True %}
+{% endif %}
+
+{# write out the noindex tag #}
+{% if noindex %}
+<meta name="robots" content="noindex" />
+{% endif %}
+
+{% if not suppressccanonical and not noindex %}
+{# unless I'm not supposed to, OR canonical is already set, generate the canonical tag from request.path or canononical_override #}
+{% if not canonical %}
+{% set canonical = request.path %}
+{% set override = get_canonical_override(request.path) %}
+{% if override %}{% set canonical = override %}{% endif %}
+{% endif %}
+
+{% if page == 'category' %}
+{% set canonical = canonical + '?perpage=499' %}
+{% endif %}
+
+{# write out the canonical #}
+<link rel="canonical" href="{{ config.STORE_URL }}{{ canonical | sanitize }}" />
+{% endif %}
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "url": "{{ config.STORE_URL }}/",
+     "name": "{{ config.STORE_NAME }}",
+    "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ config.STORE_URL }}/find?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+    }
+  }
+</script>
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "url": "{{ config.STORE_URL }}/",
+    "name": "{{ config.STORE_NAME }}",
+    "logo": "{{ config.STORE_URL }}{{ config.STORE_LOGO }}",
+    "contactPoint": [{
+    "@type": "ContactPoint",
+    "telephone": "+{{ config.STORE_PHONE }}",
+    "contactType": "sales",
+    "contactOption": "TollFree"},
+    {"@type": "ContactPoint",
+    "telephone": "+{{ config.STORE_PHONE }}",
+    "contactType": "customer service",
+    "contactOption": "TollFree"}]
+  }
+</script>
+{% if product_rich_snippet %}
+<script type="application/ld+json">{{ product_rich_snippet.get('product') | dump_json_as_ascii }}</script>
+<script type="application/ld+json">{{ product_rich_snippet.get('breadcrumb') | dump_json_as_ascii }}</script>
+{% if product_rich_snippet.get('video') %}
+<script type="application/ld+json">{{ product_rich_snippet.get('video') | dump_json_as_ascii }}</script>
+{% endif %}
+{% endif %}
+{% if category_ld_json %}
+<script type="application/ld+json">{{ category_ld_json | dump_json_as_ascii }}</script>
+{% endif %}

@@ -1,0 +1,76 @@
+{% macro render_fields(item) -%}
+{% set product = item.get('product', {}) %}
+{% set personalization = item.get('personalization', []) %}
+{% for qty in range(1, item.get('quantity')+1) %}
+
+  {# load any pre-existing personalization sets (from item) for this qty each #}
+  {% set qtyloop = loop %}
+  {% if personalization | length >= qtyloop.index %}
+    {% set eachqty_personalization = personalization[qtyloop.index0] %}
+  {% else %}
+    {% set eachqty_personalization = [] %}
+  {% endif %}
+
+  <div class="personalization__block">
+    <div class="label__description">
+      Enter exact personalized information for
+      {{ item.get('name') }}{% if item.get('quantity') > 1 %}({{ qty }}){% endif %}:
+    </div>
+
+    {% for pers in get_personalization_prompts(item.get('skuid') if product.get('custom_special') else product.get('custom')) %}
+
+      {# load any pre-existing personalization values for this prompt #}
+      {% set qtyloop = loop %}
+      {% if eachqty_personalization | length >= loop.index %}
+        {% set value = eachqty_personalization[loop.index0].get('value') %}
+      {% endif %}
+
+      {% set key = pers.get('data') + '_' + item.get('skuid') + '_' + qty | string %}
+      <label><b>{{ pers.get('prompt') }}</b></label>
+        <div class="input__holder">
+          {% if pers.get('list') and pers.get('list') | length %}
+            <select
+              name="{{ key }}"
+              class="form-select w-auto"
+              aria-label="{{ pers.get('prompt') }}"
+              {{ 'required' if pers.get('required') else '' }}
+            >
+            <option value="">Select one</option>
+            {% for option in pers.get('list') %}
+              <option
+                value="{{ option }}"
+                {{ 'selected' if option == value else '' }}
+              >{{ option }}</option>
+            {% endfor %}
+            </select>
+          {% else %}
+            {% if pers.get('field_type') == 'image' %}
+                <input
+                  type="hidden"
+                  role="uploadcare-uploader"
+                  name="{{ key }}"
+                  value="{{ value }}"
+                  {{ 'required' if pers.get('required') else '' }}
+                />
+            {% else %}
+              <input
+                type="text"
+                name="{{ key }}"
+                size="{{ pers.get('maxlength') }}"
+                maxlength="{{ pers.get('maxlength') }}"
+                value="{{ value }}"
+                aria-label="{{ pers.get('prompt') }}"
+                {{ 'required' if pers.get('required') else '' }}
+              > (max. {{ pers.get('maxlength') }} characters)
+            {% endif %}
+          {% endif %}
+        </div>
+    {% endfor %}
+    <div class="deliverytime">
+      {% if product.get('drop_ship', 0) > 0 %}
+        <b>Please note:</b> Delivery time for this item is {{ product.get('drop_ship_type', {}).get('description') }}.
+      {% endif %}&nbsp;</div>
+    <div class="changed-mind">Changed your mind? <a tabindex="-1" href="/cart?PRODUCT_{{ item.get('skuid') }}=0">Remove item</a></div>
+  </div>
+{% endfor %}
+{%- endmacro %}

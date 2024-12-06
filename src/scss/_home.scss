@@ -1,0 +1,68 @@
+.container-banner {
+  // @media (max-width: 320px) {
+  //   min-height: auto;
+  // }
+  // @media (min-width: 320px) {
+  //   min-height: 240px;
+  // }
+  // @media (min-width: 400px) {
+  //   min-height: 305px;
+  // }
+  // @media (min-width: 545px) {
+  //   min-height: 415px;
+  // }
+  // @media (min-width: 768px) {
+  //   min-height: 582px;
+  // }
+  // @media (min-width: 820px) {
+  //   min-height: 205px;
+  // }
+  // @media (min-width: 992px) {
+  //   min-height: 247px;
+  // }
+  // @media (min-width: 1200px) {
+  //   min-height: 298px;
+  // }
+  // @media (min-width: 1400px) {
+  //   min-height: 348px;
+  // }
+  // @media (min-width: 1500px) {
+  //   min-height: 371px;
+  // }
+  // @media (min-width: 1900px) {
+  //   min-height: 470px;
+  // }
+
+  .home-hero-banner {
+    overflow: hidden;
+    // removed by JS after carousel load
+    .slider_item:nth-child(n + 2) {
+      display: none;
+    }
+
+    .desktop_banner {
+      display: block !important;
+      width: 100%;
+      @media only screen and (min-width: 0px) and (max-width: 820px) {
+        display: none !important;
+      }
+    }
+    .mobile_banner {
+      display: none !important;
+      @media only screen and (min-width: 0px) and (max-width: 820px) {
+        display: block !important;
+        width: 100%;
+      }
+    }
+  }
+}
+
+.christmas-banner {
+  margin-top: -20px;
+  font-size: 1.5rem;
+  letter-spacing: 0.01rem;
+  @media (max-width: 768px) {
+    margin-top: -12px;
+    font-size: 1.1rem;
+  }
+}

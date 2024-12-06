@@ -1,0 +1,186 @@
+{% from 'macros/cart_items_object.html.j2' import render_cart_items_object with context %}
+{% from 'macros/errors.html.j2' import render_errors %}
+{% set item = last_added %}
+{% set product = item.get("product") %}
+{% from 'macros/price.html.j2' import render_price %}
+<div class="pop-body cartpage" data-last-added="{{ item.get('skuid') }}">
+  <div class="modal-header">
+    <span class="modal-title text-white" id="cart-modalLabel">Your Shopping Cart</span>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <i class="fa fa-times fa-2x"></i>
+    </button>
+  </div>
+  <div class="modal-body popcart">
+
+    {% if g.messages.get('errors', None) %}
+    {# errors sent from application back-end here #}
+      {{ render_errors(g.messages.get('errors')) }}
+    {% else %}
+      {# errors sent from application front-end here #}
+      <div class="card text-white bg-danger mt-3 mx-3 error-card" style="display: none">
+        <div class="card-body">
+          <p class="card-text"></p>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="row h-100 mb-3">
+      <script type="text/javascript">
+        window.cartItemsDelimited = { skuids: [], quantities: [], prices: [], base: [] };
+        window.cartItemsArray = [];
+        window.lastAdded = '{{ item.get("skuid") }}';
+        var cartID = function() {
+        		var val = '';
+        		if (!val.length) {
+        				try {
+        						var myRegexp = /^([0-9\-]{17,21})/g;
+        						var val = myRegexp.exec(('; '+document.cookie).split('; cart=').pop().split(';').shift())[1];
+        				} catch(e) {}
+        		}
+        		return val;
+        }();
+      </script>
+      <script type="text/javascript">
+        window.cartItemsObject['{{ item.get("skuid") }}'] = {
+          'name': '{{ item.get("name") | sanitize }}',
+          'id': '{{ item.get("unoptioned_skuid") }}',
+          'price': '{{ item.get("price") }}',
+          'variant' : '',
+          'category': "{{ replace_double_quote(get_breadcrumb_string(product.get('breadcrumb', []), ' > ')) }}",
+          'quantity': {{ item.get("quantity", 1) }},
+          'dimension1' : '{{ item.get("skuid") }}'
+        };
+      </script>
+      <div class="col-12 col-md-7">
+        <div class="card h-100">
+          <div class="card-header bg-gray text-center border-0">
+            <h3 class="my-0 text-large">In your cart:</h3>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12 col-md-5 d-flex align-items-center justify-content-center">
+                <img
+                  src="{{ item.get('image') }}"
+                  alt="{{ item.get('name') | sanitize }}"
+                  class="img-fluid cart-thumb"
+                  onerror="imageError(this)" />
+              </div>
+              <div class="col-12 col-md-7 position-relative">
+                <h5 class="mx-0 text-larger fw-bold">{{ item.get('name') }}</h5>
+                <div class="w-100 text-muted text-larger py-1">Item: <span data-js="popcart-added">{{ item.get('skuid') }}</span></div>
+                <div class="w-100 text-muted text-larger py-1">Qty: <span data-test="added-qty">{{ last_added.get('quantity') }}</span></div>
+                <div class="product-price text-larger py-1">
+                  {{ render_price(item) }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script type="text/javascript">
+        window.dataLayer.push({
+          cartSubtotal: "{{ g.cart.get_discounted() | format_currency }}",
+          cartID: cartID,
+          clientID: ''
+        });
+        Object.keys(window.cartItemsObject).forEach(function(key) {
+          window.cartItemsArray.push(window.cartItemsObject[key]);
+          window.cartItemsDelimited['skuids'].push(key);
+          window.cartItemsDelimited['quantities'].push(window.cartItemsObject[key]['quantity']);
+          window.cartItemsDelimited['prices'].push(window.cartItemsObject[key]['price']);
+          (window.cartItemsDelimited['base'].indexOf(window.cartItemsObject[key]['id']) === -1) && window.cartItemsDelimited['base'].push(window.cartItemsObject[key]['id']);
+        });
+        afterLoad('$', function() {
+          $(document).trigger("popcart", "{{ product.get('skuid') }}");
+        })
+        </script>
+
+      <div class="col-12 col-md-5 mt-4 mt-md-0 mt-lg-0 mt-xl-0">
+        <div class="card h-100">
+          <div class="card-header bg-gray text-center border-0 d-none d-md-block">
+            <h3 class="my-0 text-large">Cart Summary</h3>
+          </div>
+          <div class="card-body">
+            <div class="row pb-4 d-none d-md-flex">
+              <div class="col-6 text-left">
+                <span id="cartquantity2">{{ g.cart.get_quantities() }}</span> Items
+              </div>
+              <div class="col-6 d-flex justify-content-end">
+                {{ g.cart.get_discounted() | format_currency }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <a class="btn-outline-info btn btn-block text-center" href="javascript:void(0);" onclick="window.dataLayer.push({'event':'trackEvent','eventCategory':'Modal 2 Continue Shopping Button','eventAction':'Click','eventLabel':'View Cart'});closeModal();">Continue Shopping</a>
+                <a class="btn-outline-info btn btn-block text-center" href="/cart" onclick="window.dataLayer.push({'event':'trackEvent','eventCategory':'Modal 2 View Cart Button','eventAction':'Click','eventLabel':'View Cart'});closeModal();">View Cart</a>
+                <a id="default-btn-v0" class="btn btn-block btn-info text-center d-none d-md-block" onclick="checkoutClick(event);window.dataLayer.push({'event':'trackEvent','eventCategory':'Modal 2 Checkout Button','eventAction':'Click','eventLabel':'Checkout'});closeModal();" href="/checkout">Checkout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fullwidth__holder">
+      <div
+        id="popcart-recs-container"
+        class="loading-mask mask-300"
+        data-recs='[{"skuid":"{{ item.get("unoptioned_skuid") }}","recommendationsType":"product","reportingId":"Recommendations 1: Add-to-cart","title": "You May Also Like"}]'
+      ></div>
+    </div>
+
+    <div id="mobile-popcart-v1" class="sticky-atc-popcart border-top sticky-atc-popcart border-top pt-2 pb-2 d-block d-md-none">
+      <div class="row">
+        <div class="col-6 text-left">
+          <span id="cartquantity2">{{ g.cart.get_quantities() }}</span> Items
+        </div>
+        <div class="col-6 d-flex justify-content-end">
+          {{ g.cart.get_discounted() | format_currency }}
+        </div>
+      </div>
+      <a class="btn btn-info btn-lg w-100 mt-1" onclick="checkoutClick(event);window.dataLayer.push({'event':'trackEvent','eventCategory':'Modal 2 Checkout Button','eventAction':'Click','eventLabel':'Checkout'});closeModal();" href="/checkout">Checkout</a>
+    </div>
+
+  </div>
+</div>
+<script>
+  window.dataLayer.push({
+      event:'VirtualPageView',
+      VirtualPageURL:'/cart',
+      VirtualPageTitle:'Popcart'
+  });
+  window.dataLayer.push({
+      event:'inlinePopcart',
+      cartItems: window.cartItemsArray,
+      delimitedCartItems: window.lastAdded, // send only last added, not full cart
+      cIdent: '',
+      excludeItems: '',
+      deviceType: ''
+  });
+  var popcartEvent = new CustomEvent("inlinePopcart", {
+    bubbles: true,
+    detail: { cartItems: window.cartItemsArray },
+  });
+  document.dispatchEvent(popcartEvent);
+  if (typeof window.pageItemsObject !== 'undefined' && Object.keys(window.pageItemsObject).length) {
+    var upsellImpressions = [];
+    Array.prototype.forEach.call(document.querySelectorAll("#cart-modal .featured-products [data-skuid]"), function(el) {
+      if (el) {
+        var skuid = el.getAttribute('data-skuid');
+        if (skuid && window.pageItemsObject[skuid]) {
+          upsellImpressions.push(window.pageItemsObject[skuid]);
+        }
+      }
+    });
+    window.dataLayer.push({
+      'event': 'productImpressions',
+      'ecommerce': {
+        'impressions': upsellImpressions
+      }
+    });
+  }
+  </script>
+
+{# inlines a javascript object to make the cart available in the window #}
+{{ render_cart_items_object() }}

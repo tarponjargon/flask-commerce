@@ -1,0 +1,85 @@
+{% set flip_catalog = get_flip_catalog() %}
+<style>
+	.flipbook {
+		width: 100%;
+		display: block;
+		text-align: center;
+		overflow: hidden;
+		margin-bottom: 5px;
+	}
+	.flipbook .flip-container {
+		width: auto;
+		margin: 0 auto;
+		display: inline-block;
+		text-align: center;
+		overflow: hidden;
+	}
+	.flipbook .flip-issue {
+		width: auto;
+		float: left;
+		padding-top: 50px;
+		padding-right: 30px;
+	}
+	.flipbook .flip-content {
+		float: left;
+		max-width: 550px;
+		display: block;
+		text-align: center;
+		margin: 0 auto;
+	}
+	.flipbook .flipbook-cover {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+	.flipbook h1 {
+		font-size: 29px;
+	}
+	.flipbook ul {
+		margin: 15px 0 15px 5%;
+	}
+	.flipbook li {
+		font-size: 17px;
+		line-height: 23px;
+	}
+	.flipbook .flip-image {
+		width: 100%;
+		display: block;
+	}
+	.flipbook .flip-image {
+		max-width: 450px;
+	}
+	.flipbook .continue__checkout:focus {
+		color: white;
+		text-decoration: none;
+	}
+	.go {
+		display: none;
+	}
+</style>
+
+<div class="well flipbook">
+	<div class="flip-container">
+		<div class="d-none d-lg-block flip-issue">
+			<a data-js="virtual-catalog" href="/flipcatalog-modal"><img  src="{{ flip_catalog.get('drop_link') }}files/shot.jpg" alt="Cover of our {{ flip_catalog.get('drop_name') }} catalog" /></a>
+		</div>
+		<div class="flip-content">
+				<h1>Browse <span class="d-none d-md-inline">Our </span>{{ flip_catalog.get('drop_name') }}<br /><span class="d-none d-md-inline">Catalog </span>Online!</h1>
+				<div class="text-left">
+					<ul>
+						<li>Quickly find what you need with text search</li>
+						<li>Browse from your computer or any device</li>
+						<li>Share with friends on social media or by email</li>
+					</ul>
+				</div>
+				<div class="flip-image">
+					<a data-js="virtual-catalog" href="/flipcatalog-modal"><img src="{{ config.IMAGE_BASE }}/assets/images/flipbook-screenshot.jpg" alt="Catalog page illustration" /></a>
+				</div>
+				<a
+					class="continue__checkout"
+					style="font-size: 2rem; padding: 1.1rem;"
+					data-js="virtual-catalog" href="/flipcatalog-modal">Click to Begin <i class="fa fa-angle-double-right"></i></a>
+			</div>
+		</div>
+</div>
+

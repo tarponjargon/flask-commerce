@@ -1,0 +1,141 @@
+<div class="form-group row">
+	<div class="col-12 new-mandatory-input-wrapper">
+		<input
+			type="text"
+			class="form-control"
+			data-js="shipping-field"
+			data-required="required"
+			value="{{ session_safe_get('ship_fname') }}"
+			id="ship_fname"
+			name="ship_fname"
+			placeholder="First Name"
+			aria-label="Please enter a first name"
+		>
+	</div>
+</div>
+
+<div class="form-group row">
+	<div class="col-12 new-mandatory-input-wrapper">
+		<input
+			type="text"
+			class="form-control"
+			data-js="shipping-field"
+			data-required="required"
+			value="{{ session_safe_get('ship_lname') }}"
+			name="ship_lname"
+			id="ship_lname"
+			placeholder="Last Name"
+			aria-label="Please enter a last name"
+		>
+	</div>
+</div>
+
+<div class="form-group row">
+	<div class="col-12 new-mandatory-input-wrapper">
+		<input
+			type="text"
+			class="form-control"
+			data-js="shipping-field"
+			data-required="required"
+			value="{{ session_safe_get('ship_street') }}"
+			name="ship_street"
+			id="ship_street"
+			placeholder="Address 1"
+			aria-label="Please enter a street address"
+		>
+	</div>
+</div>
+
+<div class="form-group row">
+	<div class="col-12 ">
+		<input
+			type="text"
+			class="form-control"
+			data-js="shipping-field"
+			value="{{ session_safe_get('ship_street2') }}"
+			name="ship_street2"
+			id="ship_street2"
+			placeholder="Address 2"
+			aria-label="shipping address 2 (optional)"
+		>
+	</div>
+</div>
+
+<div class="form-group row">
+	<div class="col-12 new-mandatory-input-wrapper">
+		<input
+			type="text"
+			class="form-control"
+			data-js="shipping-field"
+			data-required="required"
+			value="{{ session_safe_get('ship_city') }}"
+			name="ship_city"
+			id="ship_city"
+			placeholder="City"
+			aria-label="Please enter a city"
+		>
+	</div>
+</div>
+
+<div class="form-group row">
+	<div class="col-12 new-mandatory-input-wrapper">
+    <select
+    id="ship_state"
+    name="ship_state"
+    data-js="shipping-field"
+    data-required="required"
+    title="Please enter a state"
+    class="form-select"
+  >
+      <option value="">Select State/Province</option>
+      {% for state in get_states() %}
+      <option
+        value="{{ state.code }}"
+        {{ 'selected' if session_safe_get('ship_state') == state.code else '' }}
+      >
+        {{ state.name }}
+      </option>
+    {% endfor %}
+    </select>
+	</div>
+</div>
+
+<div class="form-group row">
+	<div class="col-12 new-mandatory-input-wrapper">
+		<input
+			type="text"
+			class="form-control"
+			data-js="shipping-field"
+			data-required="required"
+			value="{{ session_safe_get('ship_postal_code') }}"
+			name="ship_postal_code"
+			id="ship_postal_code"
+			placeholder="Zip code"
+			aria-label="Please enter a valid zip/postal code"
+      pattern="^(\d{5}(-\d{4})?|[A-Z]\d[A-Z] ?\d[A-Z]\d)$"
+		>
+	</div>
+</div>
+
+<div class="form-group row">
+	<div class="col-12 new-mandatory-input-wrapper">
+    <select
+    id="ship_country"
+    name="ship_country"
+    data-js="shipping-field"
+    data-required="required"
+    title="Please enter a country"
+    class="form-select"
+  >
+      <option value="">Select Country</option>
+      {% for country in get_countries() %}
+      <option
+        value="{{ country.code }}"
+        {{ 'selected' if session_safe_get('ship_country') == country.code else '' }}
+      >
+        {{ country.name }}
+      </option>
+    {% endfor %}
+    </select>
+	</div>
+</div>

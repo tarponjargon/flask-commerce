@@ -1,0 +1,87 @@
+<style>
+  .in-stock-alert {
+    margin-top: 20px;
+    overflow: hidden;
+  }
+  .in-stock-alert .form-control {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .in-stock-privacy {
+    font-size: 12px;
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .available-now {
+    overflow: hidden;
+    width: 100%;
+    display: block;
+    font-size: 1.9rem;
+    text-align: center;
+  }
+</style>
+
+
+<div class="card card-info in-stock-alert mt-5" style="display: none;">
+    <div class="card-header card-info text-center">
+      <h3 class="mt-2">Add Me To The Waitlist!</h3>
+    </div>
+    <div class="card-body">
+      <h5>We'll email you when this item comes back in stock</h5>
+      <form>
+        <input
+          type="email"
+          class="form-control"
+          name="bill_email"
+          required
+          value="{{ session_safe_get('bill_email') }}"
+          placeholder="Enter your E-mail"
+          id="notify-email"
+        />
+        <button type="button" class="btn btn-primary btn-lg btn-block" id="notify-button">
+          Notify Me!
+        </button>
+      </form>
+      <div class="in-stock-privacy">
+        By entering your email, you agree to be sent email communications.
+        Read about our <a href="/privacy" target="_new" rel="noopen noreferrer">Privacy Policy</a>.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    if ('afterLoad' in window) {
+        afterLoad('$', function() {
+            afterLoad('_smtr', function() {
+                $('.card.in-stock-alert').slideDown();
+                document.getElementById('notify-button').addEventListener('click', function() {
+                    var email = document.getElementById('notify-email').value;
+                    spinButton('notify-button', 'Adding');
+                      var dataString = 'bill_email=' + email + '&request=optinrequest';
+                      $.ajax({
+                          type: "POST",
+                          url: "/process_email_capture",
+                          data: dataString,
+                          dataType: "json",
+                          success: function() {
+                            _smtr.push([ "onCustomProduct", {
+                                productId_scraped: "{{ product.get('skuid') }}",
+                                alert_requested: true
+                            }]);
+                            _smtr.push([ "onEmail", {
+                                type: "alert",
+                                email: email
+                            }]);
+                            unSpinButton('notify-button', 'E-Mail Added!');
+                          },
+                          error: function (xhr, status, errorThrown) {
+                            unSpinButton('notify-button')
+                            flashMessage.show({ message: xhr.responseJSON.message, type: "error" });
+                          }
+                    });
+                });
+            });
+        });
+    }
+  </script>

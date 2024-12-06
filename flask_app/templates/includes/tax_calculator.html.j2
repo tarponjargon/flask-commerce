@@ -1,0 +1,58 @@
+<div class="form-group">
+  <div class="cart-shipping-address">
+    <form
+      action="/cart#cartsummary"
+      method="POST"
+      onSubmit="spinButton('tax-est-button')"
+      >
+      <h2 class="title">
+        <span>Calculate Your Tax</span>
+      </h2>
+      <div class="form-group">
+        <select aria-label="Select Country" class="form-select" name="ship_country" aria-required="true" required="required">
+          <option value="">Country</option>
+          <option
+            value="USA"
+            selected
+          >
+            USA
+          </option>
+          <option
+            value="CANADA"
+          >
+            CANADA
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <select aria-label="Select State" class="form-select" name="ship_state" aria-required="true" required="required">
+          <option value="">State/Region</option>
+          {% for state in get_states() %}
+            <option
+              value="{{ state.code }}"
+              {{ 'selected' if session_safe_get('ship_state') == state.code else '' }}
+            >
+              {{ state.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group control">
+        <input
+          type="text"
+          class="form-control"
+          name="ship_postal_code"
+          aria-required="true"
+          aria-label="Enter Zip/Postal Code"
+          required="required"
+          pattern="^(\d{5}(-\d{4})?|[A-Z]\d[A-Z] ?\d[A-Z]\d)$"
+          placeholder="Zip/Postal Code"
+          value="{{ session_safe_get('ship_postal_code') }}"
+          >
+      </div>
+      <div class="form-group">
+        <button class="button-primary" id="tax-est-button" type="submit">Apply</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,423 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{ title if title else config.STORE_TAGLINE }}</title>
+    {% include "includes/heading_meta.html.j2" %}
+    {% include "includes/heading_seo.html.j2" %}
+    {% include 'includes/assets.inc' %}
+    {% include "includes/google_tag_manager.html.j2" %}
+    {# load searchsping directly on pages where it renders content, defer to interaction on pages it doesn't #}
+    {% if get_search_state() %}
+      {% if page == 'category' or page == 'search' %}
+      {# NOTE: all non-pbs brands use the same searchspring bundle: q6j626 (i.e. it doesnot correspond to the VENDOR_SEARCH_ID/SiteId #}
+      <script
+        defer
+        src="{{ 'https://localhost:3333/bundle.js' if (session_safe_get('RORY') == '2') else 'https://snapui.searchspring.io/q6j626/bundle.js' }}"
+        search="q"
+        {{ searchspring_attrs if searchspring_attrs else '' }}
+      ></script>
+      {% else %}
+      <script>
+        (function() {
+          document.addEventListener("interaction", function () {
+            var m = document.createElement('script');
+            m.type = 'text/javascript';
+            m.async = true;
+            m.src = "{{ 'https://localhost:3333/bundle.js' if (session_safe_get('RORY') == '2') else 'https://snapui.searchspring.io/q6j626/bundle.js' }}";
+            m.setAttribute('search', 'q');
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(m, s);
+          });
+        })();
+      </script>
+      {% endif %}
+    {% endif %}
+  </head>
+  <body
+    id="body"
+    data-search-id="{{ config.VENDOR_SEARCH_ID }}"
+    data-phase="shopping"
+    data-view="{{ page }}"
+    data-page-path="{{ request.path | sanitize }}"
+    data-client-id="{{ get_session_id() | sanitize }}"
+    data-gtm-id="{{ config.GTM_ID }}"
+    data-privacy-id="{{ config.ONETRUST_ID }}"
+    data-login="{{ 'true' if session_safe_get('customer_id') else ''}}"
+    data-is-fo="{{ '1' if config.get('FAILOVER') else '0'}}"
+    {{ 'data-collect-shown="1"' if session_safe_get('collect_shown') else ''}}
+    {{ body_attrs }}
+    >
+    <a href="{{ request.path | sanitize }}#main-content" class="skip-to-main-content-link">Skip to main content</a>
+    <header class="mb-lg-3">
+
+      {% include "includes/heading_banners.html.j2" %}
+
+      <div class="container">
+        <div class="header">
+          <div class="header_logo">
+            <a href="/">
+            <img src="/assets/images/logo.svg" alt="{{ config.STORE_NAME }} Logo" />
+            </a>
+          </div>
+          <div class="header_search">
+            <div class="help_links">
+              <div class="live_chat">
+                {% if is_cs_open() %}
+                  <a href="javascript:;" onclick="zE('messenger', 'show'); zE('messenger', 'open')">Contact Us</a>
+                {% else %}
+                  <a href="/contact">Contact Us</a>
+                {% endif %}
+              </div>
+              <div class="sign_in">
+                {% include "includes/account_link.html.j2" %}
+              </div>
+              <div class="track_order">
+                <a href="javascript:;" onclick="showTrackOrder(event)">Track Orders</a>
+              </div>
+            </div>
+            <div class="search">
+              <form role="form" action="/find" method="GET">
+                <div class="input-group position-relative">
+                  <input
+                    name="q"
+                    type="text"
+                    class="form-group searchspring-query desktop-search-field ng-scope ss-focused"
+                    autocomplete="off"
+                    placeholder="Search"
+                    aria-label="Search field"
+                    spellcheck="false"
+                    ss-nav-input=""
+                    required
+                    >
+                    <button class="submit-search-button" type="submit" aria-label="Search">
+                      <img src="/assets/images/Search.png" alt="Search">
+                    </button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <a href="/cart" class="cart" data-js="mini-cart">
+            <div class="header_cart">
+              <div class="cart_items {{ 'visible' if g.cart.get_quantities() else 'invisible' }}" data-js="cart-item-container">
+                <span data-js="cart-item-quantity">{{ g.cart.get_quantities() }}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="header_mobile">
+          <div class="mobile_menu"><img src="{{ config.IMAGE_BASE }}/assets/images/menu.png" width="20" height="14" class="img-fluid" alt="Mobile Hamburger Menu" /></div>
+          <div class="mobile_logo"><a href="/"><svg width="85" height="30" viewBox="0 0 85 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M64.4191 9.39571C63.162 8.41982 61.5818 7.84232 59.8694 7.84232C55.77 7.84232 52.4473 11.165 52.4473 15.2645C52.4473 19.3622 55.77 22.685 59.8694 22.685C61.7869 22.685 63.5403 21.9535 64.8569 20.7591C65.2938 21.8254 64.4191 8.77302 64.4191 9.39571ZM64.4191 17.9268C63.5495 19.23 62.0572 20.108 60.3733 20.108C57.6984 20.108 55.5281 17.9394 55.5281 15.2645C55.5281 12.5879 57.6984 10.4193 60.3733 10.4193C62.0455 10.4193 63.5487 11.2663 64.4191 12.5552" fill="#226B49"/><path d="M40.5203 9.78321C41.3623 8.78053 42.7332 7.87076 44.9662 7.87076C48.5861 7.87076 49.6206 10.806 49.6206 12.8749V18.5437C49.6206 20.0058 51.0049 20.1264 51.7364 19.6719V22.2179C51.4401 22.3836 50.9488 22.6582 49.7696 22.6582C47.606 22.6582 46.6217 20.8554 46.6217 19.276V13.3905C46.6217 11.5007 45.5873 10.662 43.8297 10.662C42.7232 10.662 41.3313 11.1232 40.5203 12.9888V22.4849H37.5215V8.15784H40.5203" fill="#226B49"/><path d="M13.7607 8.15787V19.2995C13.7607 21.0077 14.8404 22.6582 16.9613 22.6582C17.7748 22.6582 18.4686 22.4816 18.8746 22.218V19.6719C17.8945 20.1984 16.7596 19.8402 16.7596 18.5437V8.15787" fill="#226B49"/><path d="M70.9814 0.101257V19.2994C70.9814 21.0077 72.0611 22.6573 74.182 22.6573C74.9947 22.6573 75.6893 22.4816 76.0953 22.2179V19.6719C75.1152 20.1983 73.9803 19.8401 73.9803 18.5437V0.101257" fill="#226B49"/><path d="M64.4189 8.15787V19.2995C64.4189 21.0077 65.4986 22.6582 67.6195 22.6582C68.4322 22.6582 69.1268 22.4816 69.5328 22.218V19.6719C68.5519 20.1984 67.4169 19.8402 67.4169 18.5437V8.15787" fill="#226B49"/><mask id="mask0_2358_111" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="19" y="7" width="16" height="23"><path d="M19.7109 7.71426H34.9235V30H19.7109V7.71426Z" fill="white"/></mask><g mask="url(#mask0_2358_111)"><path d="M31.8908 21.1065C30.632 22.0874 29.0594 22.6858 27.3403 22.6858C23.2417 22.6858 19.9189 19.3623 19.9189 15.2637C19.9189 11.1651 23.2417 7.84235 27.3403 7.84235C29.0602 7.84235 30.632 8.43994 31.8908 9.42169V8.15788H34.8888V23.6919C34.8888 26.3802 33.0274 30 28.9949 30L28.0642 27.2079C30.1324 27.2079 31.8908 26.0705 31.8908 23.6919V21.1065ZM31.8908 12.6791C31.0195 11.3902 29.5172 10.4202 27.845 10.4202C25.1692 10.4202 22.9998 12.5879 22.9998 15.2637C22.9998 17.9403 25.1692 20.108 27.845 20.108C29.5289 20.108 31.0221 19.153 31.8908 17.8499" fill="#226B49"/></g><path d="M17.5501 2.20623C17.5501 0.987613 16.5625 0 15.3439 0C14.1261 0 13.1377 0.987613 13.1377 2.20623C13.1377 3.42484 14.1261 4.41245 15.3439 4.41245C16.5625 4.41245 17.5501 3.42484 17.5501 2.20623Z" fill="#226B49"/><path d="M80.538 16.0294C81.637 16.997 82.2513 17.4632 82.2513 18.4457C82.2513 19.2208 81.5357 20.113 80.4769 20.113C79.7764 20.113 78.9905 19.6769 78.7486 19.4593L77.5752 21.7199C78.5193 22.3786 79.6642 22.6849 80.6954 22.6849C83.0146 22.6849 85.0007 21.0311 85.0007 18.3939C85.0007 16.3776 83.6038 15.3473 82.7618 14.5338C81.7081 13.5169 80.9389 13.0942 80.9389 12.1116C80.9389 11.3358 81.6227 10.5607 82.6832 10.5607C83.382 10.5607 83.8189 10.8143 84.0608 11.0328V8.34448C83.8424 8.22396 82.9945 7.98877 82.4647 7.98877C80.1455 7.98877 78.1594 9.6426 78.1594 12.2799C78.1594 14.2969 79.6266 15.2276 80.538 16.0294Z" fill="#226B49"/><path d="M9.62406 0.887161C9.04321 0.743204 7.91834 0.589203 7.38101 0.589203C4.07502 0.589203 0.907962 2.96701 0.907962 6.0512C0.907962 11.0604 8.02045 13.5211 8.02045 16.8974C8.02045 18.927 5.91382 19.9891 4.26919 19.9891C3.22383 19.9891 1.85038 19.6242 1.06782 19.0249L-0.000976562 21.6789C1.05778 22.2631 2.64465 22.6766 4.19973 22.6766C8.00622 22.6766 11.2335 20.3381 11.2335 16.8647C11.2335 12.1937 3.98797 9.543 3.98797 6.09305C3.98797 4.55305 5.54639 3.1888 7.36762 3.1888C8.31087 3.1888 9.00639 3.35536 9.65503 3.67926" fill="#226B49"/></svg></a></div>
+          <div class="quick_menu">
+            <div class="quick-menu-items">
+              <a id="mobile-phone-link" class="pe-1" href="tel:{{ config.STORE_PHONE }}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6.49187 2.25C6.0993 2.25 5.71258 2.39063 5.39031 2.64844L5.34344 2.67188L5.32 2.69531L2.97625 5.10938L2.99969 5.13281C2.27605 5.80078 2.0534 6.7998 2.36687 7.66406C2.3698 7.66992 2.36394 7.68164 2.36687 7.6875C3.00262 9.50684 4.62859 13.0195 7.80437 16.1953C10.9919 19.3828 14.5514 20.9443 16.3122 21.6328H16.3356C17.2468 21.9375 18.2341 21.7207 18.9372 21.1172L21.3044 18.75C21.9255 18.1289 21.9255 17.0508 21.3044 16.4297L18.2575 13.3828L18.2341 13.3359C17.613 12.7148 16.5114 12.7148 15.8903 13.3359L14.3903 14.8359C13.8483 14.5752 12.5563 13.9072 11.32 12.7266C10.0925 11.5547 9.46551 10.207 9.23406 9.67969L10.7341 8.17969C11.3639 7.54981 11.3757 6.50098 10.7106 5.88281L10.7341 5.85938L10.6637 5.78906L7.66375 2.69531L7.64031 2.67188L7.59344 2.64844C7.27117 2.39063 6.88445 2.25 6.49187 2.25ZM6.49187 3.75C6.54754 3.75 6.6032 3.77637 6.65594 3.82031L9.65594 6.89063L9.72625 6.96094C9.72039 6.95508 9.77019 7.03418 9.67937 7.125L7.80437 9L7.45281 9.32813L7.61687 9.79688C7.61687 9.79688 8.4782 12.1025 10.2887 13.8281L10.4528 13.9688C12.196 15.5596 14.2497 16.4297 14.2497 16.4297L14.7184 16.6406L16.945 14.4141C17.0739 14.2852 17.0505 14.2852 17.1794 14.4141L20.2497 17.4844C20.3786 17.6133 20.3786 17.5664 20.2497 17.6953L17.9528 19.9922C17.6071 20.2881 17.2409 20.3496 16.8044 20.2031C15.1052 19.5352 11.8034 18.085 8.85906 15.1406C5.89129 12.1729 4.34148 8.80664 3.77312 7.17188C3.65887 6.86719 3.7409 6.41602 4.0075 6.1875L4.05437 6.14063L6.32781 3.82031C6.38055 3.77637 6.43621 3.75 6.49187 3.75Z" fill="#226B49"/></svg></a>
+              {% if session_safe_get('customer_id') %}
+                <div id="mobile-account-button" class="dropdown account-dropdown d-inline-block pe-0">
+                  <button id="nav-profile-dropdown" class="account px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3.75C9.1084 3.75 6.75 6.1084 6.75 9C6.75 10.8076 7.67285 12.4131 9.07031 13.3594C6.39551 14.5078 4.5 17.1621 4.5 20.25H6C6 16.9277 8.67773 14.25 12 14.25C15.3223 14.25 18 16.9277 18 20.25H19.5C19.5 17.1621 17.6045 14.5078 14.9297 13.3594C16.3271 12.4131 17.25 10.8076 17.25 9C17.25 6.1084 14.8916 3.75 12 3.75ZM12 5.25C14.0801 5.25 15.75 6.91992 15.75 9C15.75 11.0801 14.0801 12.75 12 12.75C9.91992 12.75 8.25 11.0801 8.25 9C8.25 6.91992 9.91992 5.25 12 5.25Z" fill="#226B49"/></svg>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="nav-profile-dropdown" aria-expanded="false">
+                    {% include "includes/account_nav.html.j2" %}
+                  </div>
+                </div>
+              {% else %}
+              <a
+                href="#"
+                data-toggle="modal"
+                data-target="#account-modal"
+                class="pe-0"
+                ><img src="{{ config.IMAGE_BASE }}/assets/images/user.png" width="21" height="22" class="img-fluid" alt="Log in / Track Order"></a>
+              {% endif %}
+            </div>
+          </div>
+          <button class="close-menu mobile_menu hidden" id="mobile-menu-close" aria-label="Close Menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M4.39535 3.03L3.03035 4.395L10.6354 12L2.98535 19.665L4.33535 21.015L12.0004 13.365L19.6504 21.015L21.0154 19.65L13.3654 12L20.9704 4.395L19.6054 3.03L12.0004 10.635L4.39535 3.03Z" fill="black"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="mobile_search position-relative">
+          <form role="form" action="/find" method="GET">
+            <div class="form-group position-relative">
+              <input
+                type="text"
+                name="q"
+                class="searchspring-query mobile-search-field ng-scope ss-focused form-control"
+                placeholder="Search"
+                aria-label="Search field"
+                spellcheck="false"
+                ss-nav-input=""
+                autocomplete="off"
+                required
+                >
+              <button class="mobile-search-button" type="submit"><img class="mag" src="{{ config.IMAGE_BASE }}/assets/images/magnifying-glass.png" width="14" height="15" class="img-fluid" alt="Submit Search" /></button>
+            </div>
+          </form>
+          <a href="/cart" data-js="mini-cart" class="ps-1 cart">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M16 3C13.2539 3 11 5.25391 11 8V9H6.0625L6 9.9375L5 27.9375L4.9375 29H27.0625L27 27.9375L26 9.9375L25.9375 9H21V8C21 5.25391 18.7461 3 16 3ZM16 5C17.6562 5 19 6.34375 19 8V9H13V8C13 6.34375 14.3438 5 16 5ZM7.9375 11H11V14H13V11H19V14H21V11H24.0625L24.9375 27H7.0625L7.9375 11Z" fill="#226C49"></path>
+            </svg>
+            <span class="position-relative {{ 'visible' if g.cart.get_quantities() else 'invisible' }}" data-js="cart-item-container">
+            <span data-js="cart-item-quantity" class="mobile-quantity">{{ g.cart.get_quantities() }}</span>
+            </span>
+            &nbsp;
+          </a>
+
+        </div>
+      </div>
+      {% include 'includes/desktop_nav.html.j2' %}
+      {% include 'includes/mobile_heading_nav.html.j2' %}
+    </header>
+    <span id="main-content"></span>
+
+    {% block content %}{% endblock %}
+
+    {% if (page and page != 'index') %}
+      {% include "includes/homepage_subscribe.html.j2" %}
+    {% endif %}
+    <footer>
+      <div class="mobile_nav-block">
+        <div class="row">
+          <div class="col-md-3">
+            <button href="/account" class="additional_nav trigger" aria-expanded="false">
+            MY ACCOUNT/ORDERS
+            </button>
+            <ul class="menu_accordion">
+              <li><a href="/account" class="additional_nav">
+              MY ACCOUNT
+              </a></li>
+              <li><a href="/orderstatus" class="additional_nav" >
+              ORDER STATUS
+              </a></li>
+              <li><a href="/customerservice#returns" class="additional_nav">
+              SHIPPING & PROCESSING INFORMATION
+              </a></li>
+              <li><a href="/customerservice#returns" class="additional_nav">
+              RETURNS
+              </a></li>
+              {% if is_cs_open() %}
+              <li>
+                <a
+                  class="additional_nav"
+                  href="javascript:;"
+                  onclick="zE('messenger', 'show'); zE('messenger', 'open')"
+                >
+                  CHAT WITH US
+                </a>
+              </li>
+              {% endif %}
+              <li><a href="/contact" class="additional_nav">
+              CONTACT US
+              </a></li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <button href="/customerservice" class="additional_nav trigger" aria-expanded="false">
+            CUSTOMER SERVICE
+            </button>
+            <ul class="menu_accordion">
+              <li><a href="/customerservice" class="additional_nav">
+              SHIPPING & PROCESSING INFORMATION
+              </a></li>
+              <li><a href="/coupons" class="additional_nav">
+                COUPONS & DEALS
+              </a></li>
+              <li><a href="/blog" class="additional_nav">
+                BLOG
+              </a></li>
+              <li><a href="/customerservice#returns" class="additional_nav">
+              RETURNS
+              </a></li>
+              <li><a href="/reviews" class="additional_nav">
+                REVIEWS
+              </a></li>
+              <li><a href="/quickorder" class="additional_nav">QUICK ORDER/TAX ESTIMATE</a></li>
+              <li><a href="/catalogrequest" class="additional_nav">REQUEST A CATALOG</a></li>
+              <li><a href="/about" class="additional_nav">OUR GUARANTEE</a></li>
+              <li><a data-js="virtual-catalog" href="/flipcatalog-modal" class="additional_nav">BROWSE OUR DIGITAL CATALOG</a></li>
+              <li><a data-js="email-signup" href="#" class="additional_nav">RECEIVE E-MAIL UPDATES</a></li>
+              {% if is_cs_open() %}
+              <li>
+                <a
+                  class="additional_nav"
+                  href="javascript:;"
+                  onclick="zE('messenger', 'show'); zE('messenger', 'open')"
+                >
+                  CHAT WITH US
+                </a>
+              </li>
+              {% endif %}
+              <li><a href="/contact" class="additional_nav">CONTACT US</a></li>
+              <li><a href="/gifts/giftcertificate" class="additional_nav">GIFT CERTIFICATES</a></li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <button href="/privacy" class="additional_nav trigger" aria-expanded="false">
+            PRIVACY POLICY/DO NOT SELL MY INFO
+            </button>
+            <ul class="menu_accordion">
+              <li><a href="/privacy" class="additional_nav">
+              PRIVACY
+              </a></li>
+              <li><a href="/notice-at-collection" class="additional_nav">
+                NOTICE AT COLLECTION
+              </a></li>
+              <li><a href="/accessibility-statement" class="additional_nav">
+                DIGITAL ACCESSIBILITY STATEMENT
+              </a></li>
+              <li><a href="/termsofuse" class="additional_nav" >
+              TERMS OF USE
+              </a></li>
+              <li><a href="/ca-do-not-sell" class="additional_nav">
+              DO NOT SELL MY INFO
+              </a></li>
+            </ul>
+          </div>
+          <div class="w-100 text-center mt-3">
+            <a href="javascript:void(0);" class="ot-sdk-show-settings">Your Privacy Choices</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-nav">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <ul>
+                <li><a href="/about">Company Information</a></li>
+                <li><a href="javascript:void(0);" class="ot-sdk-show-settings">Your Privacy Choices</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/privacy">Privacy</a></li>
+                <li><a href="/notice-at-collection">Notice at Collection</a></li>
+                <li><a href="/accessibility-statement">Digital Accessibility Statement</a></li>
+                <li><a href="/ca-do-not-sell">California Do Not Sell My Info</a></li>
+                <li><a href="/termsofuse">Terms of Use</a></li>
+              </ul>
+            </div>
+            <div class="col">
+              <ul>
+                <li><a href="/customerservice">Customer Service</a></li>
+                {% if is_cs_open() %}
+                <li>
+                  <a href="javascript:;" onclick="zE('messenger', 'show'); zE('messenger', 'open')">Chat With Us</a>
+                </li>
+                {% endif %}
+                <li><a href="/contact">Contact Us</a></li>
+                <li><a href="/customerservice">Shipping & Processing Information</a></li>
+                <li><a href="/customerservice#returns">Returns</a></li>
+                <li><a href="/account">My Account</a></li>
+                <li><a href="/orderstatus">Order Status</a></li>
+                <li><a href="/gifts/giftcertificate">Gift Certificate</a></li>
+              </ul>
+            </div>
+            <div class="col">
+              <ul>
+                <li><a href="/customerservice">More Information</a></li>
+                <li><a href="/reviews">Reviews</a></li>
+                <li><a href="/about">Our Guarantee</a></li>
+                <li><a href="/vip-insider-info">VIP Insider</a></li>
+                <li><a href="/coupons">Coupons &amp; Deals</a></li>
+                <li><a href="/blog">Blog</a></li>
+              </ul>
+            </div>
+            <div class="col">
+              <ul>
+                <li><a href="/catalogrequest">More Features</a></li>
+                <li><a href="/quickorder">Quick Order / Tax Estimate</a></li>
+                <li><a href="/catalogrequest">Request a Catalog</a></li>
+                <li><a data-js="virtual-catalog" href="/flipcatalog-modal">Browse our Digital Catalog</a></li>
+                <li><a href="#" data-js="email-signup">Receive Email Updates</a></li>
+                <li><a href="/contact">Feedback</a></li>
+                <li><a href="javascript:;" data-accessibility-widget="true" tabindex="0">Accessibility Widget</a></li>
+              </ul>
+            </div>
+            <div class="col">
+              <ul class="social">
+                <li><a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/1">Connect with US</a></li>
+                <li>
+                  <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/1" title="Facebook">
+                    <i class="fa fa-facebook-square footer-facebook" role="img" aria-label="Facebook"></i>
+                  </a>
+                </li>
+                <li>
+                  <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/1" title="Twitter">
+                    <i class="fa fa-twitter-square footer-twitter" role="img" aria-label="Twitter"></i>
+                  </a>
+                </li>
+                <li>
+                  <a target="_blank" rel="noopener noreferrer" href="https://www.pinterest.com/1/" title="Pinterest">
+                    <i class="fa fa-pinterest-square footer-pinterest" role="img" aria-label="Pinterest"></i>
+                  </a>
+                </li>
+                <li>
+                  <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/1/" title="Instagram">
+                    <i class="fa fa-instagram footer-instagram" role="img" aria-label="Instagram"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mobile_social">
+        <ul class="social">
+          <li>
+            <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/1/" title="Facebook">
+              <i class="fa fa-facebook-square footer-facebook" role="img" aria-label="Facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/1" title="Twitter">
+              <i class="fa fa-twitter-square footer-twitter" role="img" aria-label="Twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a target="_blank" rel="noopener noreferrer" href="https://www.pinterest.com/1/" title="Pinterest">
+              <i class="fa fa-pinterest-square footer-pinterest" role="img" aria-label="Pinterest"></i>
+            </a>
+          </li>
+          <li>
+            <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/1/" title="Instagram">
+              <i class="fa fa-instagram footer-instagram" role="img" aria-label="Instagram"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="site-footer">
+        <div class="logo"><a href="/"><img src="{{ config.IMAGE_BASE }}/assets/images/logo.svg" alt="{{ config.STORE_NAME }}" /></a></div>
+        <div class="contact_details text-center">{{ config.STORE_ADDRESS1 }} |  {{ config.STORE_CITY }} {{ config.STORE_STATE }} {{ config.STORE_ZIP }}  |  Order toll free <a href="tel:{{ config.STORE_PHONE }}">{{ config.STORE_PHONE }}</a></div>
+        <div class="sister_sites-title text-center">Our Family of Brands</div>
+        <ul class="sister_sites">
+          <li><a target="_blank" rel="noopener noreferrer" href="https://www.acornonline.com"><img src="assets/images/acorn-logo.png" width="128" height="33" class="img-fluid" alt="Acorn" /></a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://www.whatonearthcatalog.com"><img src="assets/images/woe_logo-blk.png" width="200" height="30" class="img-fluid" alt="What on Earth" /></a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://www.basbleu.com"><img src="assets/images/basbleu_logo-blk.png" width="136" height="30" class="img-fluid" alt="Bas Bleu" /></a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://www.daedalusbooks.com"><img src="assets/images/daedalus-logo_blk.png" width="136" height="37" class="img-fluid" alt="Daedalus" /></a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://www.supportplus.com"><img src="assets/images/support-plus_logo-blk.png" width="166" height="34" class="img-fluid" alt="Support Plus" /></a></li>
+        </ul>
+        <div class="copy text-center">All prices are in US dollars &copy; {{ datetime.now().strftime('%Y') }}</div>
+      </div>
+    </footer>
+
+    {% include "includes/modals_alerts.html.j2" %}
+    {% set cart_id = get_cart_id() %}
+    {% set cart_url = config.STORE_URL + '/get-cart?cart=' + cart_id if cart_id else '' %}
+    <div id="cart-url" data-cart-url="{{ cart_url }}" style="display: none;"></div>
+
+    {% set flip_catalog = get_flip_catalog() %}
+    <a
+      href="javascript:void(0);"
+      data-rel="fh5-light-box-demo"
+      data-href="{{ flip_catalog.get('drop_link') }}"
+      data-title="{{ flip_catalog.get('drop_name') }}"
+      data-width="1024"
+      data-height="768"
+      data-js="mobile-virtual-catalog"
+      style="visibility: hidden"
+      >Virtual Catalog</a>
+      {% include "includes/google_tag_manager_footer.html.j2" %}
+      {% include 'includes/footer_assets.inc' %}
+
+
+
+      {% include "includes/chat_widget.html.j2" %}
+  </body>
+</html>

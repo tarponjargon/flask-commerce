@@ -1,0 +1,41 @@
+{% extends "base.html.j2" %} {% set title %}Customer Service: Shipping & Processing Charges |
+FlaskCommerce{% endset %} {% set page = 'customerservice' %} {% block content %}
+<main class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Customer Service</li>
+        </ol>
+      </nav>
+    </div>
+    <div class="col-md-3">
+      <div class="sidebar-item">
+        <div class="sidebar-heder">
+          <div class="sidebar-name pull-left">Store Information</div>
+          <div class="switch pull-right d-block d-md-none d-lg-none d-xl-none">
+            <span class="more-icon">+</span>
+          </div>
+        </div>
+        <div class="sidebar-nav-wrapper">
+          <ul class="sidebar-nav">
+            <li><a href="/customerservice#shippingprocessing">Shipping & Processing</a></li>
+            <li><a href="/customerservice#pricinginfo">Pricing</a></li>
+            <li><a href="/customerservice#deliverytimes">Delivery Times</a></li>
+            <li><a href="/customerservice#internationalorders">International Orders</a></li>
+            <li><a href="/customerservice#sizing">Apparel Sizing</a></li>
+            <li><a href="/customerservice#gifts">Gifts</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="/termsofuse">Our Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="text-page-content">{% include "includes/shipping.html.j2" %}</div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html.j2" %}
+{% set title %}Verified Customer Reviews{% endset %}
+{% set metadesc %}FlaskCommerce has over 50,000 five star reviews on our unique gifts and everyday items. At FlaskCommerce, you will find products with honest feedback from verified customers! Shop with confidence today!{% endset %}
+{% set page = 'reviews' %}
+
+{% block content %}
+
+<main class="container minheight minheight-600">
+  <div class="row">
+    <div class="col-lg-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Customer Reviews for FlaskCommerce</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="col-lg-12">
+      <h1>Customer Reviews for FlaskCommerce</h1>
+      <div class="w-100">
+        What do you get when you add verified customers plus honest product reviews?
+        You get feedback you can trust, so you can shop us with confidence. Get the lowdown from more than 40,000
+        happy customers who have given FlaskCommerce a 5-star review. Browse our top-rated products from our collections including
+        <a href="/home">Home</a>, <a href="/outdoor">Outdoor</a>, <a href="/clothing">Clothing</a>, <a href="/shirts/graphicshirts">Graphic T-Shirts</a>,
+        <a href="/gifts">Gifts</a>, <a href="/fun/games">Games</a>, <a href="/books">Books</a>, and much more.
+      </div>
+      <div id='yotpo-testimonials-custom-tab'></div>
+    </div>
+</main>
+
+
+{% endblock %}

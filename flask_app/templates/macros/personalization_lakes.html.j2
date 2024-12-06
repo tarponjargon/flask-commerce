@@ -1,0 +1,31 @@
+{% macro render_lakes(item) -%}
+{% set product = item.get('product', {}) %}
+{% set personalization = item.get('personalization', []) %}
+{% for qty in range(1, item.get('quantity')+1) %}
+
+  {# load any pre-existing personalization sets (from item) for this qty each #}
+  {% set qtyloop = loop %}
+  {% if personalization | length >= qtyloop.index %}
+    {% set eachqty_personalization = personalization[qtyloop.index0] %}
+  {% else %}
+    {% set eachqty_personalization = [] %}
+  {% endif %}
+  {% set lakeletter = session_safe_get('lakeletter_' + item.get('skuid') + '_' + str(qtyloop.index)) %}
+  {% set selected_id = session_safe_get('DATA4_' + item.get('skuid') + '_' + str(qtyloop.index)) %}
+  <div class="personalization__block">
+    <div class="label__description">
+      Please choose Lake for
+      {{ item.get('name') }}{% if item.get('quantity') > 1 %}({{ qty }}){% endif %}:
+    </div>
+    <iframe src="/lakes?LAKELETTER={{ lakeletter }}&LAKESKUID={{ item.get('skuid') }}&LC={{ qtyloop.index }}#{{ selected_id }}" width="500" height="400">
+      <p>Your browser does not support iframes.</p>
+    </iframe>
+    <div class="deliverytime">
+      {% if product.get('drop_ship', 0) > 0 %}
+        <b>Please note:</b> Delivery time for this item is {{ product.get('drop_ship_type', {}).get('description') }}.
+      {% endif %}&nbsp;
+    </div>
+    <div class="changed-mind">Changed your mind? <a tabindex="-1" href="/cart?PRODUCT_{{ item.get('skuid') }}=0">Remove item</a></div>
+  </div>
+{% endfor %}
+{%- endmacro %}

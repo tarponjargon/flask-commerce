@@ -1,0 +1,23 @@
+{% extends "base.html.j2" %}
+{% set title %}Your Session is Closed{% endset %}
+{% set page = 'logout' %}
+
+{% block content %}
+
+<main class="container">
+  <div class="shopping-cart-header">
+    <h1 class="header-title primary-color">Your Session is Closed</h1>
+  </div>
+
+  <hr />
+
+  <div class="fullwidth__holder">
+    <div
+      id="recs-container"
+      class="certona-carousel minheight minheigt-800 loading-mask"
+      data-recs='[{"recommendationsType":"recommendations","reportingId":"Recommendations 1: PLP","title": "You May Also Like"}]'
+    ></div>
+  </div>
+
+</main>
+{% endblock %}

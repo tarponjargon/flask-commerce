@@ -1,0 +1,181 @@
+{% from 'macros/cart_items_object.html.j2' import render_cart_items_object with context %}
+{# inlines a javascript object to make the cart available in the window #}
+{{ render_cart_items_object() }}
+
+<script>
+  window.productClick = function(e, product) {
+      if (!product) return true;
+      var productObj = null;
+      if (typeof product === 'string' && product in window.pageItemsObject) {
+          productObj = window.pageItemsObject[product];
+      } else {
+          productObj = product;
+      }
+      if (!'url' in productObj) return true;
+      e.preventDefault();
+      var newUrl = productObj.url;
+      var requestTimer = setTimeout(function() {
+          document.location = newUrl;
+      }, 1500);
+      if (window.google_tag_manager) {
+          window.dataLayer.push({
+              'event': 'productClick',
+              'ecommerce': {
+                  'click': {
+                      'actionField': {
+                        'list': productObj.list,
+                        'listId': productObj.listId
+                      },
+                      'products': [{
+                          'name': productObj.name,
+                          'id': productObj.id,
+                          'price': productObj.price,
+                          'category': productObj.category,
+                          'position': productObj.position
+                      }]
+                  }
+              },
+              'eventCallback': function(gtm) {
+                  clearTimeout(requestTimer);
+                  if (gtm === '{{ config.GTM_ID }}') {
+                      window.location.href = newUrl;
+                  }
+              }
+          });
+      } else {
+          clearTimeout(requestTimer);
+          document.location = newUrl;
+      }
+      sessionStorage.setItem(productObj.id, JSON.stringify({
+        'item_list_name': productObj.list,
+        'item_list_id': productObj.listId,
+        'timestamp': Date.now(),
+      }))
+  }
+
+  function checkoutClick(e, page) {
+      e.preventDefault();
+      if (!page) {
+          page = e.target.href || '/checkout';
+      }
+      var requestTimer = setTimeout(function() {
+          document.location = page;
+      }, 1500);
+      if (window.google_tag_manager) {
+          window.dataLayer.push({
+              'event': 'checkout',
+              'ecommerce': {
+                  'checkout': {
+                      'actionField': {
+                          'step': 1
+                      },
+                      'products': window.cartItemsArray
+                  }
+              },
+              'eventCallback': function() {
+                  clearTimeout(requestTimer);
+                  document.location = page;
+              }
+          });
+      } else {
+          clearTimeout(requestTimer);
+          document.location = page;
+      }
+  }
+
+  var cartID = function() {
+      var val = '';
+      if (!val.length) {
+          try {
+              var myRegexp = /^([0-9\-]{17,21})/g;
+              var val = myRegexp.exec(('; ' + document.cookie).split('; cart=').pop().split(';').shift())[1];
+          } catch (e) {}
+      }
+      return val;
+  }();
+
+    {# /*
+    access and parse the optanon cookie (consent manager) and place the groups value in GTM variable
+    since the consent model is "opt-out", all groups are active by default
+    */ #}
+    var consentGroups = function() {
+      var cGroups = "C0001:1,C0002:1,C0003:1,C0004:1";
+      try {
+        var consentParams = new URLSearchParams(decodeURIComponent(document.cookie.split('; OptanonConsent').pop().split(';').shift()));
+        if (consentParams && consentParams.get('groups')) {
+          cGroups = consentParams.get('groups');
+        }
+      } catch(e) {}
+      console.log("consent", cGroups)
+      return cGroups;
+    }();
+
+  function afterLoad(obj, callback) {
+    if (!obj || !callback) return false;
+    var r = 0;
+    var i = setInterval(function() {
+      r += 1;
+      if (r === 80) {
+      clearInterval(i);
+      }
+      if (obj in window && window[obj]) {
+      clearInterval(i);
+      callback();
+      }
+    }, 100);
+  }
+  function imageError(e) {
+    e.onerror=null;
+    e.src="{{ config.DEFAULT_IMAGE }} ";
+  }
+  function closeCart() {
+    return true;
+  }
+
+  window.dataLayer.push({
+    consentGroups: consentGroups,
+    pagePath: document.location.pathname + document.location.search, // this is the default.  specifying because GTM wants pagePath,
+    pageType: '{{ page | upper }}',
+    deviceType: /iPad/.test(navigator.userAgent) ? "T" : /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Silk/.test(navigator.userAgent) ? "P" : "D",
+    {% if session_safe_get('bill_email') %}email: "{{ session_safe_get('bill_email') }}",{% endif %}
+    {% if session_safe_get('bill_fname') %}firstname: "{{ session_safe_get('bill_fname') }}",{% endif %}
+    {% if session_safe_get('bill_lname') %}lastname: "{{ session_safe_get('bill_lname') }}",{% endif %}
+    cartItems: window.cartItemsArray,
+    delimitedCartItems: window.cartItemsDelimited.skuids.join(';'),
+    delimitedCartQuantities: window.cartItemsDelimited.quantities.join(';'),
+    delimitedCartPrices: window.cartItemsDelimited.prices.join(';'),
+    productid: "{{ product.get('skuid') if product else ''}}",
+    productName: "{{ sanitize(product.get('name')) if product else ''}}",
+    sessionPhase: "{{ 'Checkout' if phase and phase == 'checkout' else 'Shopping' }}",
+    {% if product %}breadcrumb: "{{ get_breadcrumb_string(product.get('breadcrumb', []), ' / ') | sanitize }}",{% endif %}
+    {% if category and category.breadcrumb %}breadcrumb: "{{ get_breadcrumb_string(category.breadcrumb, ' / ') | sanitize }}",{% endif %}
+    {% if session_safe_get('q') %}searchPhrase: "{{ session_safe_get('q') }}",{% endif %}
+    couponCode: "{{ session_safe_get('coupon_code') }}",
+    cartSubtotal: {{ g.cart.get_discounted() }},
+    cartID: "{{ get_cart_id() | sanitize }}",
+    clientID: '{{ get_session_id() | sanitize }}',
+    {% if category and category.breadcrumb %}{% for breadcrumb in category.breadcrumb %}category_{{loop.index}}: "{{ breadcrumb.category_name }}",
+    {% endfor %}{% endif %}
+    loggedIn: {{ 'true' if session_safe_get('customer_id') else 'false'}},
+    cIdent: "{{ md5_encode(session_safe_get('bill_email','').lower()) if session_safe_get('bill_email') else "" }}",
+    p_h_id: "{{ create_phone_hash() }}",
+    a_h_id: "{{ create_address_hash() }}",
+    isCustomer: {{ 'true' if session_safe_get('customer_id') else 'false'}}
+  });
+  {% if page == 'category' %}
+    document.addEventListener("interaction", function () {
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','{{ config.GTM_ID }}');
+    });
+  {% else %}
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','{{ config.GTM_ID }}');
+  {% endif %}
+
+</script>

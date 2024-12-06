@@ -1,0 +1,117 @@
+
+<script>
+  $(document).on('click', '[data-js="some-restrictions-trigger"]', function(e) {
+    e.preventDefault();
+    $('#' + $(e.target).data('target')).slideDown();
+  });
+</script>
+
+<div class="w-100">
+  <div class="popup">
+    <div id="addcap">
+      <div class="offer-off mt-3 mb-1">
+        Sign up today and receive
+      </div>
+      <h1 class="price-off" id="smallModalLabel">
+        15% off
+      </h1>
+      <div class="offer-off mt-0 mb-3">
+        your first order with {{ config.STORE_NAME }}!
+      </div>
+      <div class="w-100 text-center mb-4 d-none d-sm-block">
+        <h2 class="text-primary d-inline-block cap-subhead">
+          Exclusive Deals |
+          New Products |
+          Clearance Savings
+        </h2>
+      </div>
+      <div class="w-100 text-center">
+        <form action="/process_email_capture" method="post" id="addcapform">
+          <div class="input-group mb-3 email-input">
+            <input
+              type="email"
+              required="required"
+              name="bill_email"
+              class="form-control"
+              id="email"
+              aria-label="Enter your E-Mail Address"
+              placeholder="Enter E-Mail Address"
+              aria-describedby="capture-submit-btn"
+            >
+            <button
+              class="btn btn-primary"
+              type="submit"
+              id="capture-submit-btn"
+            >Sign Up</button>
+          </div>
+        </form>
+      </div>
+      <div class="w-100 text-center mb-4">
+        <i>
+          <a href="#" data-target="some-restrictions1" data-js="some-restrictions-trigger">Some exclusions apply</a>.
+          View our <a href="/privacy">Privacy Policy</a>.
+        </i>
+      </div>
+      <div class="w-100 text-center">
+        <div class="w-75 mb-4 text-center m-auto" id="some-restrictions1" style="display: none;">
+          One-time offer good for new email registrants.
+          Cannot be combined with other offers.
+        </div>
+      </div>
+    </div>
+    <div id="successdiv" class="text-center" data-test="signup-success" style="display: none;">
+      <h1 class="heading-huge mt-4">
+        THANKS
+      </h1>
+      <h2 class="text-primary display-4 fw-bold">for subscribing!</h2>
+      <div class="offer-off mt-3">
+        Use Code <span class="text-info fw-bold">EMSYAY</span>
+      </div>
+      <div class="w-100 text-large mb-4">
+      </div>
+      <div class="w-100 text-center mb-4">
+        <a href="/" class="btn btn-lg btn-info" role="button">
+          <span class="button-lg-text">START SHOPPING NOW!</span>
+        </a>
+      </div>
+      <div class="w-100 text-large mb-4">
+        <i>
+          Keep checking your inbox for upcoming offers, product releases and other great stuff!
+        </i>
+      </div>
+      <div class="w-100 text-center mb-4">
+        <i>
+          <a href="#" data-target="some-restrictions2" data-js="some-restrictions-trigger">Some exclusions apply</a>.
+          View our <a href="/privacy">Privacy Policy</a>.
+        </i>
+      </div>
+      <div class="w-100 text-center">
+        <div class="w-50 mb-4 text-center m-auto" id="some-restrictions2" style="display: none;">
+          One-time offer good for new email registrants.
+          Cannot be combined with other offers.
+        </div>
+      </div>
+    </div>
+    <div id="kindof-successdiv" class="text-center" data-test="signup-success" style="display:none">
+      <h1 class="heading-huge mt-4 mb-4">GOOD</h1>
+      <h1 class="heading-huge mt-0">NEWS!</h1>
+      <div class="offer-off already-subscribed mt-4 text-center">
+        This e-mail address is already signed up to receive upcoming offers,
+        product releases and other great stuff.
+      </div>
+      <div class="w-100 text-center my-4">
+        <div class="w-75 text-center m-auto">
+          <i class="fw-bold">
+            Thanks for being a subscriber, and enjoy your shopping experience
+          </i>
+        </div>
+      </div>
+      <div class="w-100 text-center mb-4">
+        <a href="/new" class="btn btn-lg btn-info" role="button">
+            <span class="button-lg-text">SEE WHAT'S NEW</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+

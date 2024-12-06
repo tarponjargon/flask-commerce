@@ -1,0 +1,18 @@
+{% extends "base.html.j2" %} {% set title %}Get Your Order Status | FlaskCommerce{% endset %} {% set
+page = 'orderstatus' %} {% block content %}
+
+<main data-js="orderstatus-container" class="orderstatus-container container">
+  <span
+    class="d-none"
+    data-js="orderstatus-data"
+    data-order-id="{{ session_safe_get('orderid') }}"
+    data-lastname="{{ session_safe_get('bill_lname') }}"
+    data-zip="{{ session_safe_get('bill_postal_code') }}"
+  >
+  </span>
+  <div class="container orderstatus-wrapper loading-mask mask-300 minheight minheight-400">
+    <div id="orderstatus-content"></div>
+  </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html.j2" %}
+{% set title %}All About FlaskCommerce{% endset %}
+{% set page = 'about' %}
+
+{% block content %}
+<main class="container minheight minheight-600">
+  <div class="row">
+    <div class="col-lg-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">About {{ config.STORE_NAME }}</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="col-lg-12">
+      <h1>About {{ config.STORE_NAME }}</h1>
+      <div style="float: right;margin: 0 0 0 20px">
+        {% include "includes/store_address.html.j2" %}
+      </div>
+
+      <p>We welcome your thoughts on product ideas and are always anxious to hear about your overall shopping experience with FlaskCommerce. Please <a href="/contact">let us know</a>!</p>
+
+
+      <strong>FlaskCommerce</strong> is a privately held company and is headquartered in Springfield, MA
+      <br><Br>
+      <strong>Shopping at FlaskCommerce</strong> is a convenient and enjoyable experience. We want to share our unique collection with you so that your gift will be one that can not be found elsewhere.
+      <ul>
+      <li>FlaskCommerce offers convenient shopping 24/7 online or by phone at {{ config.STORE_PHONE }}. We are always here to help you with your shopping. </li>
+      </ul>
+      <br>
+      <strong>The FlaskCommerce Guarantee:</strong><br>
+      Our goal is for you to be thrilled with your purchase. If your purchase does not meet your expectations we will promptly exchange it or send you a refund.
+
+    </div>
+</main>
+
+{% endblock %}

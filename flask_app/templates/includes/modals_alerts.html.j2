@@ -1,0 +1,351 @@
+<div class="modal fade" id="account-modal" role="dialog" aria-label="Account Login and Signup" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content signin-modal">
+      <div class="loginmodal-container">
+        <div>
+          <ul class="nav nav-tabs" id="signin-tablist" role="tablist" aria-label="Account-related tab list">
+            <a
+              class="nav-item nav-link active"
+              id="nav-signin-tab"
+              href="#signin"
+              data-toggle="tab"
+              role="tab"
+              aria-controls="signin"
+              aria-selected="true"
+              tabindex="0"
+              >Sign In</a>
+            <a
+              class="nav-item nav-link"
+              id="nav-signup-tab"
+              href="#signup"
+              data-toggle="tab"
+              role="tab"
+              aria-controls="signup"
+              aria-selected="false"
+              tabindex="-1"
+              ><span class="d-none d-sm-inline">New Account</span><span class="d-inline d-sm-none">New</span></a>
+            <a
+              class="nav-item nav-link"
+              id="nav-orderstatus-tab"
+              href="#orderstatus"
+              data-toggle="tab"
+              role="tab"
+              aria-controls="orderstatus"
+              aria-selected="false"
+              tabindex="-1"
+              ><span class="d-none d-sm-inline">Track Order</span><span class="d-inline d-sm-none">Track</span></a>
+            <a
+              class="nav-item nav-link"
+              id="nav-forgotpassword-tab"
+              href="#forgotpassword"
+              data-toggle="tab"
+              role="tab"
+              aria-controls="forgotpassword"
+              aria-selected="false"
+              tabindex="-1"
+              >Password</a>
+          </ul>
+          <div class="tab-content">
+						<div
+              tabindex="0"
+              role="tabpanel"
+              class="tab-pane fade show active"
+              id="signin"
+              role="tabpanel"
+              aria-labelledby="nav-signin-tab"
+            >
+              <form data-js="user-login-form" method="POST">
+                <div class="modal-header">
+                  <span class="modal-title text-white">Your Account</span>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <i class="fa fa-times fa-2x"></i>
+                  </button>
+                </div>
+                <div class="card text-white bg-danger mt-3 mx-3 error-card" style="display: none">
+                  <div class="card-body">
+                    <p class="card-text"></p>
+                  </div>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group row">
+                    <div class="controls col-lg-12">
+                      <label for="signin-email" class="control-label inline">Email Address</label>
+                      <input
+                        type="email"
+                        id="signin-email"
+                        class="col-lg-12 form-control"
+                        required="required"
+                        name="bill_email"
+                        placeholder="Your Email Address"
+                        value=""
+                        >
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="controls col-md-12">
+                      <label for="signin-password" class="control-label inline">Password</label>
+                      <input
+                        id="signin-password"
+                        type="password"
+                        class="col-lg-12 form-control"
+                        required="required"
+                        name="bill_account_password"
+                        placeholder="Enter Password"
+                        autocomplete="off"
+                        >
+                      <div class="forgot-passwd">
+                        <a href="javascript:;" id="forgotpassword-link">Forgot your password?</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="button-primary" id="account-signin-button">Sign In</button>
+                </div>
+                <div class="signup">
+                  <div class="create-account">
+                    <span class="text-center">Don't have an account?</span>
+                    <a href="#" id="signup-link">Create one now</a>
+                  </div>
+                </div>
+              </form>
+            </div>
+						<div
+              role="tabpanel"
+              class="tab-pane fade"
+              id="signup"
+              role="tabpanel"
+              aria-labelledby="nav-signup-tab"
+              tabindex="0"
+            >
+              <form id="user-signup-form" method="POST">
+                <div class="modal-header">
+                  <span class="modal-title text-white">New Account</span>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <i class="fa fa-times fa-2x"></i>
+                  </button>
+                </div>
+                <div class="card text-white bg-danger mt-3 mx-3 error-card" style="display: none">
+                  <div class="card-body">
+                    <p class="card-text"></p>
+                  </div>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group row">
+                    <div class="controls col-lg-12">
+                      <label for="signup-email" class="control-label inline">Email Address</label>
+                      <input
+                        type="email"
+                        id="signup-email"
+                        class="col-lg-12 form-control"
+                        required="required"
+                        name="bill_email"
+                        value=""
+                        placeholder="Email Address"
+                        aria-label="Email Address"
+                        >
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="controls col-md-12">
+                      <label for="signup-password" class="control-label inline">Password</label>
+                      <input
+                        id="signup-password"
+                        type="password"
+                        class="col-lg-12 form-control"
+                        required="required"
+                        name="bill_account_password"
+                        placeholder="Password (8-24 chars, containing letters and numbers)"
+                        minlength="8"
+                        maxlength="24"
+                        pattern="(?=.*?[0-9])(?=.*?[A-Za-z]).+"
+                        autocomplete="off"
+                        >
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="controls col-md-12">
+                      <label for="signup-password2" class="control-label inline">Confirm Password</label>
+                      <input
+                        id="signup-password2"
+                        type="password"
+                        class="col-lg-12 form-control"
+                        required="required"
+                        name="bill_account_password_confirm"
+                        placeholder="Confirm Password"
+                        minlength="8"
+                        maxlength="24"
+                        autocomplete="off"
+                        >
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="button-primary" id="account-signup-button">Sign Up</button>
+                </div>
+              </form>
+            </div>
+						<div
+              role="tabpanel"
+              class="tab-pane fade"
+              id="orderstatus"
+              role="tabpanel"
+              aria-labelledby="nav-orderstatus-tab"
+              tabindex="0"
+            >
+              <form id="track-order-form" action="/orderstatus" onSubmit="spinButton('track-order-button')" method="GET">
+                <div class="modal-header">
+                  <span class="modal-title text-white">Track Your Order</span>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <i class="fa fa-times fa-2x"></i>
+                  </button>
+                </div>
+                <div class="card text-white bg-danger mt-3 mx-3 error-card" style="display: none">
+                  <div class="card-body">
+                    <p class="card-text"></p>
+                  </div>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="orderid-modal" class="control-label inline">Order ID</label>
+                        <input
+                          id="orderid-modal"
+                          type="text"
+                          name="orderid"
+                          required
+                          pattern="^[A-Za-z]?[A-Za-z]?[0-9]{6,9}$"
+                          placeholder="Enter Your Order ID"
+                          class="form-control"
+                          />
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="lname-modal" class="control-label inline">Last Name</label>
+                        <input
+                          id="lname-modal"
+                          type="text"
+                          name="bill_lname"
+                          value=""
+                          required="required"
+                          placeholder="Enter Last Name"
+                          class="form-control"
+                          />
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <label for="zipcode-modal" class="control-label inline">Zip Code</label>
+                      <div class="form-group">
+                        <input
+                          id="zipcode-modal"
+                          type="text"
+                          name="bill_postal_code"
+                          value=""
+                          required="required"
+                          placeholder="Enter Billing Zip Code"
+                          pattern="^(\d{5}(-\d{4})?|[A-Z]\d[A-Z] ?\d[A-Z]\d)$"
+                          class="form-control"
+                          />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="button-primary" id="track-order-button">Find Order</button>
+                </div>
+              </form>
+            </div>
+						<div
+              role="tabpanel"
+              class="tab-pane fade"
+              id="forgotpassword"
+              role="tabpanel"
+              aria-labelledby="nav-forgotpassword-tab"
+              tabindex="0"
+            >
+              <form id="forgot-password-form" method="POST">
+                <div class="modal-header">
+                  <span class="modal-title text-white">Forgot Your Password?</span>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <i class="fa fa-times fa-2x"></i>
+                  </button>
+                </div>
+                <div class="card text-white bg-danger mt-3 mx-3 error-card" style="display: none">
+                  <div class="card-body">
+                    <p class="card-text"></p>
+                  </div>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group row">
+                    <div class="controls col-lg-12">
+                      <label for="forgotpassword-email" class="control-label inline">Email Address</label>
+                      <input
+                        type="email"
+                        id="forgotpassword-email"
+                        class="col-lg-12 form-control"
+                        required="required"
+                        name="bill_email"
+                        placeholder="Enter your Email"
+                        aria-label="Enter your Email"
+                        value=""
+                        >
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="button-primary" id="forgotpassword-button">Send E-Mail</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="cart-modal" role="dialog" data-aria-labelledby="cart-modalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+<div
+  class="modal fade summary-modal"
+  id="cart-summary-modal"
+  role="dialog"
+  data-aria-labelledby="cart-summary-modalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+<div class="modal fade summary-modal" id="summary-modal" role="dialog" data-aria-labelledby="summary-modalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document"></div>
+</div>
+<div id="smallModal" class="modal fade" style="z-index:99999" role="dialog" data-aria-labelledby="smallModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+    <div class="modal-content"></div>
+  </div>
+</div>
+<div id="capture-modal" class="modal fade" style="z-index:99999" role="dialog" data-aria-labelledby="smallModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+    <div class="modal-content"></div>
+  </div>
+</div>
+<div id="footer-drawer"></div>
+<div class="alert alert-dismissible" data-js="alert-container" role="alert">
+  <div class="alert-content" data-js="alert-content"></div>
+  <button
+    type="button"
+    data-js="alert-close-button"
+    class="close"
+    aria-label="Close Alert">
+  <i class="fa fa-times"></i>
+  </button>
+</div>
+
+{% include 'includes/mobile_nav.html.j2' %}

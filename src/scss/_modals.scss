@@ -1,0 +1,691 @@
+/*Modal*/
+.modal-dialog {
+  @media screen and (min-width: 576px) and (max-width: 768px) {
+    max-width: 600px!important;
+    //margin: 0.5rem;
+  }
+}
+.scrolling-container {
+  margin-bottom: 20px;
+}
+
+#capture-modal {
+  z-index: 33399;
+  .modal-dialog {
+    max-width: 630px;
+    @media screen and (max-width: 630px) {
+      max-width: 89% !important;
+    }
+    margin: 22px auto;
+    button.close {
+      color: white;
+      font-size: 19px;
+      padding: 0 0 2px 1px;
+      z-index: 1000000;
+      background: #000;
+      position: absolute;
+      top: -17px;
+      right: -17px;
+      opacity: 1;
+      border-radius: 100px;
+      width: 28px;
+      height: 28px;
+      border: 2px solid white;
+      cursor: pointer;
+      i {
+        font-size: 1.1rem;
+      }
+    }
+    @supports (-ms-ime-align: auto) {
+      //edge fisx for modal close
+      button.close {
+        padding: 0;
+      }
+    }
+  }
+  .modal-content {
+    padding: 2px;
+  }
+
+  .popup {
+    border: 7px solid $brand-primary;
+    max-width: 630px;
+    margin: 0;
+    padding: 10px;
+
+    .offer-off {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 200;
+      color: $gray-darker;
+      @media screen and (max-width: 768px) {
+        font-size: 1.7rem;
+      }
+      @media screen and (max-width: 476px) {
+        font-size: 1.4rem;
+      }
+    }
+
+    .price-off {
+      text-align: center;
+      font-size: 6.5rem;
+      line-height: 6rem;
+      font-weight: 400;
+      color: $brand-primary;
+      @media screen and (max-width: 768px) {
+        font-size: 5.5rem;
+        line-height: 5rem;
+      }
+      @media screen and (max-width: 476px) {
+        font-size: 4rem;
+        line-height: 3.5rem;
+      }
+      @media screen and (max-width: 476px) {
+        font-size: 3rem;
+      }
+    }
+
+    .cap-subhead {
+      font-size:1.3rem;
+      font-weight: 300;
+      @media screen and (max-width: 576px) {
+        font-size: 1rem;
+      }
+    }
+
+    .button-lg-text {
+      font-size: 1.8rem;
+      @media screen and (max-width: 576px) {
+        font-size: 1.5rem;
+      }
+      @media screen and (max-width: 400px) {
+        font-size: 1.2rem;
+      }
+    }
+
+    .email-input {
+      width: 80%;
+      margin: 0 auto;
+      input#email {
+        &:placeholder-shown {
+          font-style: italic;
+        }
+      }
+    }
+
+    .already-subscribed {
+      line-height: 2rem;
+      font-weight: 400;
+    }
+
+    .heading-huge {
+      font-size: 110px;
+      line-height: 80px;
+      color: $brand-primary;
+      @media screen and (max-width: 576px) {
+        font-size: 90px;
+        line-height: 50px;
+      }
+      @media screen and (max-width: 460px) {
+        font-size: 60px;
+        line-height: 40px;
+      }
+    }
+  }
+}
+
+#account-modal {
+  .modal-dialog {
+    @media screen and (min-width: 576px) {
+      max-width: 450px;
+    }
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    color: $white;
+    padding: 10px 16px 0;
+    border-bottom: none;
+    background: $brand-info;
+    border-radius: 0;
+    h5 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0;
+      padding-bottom: 8px;
+      font-size: 20px;
+    }
+    .close {
+      cursor: pointer;
+      color: inherit;
+      margin-left: 15px;
+      font-size: 16px;
+      color: $white;
+      background: transparent;
+      border: none;
+      padding: 5px;
+    }
+  }
+  .modal-footer {
+    padding: 16px 16px 16px;
+    justify-content: center;
+    text-align: center;
+    background-color: #fff;
+    border-top: 0;
+    margin-top: 0;
+    border-bottom: 0;
+    border-radius: 0 0 6px 6px;
+    .button-primary {
+      width: 50%;
+    }
+  }
+  .forgot-passwd {
+    a {
+      font-size: 14px;
+      color: $brand-info;
+    }
+  }
+  label {
+    display: block;
+    position: static;
+    left: auto;
+    top: auto;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .signup {
+    text-align: left;
+    font-size: 14px;
+    padding-bottom: 16px;
+    a {
+      color: $brand-info;
+      font-size: 14px;
+    }
+  }
+  .create-account {
+    padding: 0 16px;
+  }
+}
+#shipping-details,
+#add-to-wishlist {
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    color: $white;
+    padding: 10px 16px 0;
+    border-bottom: none;
+    background: $brand-info;
+    h5 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0;
+      padding-bottom: 8px;
+      font-size: 20px;
+    }
+    .close {
+      cursor: pointer;
+      color: inherit;
+      margin-left: 15px;
+      font-size: 16px;
+      color: $white;
+      padding: 5px;
+    }
+  }
+
+  .modal-footer {
+    padding: 16px 16px 16px;
+    display: block;
+    background-color: #fff;
+    border-top: 0;
+    margin-top: 0;
+    border-bottom: 0;
+    border-radius: 0 0 6px 6px;
+    .button-primary {
+      width: 48.5%;
+      display: initial;
+    }
+  }
+  .modal-body {
+    padding: 16px 16px 0;
+    .dropdowncartItems {
+      width: 100%;
+      margin: 0;
+      max-width: none;
+      background-color: #fff;
+      .item {
+        border-bottom: 1px solid #cdcdcd;
+        .image {
+          padding: 8px;
+          line-height: 1.42857143;
+          vertical-align: top;
+        }
+        .description {
+          overflow: hidden;
+          padding: 8px;
+          font-size: 14px;
+          .name {
+            color: #333;
+          }
+          .qty {
+            color: #333;
+            margin: 10px 0;
+          }
+          .price-block {
+            text-align: right;
+            color: #333;
+            font-weight: bold;
+            .product-price {
+              margin: 0 0 10px;
+              color: #333;
+              font-weight: 600;
+              .price-original {
+                color: $dark-gray-alt;
+                text-decoration: line-through;
+                text-decoration-color: $dark-gray;
+                margin: 10px 10px 0 0;
+              }
+              .price-sale {
+                margin-top: 10px;
+                color: $price-sale;
+                font-weight: bold;
+              }
+            }
+          }
+        }
+      }
+    }
+    .cart-links {
+      .blue-link .fa {
+        margin-right: 5px;
+      }
+      b {
+        font-size: 18px;
+        color: #333;
+      }
+    }
+  }
+}
+#add-to-wishlist {
+  .modal-footer {
+    .button-primary {
+      width: initial;
+      display: initial;
+    }
+  }
+}
+#cart-modal {
+  @media screen and (min-width: 576px) {
+    .modal-dialog {
+      max-width: 730px;
+    }
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    color: $white;
+    padding: 10px 16px 0;
+    border-bottom: none;
+    background: $brand-info;
+    h4 {
+      font-size: 1.2rem;
+    }
+    h5 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0;
+      padding-bottom: 8px;
+      font-size: 20px;
+    }
+    .close {
+      cursor: pointer;
+      color: inherit;
+      margin-left: 15px;
+      font-size: 16px;
+      color: $white;
+      padding: 5px;
+    }
+  }
+
+  .modal-body {
+    padding: 16px 16px 0;
+    .flexbox-container {
+      display: -ms-flex;
+      display: -webkit-flex;
+      display: flex;
+      @media screen and (max-width: 767px) {
+        flex-direction: column;
+      }
+    }
+  }
+  // .modal-footer {
+  //   @media screen and (max-width: 568px) {
+  //     padding: 0.25rem;
+  //   }
+  // }
+}
+
+// popcart
+.cartpage {
+  h4 {
+    font-size: 1.2rem;
+  }
+}
+
+
+
+.modal-backdrop + .modal-backdrop {
+  z-index: 1100;
+}
+
+.modal-backdrop {
+  z-index: 1040;
+}
+
+/*
+ MARKO - commented out some css in your modals.scss.  Neeeded to refactor the cart add modal markup
+*/
+.summary-modal {
+  opacity: 1;
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    color: $white;
+    padding: 10px 16px 0;
+    border-bottom: none;
+    background: $brand-info;
+    h5 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0;
+      padding-bottom: 8px;
+      font-size: 20px;
+    }
+    .close {
+      cursor: pointer;
+      color: inherit;
+      margin-left: 15px;
+      font-size: 16px;
+      color: $white;
+      background: transparent;
+      border: none;
+      padding: 5px;
+    }
+  }
+
+  .modal-footer {
+    padding: 16px 16px 16px;
+    display: block;
+    background-color: #fff;
+    border-top: 0;
+    margin-top: 0;
+    border-bottom: 0;
+    border-radius: 0 0 6px 6px;
+    .button-primary {
+      width: 48.5%;
+      display: initial;
+    }
+    @media screen and (max-width: 568px) {
+      padding: 0;
+      .button-primary {
+        width: 46.5%;
+      }
+    }
+  }
+  .modal-body {
+    .summary-block {
+      .promotion {
+        h2 {
+          font-size: 1.3rem;
+        }
+      }
+    }
+    padding: 16px 16px 16px;
+    .dropdowncartItems {
+      width: 100%;
+      margin: 0;
+      max-width: none;
+      background-color: #fff;
+      .item {
+        border-bottom: 1px solid #cdcdcd;
+        .image {
+          padding: 8px;
+          line-height: 1.42857143;
+          vertical-align: top;
+          .imageSize {
+            @media screen and (max-width: 575px) {
+              max-height: 100px;
+            }
+          }
+        }
+        .description {
+          overflow: hidden;
+          padding: 8px;
+          .btn-remove {
+            bottom: 5px;
+            right: 5px;
+            color: $brand-info;
+          }
+          .name {
+            color: #333;
+          }
+          .qty {
+            color: #333;
+            margin: 10px 0;
+          }
+          .price-block {
+            text-align: right;
+            color: #333;
+            font-weight: bold;
+            .product-price {
+              margin: 0 0 10px;
+              font-size: 14px;
+              color: #333;
+              font-weight: 600;
+              .price-original {
+                color: $dark-gray-alt;
+                text-decoration: line-through;
+                text-decoration-color: $dark-gray;
+                margin: 10px 10px 0 0;
+              }
+              .price-sale {
+                margin-top: 10px;
+                color: $price-sale;
+                font-weight: bold;
+              }
+            }
+            @media screen and (max-width: 575px) {
+              text-align: left;
+            }
+          }
+        }
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+    .cart-links {
+      .blue-link .fa {
+        margin-right: 5px;
+      }
+      b {
+        font-size: 18px;
+        color: #333;
+      }
+    }
+  }
+}
+
+#cart-modal {
+  .you-may-enjoy {
+    padding: 25px 0;
+  }
+  .featured-products {
+    .carousel_outer {
+      border-bottom: none;
+    }
+  }
+}
+
+// default modal close button
+#smallModal {
+  z-index: 33399;
+  .modal-dialog {
+    max-width: 550px;
+    @media screen and (max-width: 575px) {
+      max-width: 89%;
+    }
+    margin: 22px auto;
+    button.close {
+      color: white;
+      font-size: 19px;
+      padding: 0 0 2px 1px;
+      z-index: 1000000;
+      background: #000;
+      position: absolute;
+      top: -17px;
+      right: -17px;
+      opacity: 1;
+      border-radius: 100px;
+      width: 28px;
+      height: 28px;
+      border: 2px solid white;
+      cursor: pointer;
+      i {
+        font-size: 1.1rem;
+      }
+    }
+    @supports (-ms-ime-align: auto) {
+      //edge fisx for modal close
+      button.close {
+        padding: 0;
+      }
+    }
+  }
+  .modal-content {
+    padding: 10px;
+  }
+}
+
+_:-ms-fullscreen, // ie11 fix for modal-close btn
+:root button.close {
+  line-height: 28px;
+  padding: 0;
+}
+
+// // these are bootstrap 3 modal styles.  I am not using bs4 js/popper as it's too large.  using selectd bs3 js (with bs4 styles)
+.modal.in .modal-dialog {
+  /* transform: translate(0, 10px); */
+  transform: none;
+}
+.fade:not(.show) {
+  opacity: inherit;
+}
+// .modal-backdrop {
+//   position: fixed;
+//   top: 0;
+//   right: 0;
+//   bottom: 0;
+//   left: 0;
+//   z-index: 1040;
+//   background-color: #000000;
+// }
+.modal-backdrop.fade {
+  filter: alpha(opacity=0);
+  opacity: 0;
+}
+.modal-backdrop.in {
+  filter: alpha(opacity=50);
+  opacity: 0.5;
+}
+
+/* footer flyout ("slide-up" menu) */
+.footer-flyout {
+  position: fixed;
+  z-index: 1041;
+  bottom: 0;
+  height: 0;
+  width: 100%;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+
+  .footer-flyout-container {
+    max-width: 600px;
+    margin: 0 auto;
+    .footer-close-container {
+      height: 25px;
+    }
+  }
+
+  #drawer-success-content {
+    display: none;
+  }
+
+  #drawer-fail-content {
+    display: none;
+  }
+}
+
+// mobile minicart
+.mobile-minicart {
+  .total-line {
+    display: none;
+  }
+  .summary-block {
+    .summary-label {
+      a {
+        display: none;
+      }
+    }
+  }
+  .sticky-atc-minicart {
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 0;
+    background: white;
+  }
+}
+
+// mobile popcart
+.popcart {
+  .sticky-atc-popcart {
+    z-index: 1001;
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 0;
+    background: white;
+  }
+}
+
+// cro-metrics mobile nav
+.sub-mobile-flyout-opened {
+  .slide-left {
+    transform: translateX(-1000px);
+  }
+}
+
+.mobile-flyout-opened {
+	.mobile_flyout.active {
+		top: 100px !important;
+		position: fixed !important;
+		z-index: 5000 !important;
+	}
+	header {
+		.container {
+			position: fixed;
+			top: 37px;
+			z-index: 50;
+			background: #fff;
+		}
+	}
+	#modal-backdrop {
+		top: 101px !important;
+	}
+}

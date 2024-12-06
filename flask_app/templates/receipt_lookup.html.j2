@@ -1,0 +1,82 @@
+{% extends "base.html.j2" %}
+{% set title %}Receipt Lookup at {{ config.STORE_NAME }}{% endset %}
+{% set page = 'receiptlookup' %}
+{% block content %}
+<main class="container pb-4">
+  <div class="shopping-cart-header">
+    <h1 class="header-title primary-color">Receipt Lookup</h1>
+  </div>
+
+  <hr />
+
+  <div class="row">
+    <div class="col-12 col-sm-4 pb-4 mb-4">
+
+      <div id="receipt-errors" class="card text-white bg-danger mb-4 error-card" style="display: none">
+        <div class="card-body">
+          <p class="card-text"></p>
+        </div>
+      </div>
+
+      <div id="receipt-success" class="card text-white bg-success mb-4" style="display: none">
+        <div class="card-header"><h2 class="text-white">Select Order</h2></div>
+        <div class="card-body">
+          <p class="card-text"></p>
+        </div>
+      </div>
+
+      <h2 class="text-md">Enter Order ID</h2>
+      <form action="/api/receipt" data-js="receipt-lookup">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Order ID"
+            aria-label="Order ID"
+            required="required"
+            name="order_lookup_id"
+            pattern="^[{{ config.ORDER_PREFIX }}]?[0-9]{7}$"
+            title="Begins with an {{ config.ORDER_PREFIX}} followed by 7 numbers"
+          >
+            <span class="input-group-append">
+            <button
+              class="btn btn-info"
+              id="order-id-add-button"
+              type="submit"
+              aria-label="Enter"
+            >GO</button>
+            </span>
+        </div>
+      </form>
+
+      <h3 class="text-md my-4">- or -</h3>
+
+      <h2 class="text-md">Enter E-Mail</h2>
+
+      <form action="/api/receipt" data-js="receipt-lookup">
+        <div class="input-group">
+          <input
+            type="email"
+            class="form-control"
+            placeholder="Enter E-Mail"
+            aria-label="Enter E-Mail"
+            required="required"
+            name="order_lookup_email"
+          >
+            <span class="input-group-append">
+            <button
+              class="btn btn-info"
+              id="order-email-add-button"
+              type="submit"
+              aria-label="Enter"
+            >GO</button>
+            </span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+</main>
+{% endblock %}

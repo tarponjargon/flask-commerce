@@ -1,0 +1,159 @@
+.certona-carousel {
+  min-height: 550px;
+}
+
+[data-view="index"] .fullwidth__holder .product__list--header {
+  text-align: left;
+}
+
+.fullwidth__holder {
+  a {
+    text-decoration: none;
+  }
+  width: 100%;
+  margin-bottom: 20px;
+  .homepage__product--list,
+  .certona-general-container,
+  .certona-category-container,
+  .related__products,
+  .certona-ppc {
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+
+  .product__list--header {
+    font-size: 24px;
+    margin-bottom: 45px;
+    color: $brand-primary;
+    font-weight: 500;
+    text-align: center;
+    @media only screen and (min-width: 0px) and (max-width: 767px) {
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+  }
+
+
+  .product__list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(var(--bs-gutter-y) * -1);
+    margin-right: calc(var(--bs-gutter-x) * -0.5);
+    margin-left: calc(var(--bs-gutter-x) * -0.5);
+
+    .slick-next,
+    .slick-prev {
+      top: 33%;
+      @media (min-width: 576px) {
+        top: 27%;
+      }
+      @media (min-width: 768px) {
+        top: 32%;
+      }
+      @media (min-width: 992px) {
+        top: 25%;
+      }
+      @media (min-width: 1200px) {
+        top: 28%;
+      }
+      @media (min-width: 1400px) {
+        top: 32%;
+      }
+    }
+
+    .slick-next {
+      right: calc(var(--bs-gutter-x) * 0.5);
+    }
+
+    .slick-prev {
+      left: calc(var(--bs-gutter-x) * 0.5);
+    }
+
+    .product--container {
+      flex: 0 0 auto;
+      width: 25%;
+      max-width: 100%;
+      padding-right: calc(var(--bs-gutter-x) * 0.5);
+      padding-left: calc(var(--bs-gutter-x) * 0.5);
+      margin-top: var(--bs-gutter-y);
+      margin-bottom: 1.7rem;
+      position: relative;
+      @media (max-width: 768px) {
+        width: 50%;
+      }
+      @media (max-width: 400px) {
+        width: 100%;
+      }
+      .product__image-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        border: 1px solid $gray-light;
+        margin-bottom: 5px;
+        @include thumb-height;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .product__data {
+        font-size: 1.1rem;
+        & > div {
+          margin: 3px 0;
+          text-align: center;
+        }
+
+        .product__links {
+          .certona_product_link {
+            display: inline-block;
+            text-transform: uppercase;
+          }
+          display: none;
+        }
+
+        .certona_product_link {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          // the style-color icons
+          img {
+            margin-top: 0;
+            margin-right: 4px;
+          }
+        }
+      }
+    }
+  }
+
+	.vertical-products {
+    text-align: center;
+    margin-bottom: 20px;
+    overflow: hidden;
+    .products-list-title {
+      display: block;
+      margin: 15px 0;
+      font-size: 1.5rem;
+    }
+		ul {
+      padding: 0;
+
+			li {
+        width: 33%;
+        text-align: center;
+				list-style-type: none;
+				float: left;
+				text-align: center;
+      }
+    }
+  }
+}

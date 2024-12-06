@@ -1,0 +1,314 @@
+{% set express_rates = g.cart.get_express_rates() %}
+
+{% include "includes/cart_shipping_cutoffs.html.j2" %}
+
+<a name="shippingprocessing"></a>
+<div class="table-responsive">
+	<table class="table">
+		<tr>
+			<td colspan="6" class="text-center border-top-0">
+        <h1 id="smallModalLabel" class="text-huge">48 Contiguous States and DC Shipping & Processing Charges</h1>
+        <h2 class="text-large">Add {{ config.AK_HI_SURCHARGE | format_currency}} for standard delivery to Alaska and Hawaii</h2>
+      </td>
+		</tr>
+		<tr>
+			<th><b>Total Amount of Order</b></th>
+			<th><b>Standard</b></th>
+			<th><b>Rush</b></th>
+			<th><b>2-Day</b></th>
+			<th><b>Overnight</b></th>
+			<th><b>Canada</b></th>
+		</tr>
+
+    {% for tier in shipping_chart %}
+			<tr>
+				<td><b>{{ tier.get('order_min') | format_currency }} - {{ tier.get('order_max') | format_currency }}</b></td>
+				<td><b>{{ tier.get('shipping_cost') | format_currency }}</b></td>
+				<td><b>{{ tier.get('rush') | format_currency }}</b></td>
+				<td><b>{{ tier.get('2day') | format_currency }}</b></td>
+				<td><b>{{ tier.get('overnight') | format_currency }}</b></td>
+				<td><b>{{ tier.get('canada') | format_currency }}</b></td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>
+
+
+<a name="salestax"></a>
+<p><h4>SALES TAX</h4>
+  We are required to collect sales tax for the following states:
+</p>
+<p><h5>States With Single Tax Rate</h5></p>
+<style>
+.centered
+{text-align: center}
+.odd
+{background-color: #F4F0EE;}
+
+</style>
+<p>
+<table>
+<tr>
+  <th>State</th>
+  <th>Rate</th>
+  <th>Applied to Merchandise</th>
+  <th>Applied To Shipping & Handling</th>
+</tr>
+<tr class="odd"><td class="centered">CT</td><td class="centered">6.35%</td><td class="centered">YES</td><td class="centered">YES</td></tr>
+<tr><td class="centered">DC</td><td class="centered">6.00%</td><td class="centered">YES</td><td class="centered">YES</td></tr>
+<tr class="odd"><td class="centered">IN</td><td class="centered">7.00%</td><td class="centered">YES</td><td class="centered">YES</td></tr>
+<tr><td class="centered">KY</td><td class="centered">6.00%</td><td class="centered">YES</td><td class="centered">YES</td></tr>
+<tr class="odd"><td class="centered">MA</td><td class="centered">6.25%</td><td class="centered">YES</td><td class="centered">NO</td></tr>
+<tr><td class="centered">MD</td><td class="centered">6.00%</td><td class="centered">YES</td><td class="centered">YES</td></tr>
+<tr class="odd"><td class="centered">MI</td><td class="centered">6.00%</td><td class="centered">YES</td><td class="centered">YES</td></tr>
+<tr><td class="centered">OH</td><td class="centered">6.75%</td><td class="centered">YES</td><td class="centered">YES</td></tr>
+<tr class="odd"><td class="centered">RI</td><td class="centered">7.00%</td><td class="centered">YES</td><td class="centered">YES</td></tr>
+</table>
+</p>
+
+<p><h5>States With Local Tax Rate</h5></p>
+<p>
+  The following states will be charged local sales tax.<br> Combine your state plus any applicable local sales tax, if known.
+  You can <a href="/quickorder">reference a tax calculator by zip code here</a>, or call us at <span class="d-none d-md-inline">{{ config.STORE_PHONE }}</span><span class="d-inline d-md-none">{{ config.STORE_PHONE }}</span> to get a proper tax rate.
+</p>
+<ul class="row list-unstyled">
+
+  <li class="col-4 col-md-3 col-lg-2">AL</li>
+  <li class="col-4 col-md-3 col-lg-2">AR</li>
+  <li class="col-4 col-md-3 col-lg-2">AZ</li>
+  <li class="col-4 col-md-3 col-lg-2">CA</li>
+  <li class="col-4 col-md-3 col-lg-2">CO</li>
+  <li class="col-4 col-md-3 col-lg-2">FL</li>
+  <li class="col-4 col-md-3 col-lg-2">GA</li>
+  <li class="col-4 col-md-3 col-lg-2">HI</li>
+
+
+  <li class="col-4 col-md-3 col-lg-2">IA</li>
+  <li class="col-4 col-md-3 col-lg-2">ID</li>
+  <li class="col-4 col-md-3 col-lg-2">IL</li>
+  <li class="col-4 col-md-3 col-lg-2">KS</li>
+  <li class="col-4 col-md-3 col-lg-2">LA</li>
+  <li class="col-4 col-md-3 col-lg-2">ME</li>
+  <li class="col-4 col-md-3 col-lg-2">MN</li>
+  <li class="col-4 col-md-3 col-lg-2">MO</li>
+
+
+  <li class="col-4 col-md-3 col-lg-2">MS</li>
+  <li class="col-4 col-md-3 col-lg-2">NC</li>
+  <li class="col-4 col-md-3 col-lg-2">ND</li>
+  <li class="col-4 col-md-3 col-lg-2">NE</li>
+  <li class="col-4 col-md-3 col-lg-2">NJ</li>
+  <li class="col-4 col-md-3 col-lg-2">NM</li>
+  <li class="col-4 col-md-3 col-lg-2">NV</li>
+  <li class="col-4 col-md-3 col-lg-2">NY</li>
+
+
+  <li class="col-4 col-md-3 col-lg-2">OK</li>
+  <li class="col-4 col-md-3 col-lg-2">PA</li>
+  <li class="col-4 col-md-3 col-lg-2">SC</li>
+  <li class="col-4 col-md-3 col-lg-2">SD</li>
+  <li class="col-4 col-md-3 col-lg-2">TN</li>
+  <li class="col-4 col-md-3 col-lg-2">TX</li>
+  <li class="col-4 col-md-3 col-lg-2">UT</li>
+  <li class="col-4 col-md-3 col-lg-2">VA</li>
+
+
+  <li class="col-4 col-md-3 col-lg-2">VT</li>
+  <li class="col-4 col-md-3 col-lg-2">WA</li>
+  <li class="col-4 col-md-3 col-lg-2">WI</li>
+  <li class="col-4 col-md-3 col-lg-2">WV</li>
+  <li class="col-4 col-md-3 col-lg-2">WY</li>
+
+</ul>
+</p>
+
+  <a name="surcharge"></a>
+  <p><h4>COLORADO/MINNESOTA RETAIL SURCHARGE:</h4>
+  On July 1, 2022, Colorado imposed a retail delivery fee on all deliveries by motor vehicle to a location in Colorado with at least one item of tangible personal property subject to state sales or use tax. The fee is .28 on the first shipment of an order. If the order is split into multiple shipments, the fee only applies to the first shipment.
+  <br /><br />On July 1, 2024,  Minnesota imposed a similar surcharge of .50 on orders totaling $100 or more.
+  </p>
+
+
+<a name="ourguarantee"></a>
+<p><h4>OUR GUARANTEE:</h4>
+  Our goal is for you to be thrilled with your purchase. If your purchase does not meet your expectations we will promptly exchange it or send you a refund. </p>
+  <p>
+  <a name="returns"></a> <h4>RETURNS AND EXCHANGES:</h4> &#8226; Upon receiving your order, please verify the
+  contents immediately against the items marked as shipped on your receipt. If you did not receive the correct item(s),
+  received damaged merchandise or have a question about the status of items being shipped separately, please contact our
+  Customer Service Department.<br> &#8226; Most items may be returned for exchange or refund at any time. Exceptions are, personal care items,
+  intimates and footwear must be returned in original unworn condition, within 60 days. Please try on your footwear inside, on a carpeted surface.
+  Personalized items, with custom name, address, etc., cannot be cancelled or returned. However, if your personalized item arrives damaged or contains an error,
+  we will gladly send you a replacement. Media (DVDs, CDs, Blu-ray discs) must be returned unopened for refund. Defective media may be exchanged for the same title.
+  It is not necessary to call Customer Service before returning or exchanging an item, but exchanges authorized by a Customer Service Representative must have the original item shipped back within 30 days of the authorization.
+  <br> &#8226; Returns made for reasons other than damage, defect or our error must be returned postage prepaid. See below for instructions on how to use the prepaid
+  SmartLabel return label included in your package. </p> <p> <h4>REFUND INSTRUCTIONS:</h4> &#8226; Review our Return and Exchange information above.<br> &#8226;
+  Follow the Return Instructions below.<br> &#8226; Allow 2-3 weeks for shipment and processing time.<br> &#8226;
+  Refunds will be made in the same manner in which payment was received.<br> &#8226; Credit Card refunds will be issued within 1 business day of processing the return.
+  <br> &#8226; Check/Money Order refunds will be issued within 10 business days of processing the return.<br> </p> <p><h4>RETURNS INSTRUCTIONS:</b><br/> &#8226;
+  Fill out the <a target="_blank"  rel="noopener noreferrer" href="/graphics/returns2024.pdf">returns form</a> completely.<br> &#8226;
+  Carefully repackage the merchandise and be certain to include the return form.<br> &#8226; If your package was damaged in transit, save the original packaging and contact our
+  Customer Service Department immediately.<br> &#8226; The best method for returning the package to us is outlined below:<br> </p> <p>
+  <img src="{{ config.IMAGE_BASE }}/assets/images/smartlabel2.jpg" alt=""/><br/> <h4>RETURNING YOUR PACKAGE USING THE PREPAID SMARTLABEL&reg;</b>
+    <br/> Most of our shipments include a postage-paid pre-addressed SmartLabel&reg; for your convenience. To use the optional SmartLabel&reg; service, simply affix the label to your return package.
+    This label doesn't require any out-of-pocket money or insurance. Your package can now be inserted into the U.S. Mail at home, your office or any Post Office.
+    The purchase price of the merchandise will be credited back to your original method of payment and a flat fee will be deducted for the use of the SmartLabel&reg;.
+    <br/>Please note: If you use the SmartLabel&reg; for an item exchange, you will need to include payment for SmartLabel&reg;service by check, money order or authorize us to bill your credit card. </p>
+    <p> <img src="{{ config.IMAGE_BASE }}/assets/images/smartlabel.jpg" alt=""/> </p> <p> <h4>RETURNING YOUR PACKAGE USING THE CARRIER OF YOUR CHOICE</b><br/>
+    In some cases, a pre-addressed Return Label has been printed on the opposite side of this form. If you live outside the contiguous 48 states, have an APO/FPO address or prefer to pay your own shipping,
+    you can use this label and send your return package to the address below. We recommend you use a traceable form of delivery and insure your package for your protection. We cannot accept package shipped C.O.D.
+    <br/> Returns sent without using a SmartLabel&reg; should be directed to returns dept. </p>
+
+
+<a name="pricinginfo"></a>
+<p><h4>PRICING:</h4>
+	Descriptive, typographic and photographic errors are subject to correction. References to previous prices are prices at which the merchandise either originally or most recently was offered for sale in our catalogs or websites. Such prices were in effect, unless marked, during a period more than 12-months prior to their advertisement here. Intermediate markdowns may have been taken. We reserve the right to correct pricing or printing errors.
+	</p>
+
+
+<p><h4>CHECK POLICY:</h4>
+Upon receipt, your check may be converted into an electronic
+debit and processed according to Federal Reserve rules. Receipt of the check
+will be deemed to be your authorization for an Automated Clearing House
+debit entry to your account, which likely will be posted to your account the
+following day. If your check is dishonored or returned for any reason, we
+will electronically debit your account for the amount of the check plus a
+legal limit of a processing fee as per state law.
+</p>
+
+
+<p><h4>INVENTORY AVAILABILITY:</h4>
+Although we do our best to communicate our inventory
+availability during your shopping experience, there may be some instances
+where, as the order is being processed, we may need to adjust the status of
+your order. In some cases, we may need to cancel items from your order if
+they are discontinued and we have none in stock to ship. We apologize for
+any inconvenience this practice may cause you. Please know we are constantly
+working to improve our website functionality. We thank you for your
+business.</p>
+
+
+<a name="deliverytimes"></a>
+<p><h4>STANDARD DELIVERY TO USA:</h4>
+We use Fed Ex Ground, UPS Ground
+and the U.S. Postal Service to ship most orders. Orders shipped from our
+warehouse can be delivered in 4-6 business days from the date of the order.
+Items personalized or shipped direct from our suppliers may require 4-6
+weeks for delivery. Please refer to item description. Items ordered together
+are sometimes shipped separately. You will be notified if an item is
+temporarily out of stock. Credit card orders are charged only as each item is
+shipped. Standard delivery fees for shipping and processing are listed above
+on the shipping and processing table.
+{{ config.AK_HI_SURCHARGE | format_currency }} surcharge applies to each address in Alaska & Hawaii. Please supply a street address fordelivery.
+APO,FPO,DPO addresses allow 4 weeks for delivery. PO Box addresses contact Customer Service {{ config.STORE_CUSTOMER_SERVICE }}. We regret we cannot ship to the US Territories at this time.
+</p>
+
+<p><h4>RUSH DELIVERY TO USA:</h4>
+Add to {{ express_rates.get('rush') | format_currency }} standard shipping and
+processing charge. Orders placed before 12 NOON (EST) will be delivered
+within 3-5 business days after the order placement. Applies to in-stock
+items only. Some oversized, heavy or drop shipped items may be excluded as
+noted in the copy. No PO Boxes or APO/FPO. Other restrictions may apply.
+Orders of more than 20 items may not be eligible for expedited delivery, please call Customer Service.
+</p>
+
+
+<p><h4>2-DAY DELIVERY TO USA:</h4>
+Add {{ express_rates.get('2day') | format_currency }} to standard shipping and
+processing charge. Orders placed before 12 NOON (EST) will be delivered
+within 2 business days after the order placement. Applies to in-stock items
+only. Some oversized, heavy or drop shipped items may be excluded as noted
+in the copy. No PO Boxes or APO/FPO. Other restrictions may apply. Please
+click for more information.
+Orders of more than 20 items may not be eligible for expedited delivery, please call Customer Service.
+</p>
+
+<p><h4>OVERNIGHT DELIVERY TO USA:</h4>
+Add {{ express_rates.get('overnight') | format_currency }} to standard shipping
+and processing charge. Orders received by 11am (EST) will be delivered the
+next business day after the order placement. Applies to in-stock items only.
+Some oversized, heavy or drop shipped items may be excluded as noted in the
+copy.  No PO Boxes or APO/FPO. Other restrictions may apply.
+
+Orders of more than 20 items may not be eligible for expedited delivery, please call Customer Service.
+</p>
+
+
+<a name="internationalorders"></a>
+<p><h4>OTHER INTERNATIONAL ORDERS:</h4>
+We regret at this time we can only ship to the U.S.A. and Canada.<br><br>
+
+Standard Delivery Canada: We ship via FedEx. Please supply a physical street address for delivery.
+For each delivery address your account will be charged standard shipping and processing plus
+{{ (shipping_chart[0].get('canada', 0.00) - shipping_chart[0].get('shipping_cost', 0.00)) | format_currency if shipping_chart else 39.95 }}.
+Applicable duties are covered by these fees. Taxes will be charged separately. All prices are in U.S. dollars and payable in U.S. funds only.
+Some products cannot be shipped outside the U.S.A. We regret we are unable to ship to the Northwest Territories (NT), Nunavut (NU), Yukon (YT), and the following postal codes:
+A0K, A0P, A0R, A2V, G0G, G4T, J0M, R0B, T0P, T0V, V0L, V0T, V0V, V0W, X0A, Y9Z, X1A<br><br>
+
+Charges are for each Ship To address and include shipping, processing and
+insurance.
+<br><br>
+
+To Discuss your Order: Please call <span class="d-none d-md-inline">{{ config.STORE_PHONE }}</span><span class="d-inline d-md-none">{{ config.STORE_PHONE_MOBILE }}</span> to speak with Customer
+Service.
+<br><br>
+Outside the USA, please contact our Customer Service Staff at 1-330-650-5000
+{{ config.STORE_CUSTOMER_SERVICE_HOURS }}.
+</p>
+
+
+<a name="sizing"></a>
+<p><h4>TEES & SWEATSHIRTS SIZE INFORMATION</h4>
+Tee shirts are 100% heavyweight pre-shrunk cotton.  Sweatshirts are 50/50 heavyweight cotton/poly blend.<br /><br/>
+Sizes for other apparel items are noted in copy.  All garments are made in USA or imported.<br /><br />
+<table class="table table-responsive">
+  <thead>
+    <tr>
+      <th class="text-center">SIZE</th>
+      <th class="text-center">ADULT TEE/SWEAT</th>
+      <th class="text-center">SWEATPANTS/BOXERS (WAIST)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="text-center">Small</td>
+      <td class="text-center">34-36</td>
+      <td class="text-center">28-30</td>
+    </tr>
+    <tr>
+      <td class="text-center">Medium</td>
+      <td class="text-center">38-40</td>
+      <td class="text-center">32-34</td>
+    </tr>
+    <tr>
+      <td class="text-center">Large</td>
+      <td class="text-center">42-44</td>
+      <td class="text-center">36-38</td>
+    </tr>
+    <tr>
+      <td class="text-center">XL</td>
+      <td class="text-center">46-48</td>
+      <td class="text-center">40-42</td>
+    </tr>
+    <tr>
+      <td class="text-center">XXL</td>
+      <td class="text-center">50-52</td>
+      <td class="text-center">-</td>
+    </tr>
+  </tbody>
+</table>
+<br />
+
+<h4>STANDARD DELIVERY PERSONALIZED PRODUCTS:</h4>
+Many of our products are available personalized. Specifications and shipping times vary for each item. Please refer to the item description for maximum number of characters allowed and ordering information. Please note: a space or punctuation mark constitutes a character. Personalized items are not returnable.
+</p>
+<a name="gifts"></a>
+<p>
+<h4>GIFT CERTIFICATES:</h4>
+Gift certificates are available for purchase online and through our Customer Service Department. Use item number GC9999 when ordering. Please specify dollar amount, gift message, and gift recipient's name and address. The certificate will be presented along with a copy of our current catalog. Shipping charges and sales tax do not apply to gift certificates.
+</p>
+<p>
+<h4>GIFT DELIVERIES:</h4>
+<img src="{{ config.IMAGE_BASE }}/assets/images/BAGS.jpg" width="150" height="108" alt="" style="float:right">
+We give special attention to gift orders and, of course, omit price and sales slips. At your request, we will include your personal gift message, printed on card stock, at no charge. Please click for more information. . For an additional $4.95 we can place many items in a gift box/bag with tissue and ribbon. See individual product descriptions for restrictions. On the "your order" or "checkout" screen where your items are listed, you will see a "Gift Bag" column. If the item has gift-bagging available you will see a "click" in that column. Click that link and the Gift Bag ($4.95) will be added as a separate item to your order, and the item you want gift-bagged will be added to your "gift bagged" list.
+</p>

@@ -1,0 +1,109 @@
+{% cache None %}
+<div class="mobile_flyout" data-aria-labelledby="mobile_categories">
+  <button class="close d-none"><img src="{{ config.IMAGE_BASE }}/assets/images/close.png" width="17" height="17" class="img-fluid" alt="Close Slideout Menu"></button>
+  <nav>
+    <ul>
+      {# <!--
+      <li class="mobile_sign-in d-flex justify-content-between align-items-center">
+        <a
+          data-js="slideout-close"
+          href="#"
+          data-toggle="modal"
+          data-target="#account-modal"
+          class="mobile-sign-in-link"
+          >SIGN-IN/TRACK ORDER</a>
+          <a data-js="slideout-close" href="tel:{{ config.STORE_PHONE }}">{{ config.STORE_PHONE }}</a>
+      </li>
+      --> #}
+      <li class="mobile_categories">
+        <a href="#" class="category-main active"><span id="mobile_categories">SHOP CATEGORIES</span></a>
+        <div class="menu-element">
+
+          <div class="panel clearfix">
+            {% for cat in get_mobile_nav() %}
+              {% set random_id = get_random_string() %}
+              {% set target = 'target-' + random_id + '-' + cat.category_code %}
+
+              <div class="category-link-wrapper top-category">
+                {% if cat.count > cat.hard_count %}
+                  <a
+                    class="collapsed top-cateogry-link-{{ cat.category_code }}"
+                    href="#{{ target }}"
+                    data-toggle="collapse"
+                    role="button"
+                    aria-expanded="false"
+                    aria-controls="{{ target }}"
+                  >{{ cat.category_name }}</a>
+                {% else %}
+                  <a
+                    class="collapsed empty-category top-cateogry-link-{{ cat.category_code }}"
+                    href="{{ cat.path }}"
+                  >{{ cat.category_name }}</a>
+                {% endif %}
+              </div>
+              <nav class="panel-collapse collapse w-100" id="{{ target }}" data-parent="#mobile-menu">
+                <div class="panel clearfix">
+
+                  {% if not cat.category_code == config.ROOT_CATEGORY %}
+                    <div class="category-link-wrapper sub-category sub-category-{{ cat.category_code }}">
+                      <a class="collapsed empty-category" href="{{ cat.path }}">See All in {{ cat.category_name }}</a>
+                    </div>
+                  {% endif %}
+                  {% for category in get_subcategories(cat.category_code) %}
+                    {% if category.count > category.hard_count %}
+                      {% set innertarget = 'target-' + random_id + '-' + category.category_code %}
+                      <div class="category-link-wrapper sub-category">
+                        <a
+                          class="collapsed"
+                          href="#{{ innertarget }}"
+                          data-toggle="collapse"
+                          role="button"
+                          aria-expanded="false"
+                          aria-controls="{{ innertarget }}"
+                        >{{ category.category_name }}</a>
+                        <div
+                          class="panel-collapse collapse"
+                          id="{{ innertarget }}"
+                          data-parent="#{{ innertarget }}"
+                        >
+                          <div class="category-link-wrapper category">
+                            <a href="{{ category.path }}">See All in {{ category.category_name }}</a>
+                          </div>
+                          {% for subcat in get_subcategories(category.category_code) %}
+                            <div class="category-link-wrapper category">
+                              <a href="{{ subcat.path }}">{{ subcat.category_name }}</a>
+                            </div>
+                          {% endfor %}
+                        </div>
+                      </div>
+                    {% else %}
+                      <div class="category-link-wrapper sub-category">
+                        <a class="collapsed empty-category" href="{{ category.path }}">{{ category.category_name }}</a>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </nav>
+            {% endfor %}
+          </div>
+
+        </div>
+      </li>
+      <li class="menu_order">
+        <span>Order From Catalog</span>
+        <form method="GET" action="/quickorder"><input type="text" name="includeskuids" aria-label="Enter item number(s) separated by a space" placeholder="Enter item #"><button>GO</button></form>
+      </li>
+      <li class="gray_menu">
+        <a href="/find?q=GC9999">Gift Cards</a>
+      </li>
+      <li class="gray_menu">
+        <a href="/vip-insider-info">VIP Insider</a>
+      </li>
+      <li class="acc_section"><a href="/orderstatus">Track Order</a></li>
+      <li class="menu_footer"><span><a href="tel:{{ config.STORE_PHONE }}" data-js="slideout-close">CALL US {{ config.STORE_PHONE }}</a></span>
+        <img src="{{ config.IMAGE_BASE }}/assets/images/logo.svg" width="101" class="img-fluid" alt="{{ config.STORE_NAME }} Logo">
+      </li>
+    </ul>
+  </nav>
+</div>
+{% endcache %}

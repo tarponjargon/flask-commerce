@@ -1,0 +1,20 @@
+{% set noindex = True %}
+{% extends "base.html.j2" %}
+
+{% from 'macros/quick_add_item.html.j2' import quick_add_item with context %}
+{% set page = 'multidetail' %}
+{% set title %}Select Item Options{% endset %}
+
+{% block content %}
+
+<main class="container minheight minheight-400" data-multidetail-type="missing-options">
+  <div class="shopping-cart-header">
+    <h1 class="header-title primary-color">{{ title }}</h1>
+  </div>
+  <hr />
+  <div data-js="unconfigured-skuids">
+    {{ quick_add_item(product, '/cart', removeskuid) }}
+  </div>
+</main>
+
+{% endblock %}

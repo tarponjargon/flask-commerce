@@ -1,0 +1,308 @@
+
+
+.facebook {
+  .fb-like {
+    iframe {
+      width: 140px !important;
+    }
+  }
+}
+
+// onetrust custom css
+#ot-sdk-btn-floating {
+  display: none;
+}
+#ot-sdk-btn {
+  &.ot-sdk-show-settings {
+    color: $brand-primary !important;
+    border: none !important;
+    height: auto !important;
+    white-space: normal !important;
+    padding: unset !important;
+    font-size: 1em !important;
+    line-height: inherit !important;
+    font-weight: bold;
+
+    &:hover {
+      color: $brand-primary !important;
+      background-color: transparent !important;
+    }
+  }
+}
+#onetrust-banner-sdk #onetrust-policy-text a {
+  margin-left: 0 !important;
+}
+
+#onetrust-consent-sdk {
+  #onetrust-policy-text a {
+    margin-left: 0 !important;
+  }
+  #onetrust-pc-btn-handler {
+    color: #3860BE !important;
+    border-color: #3860BE !important;
+  }
+  #onetrust-accept-btn-handler {
+    background-color: $brand-primary !important;
+    border-color: $brand-primary !important;
+  }
+  #onetrust-reject-all-handler {
+    background-color: #fff !important;
+    border-color: #fff !important;
+    color: #3860BE !important;
+    text-decoration: underline !important;
+  }
+}
+
+#onetrust-pc-sdk {
+  #accept-recommended-btn-handler, .ot-btn-container button  {
+    background-color: $brand-primary !important;
+    border-color: $brand-primary !important;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  #onetrust-banner-sdk {
+    p {
+      margin: 0 0 10px 0!important;
+    }
+    @media (min-width: 550px) {
+      .ot-sdk-container {
+        padding: 0 20px!important;
+      }
+    }
+    #onetrust-policy {
+      margin: 1.5em 0 0 0!important;
+    }
+    #onetrust-close-btn-container {
+      top: 0!important;;
+      right: 0!important;
+    }
+    #onetrust-button-group {
+      display: flex!important;
+      flex-wrap: wrap-reverse;
+      width: auto!important;
+
+      #onetrust-accept-btn-handler {
+        flex-grow: 2!important;
+        margin-right:0!important;
+        float: none !important;
+      }
+      #onetrust-reject-all-handler, #onetrust-pc-btn-handler {
+        flex-grow: 1!important;
+        width: auto!important;
+        min-width: auto!important;
+        height: auto!important;
+        padding: 0px!important;
+        margin-right:0!important;
+        float: none !important;
+        text-align: center;
+      }
+    }
+  }
+}
+@media only screen and (max-width: 896px) {
+  #onetrust-button-group {
+    width: auto!important;
+    button {
+      float: none!important;
+      text-align: center;
+    }
+  }
+}
+@media only screen and (min-width: 890px) and (max-width: 1299px) {
+  #onetrust-button-group {
+    #onetrust-pc-btn-handler, #onetrust-reject-all-handler {
+      margin: 0!important;
+      line-height: 1!important;
+    }
+  }
+}
+
+// this is a general-use heading that needs to be smaller on smaller screens
+h1.customer-service {
+  @media only screen and (min-width: 768px) and (max-width: 991px) {
+    font-size: 38px;
+  }
+  @media only screen and (min-width: 577px) and (max-width: 767px) {
+    font-size: 30px;
+  }
+  @media only screen and (max-width: 576px) {
+    font-size: 24px;
+  }
+}
+
+// remove button on quick-add page
+.quick-add-remove {
+  position: absolute;
+  bottom: 0;
+  right: 20px;
+  @media (max-width: 768px) {
+    bottom: initial;
+    top: 0;
+  }
+}
+
+// making bs3 js work with bs4 css
+.menu-element.in,
+.panel-collapse.in {
+  display: block !important;
+}
+
+// to combat page jump when async content pops in and scrollbar becomes active
+.async-results-container {
+  min-height: 900px;
+  @media (max-width: 575.98px) {
+    min-height: 500px;
+  }
+  @media (max-width: 767.98px) {
+    min-height: 600px;
+    // margin-left: -15px;
+    // margin-right: -15px;
+  }
+  @media (max-width: 991.98px) {
+    min-height: 700px;
+  }
+  @media (max-width: 1199.98px) {
+    min-height: 800px;
+  }
+}
+
+// for mobile, easy return to top button when scrolled
+#return-to-top {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  background: $brand-primary;
+  opacity: 25%;
+  width: 50px;
+  height: 50px;
+  text-decoration: none;
+  border-radius: 35px;
+  display: none;
+  transition: all 0.3s ease;
+  z-index: 999999999;
+  i {
+    color: #fff;
+    margin: 0;
+    position: relative;
+    left: 16px;
+    top: 13px;
+    font-size: 19px;
+    transition: all 0.3s ease;
+  }
+}
+
+
+// rating-related
+.rating-stars {
+  color: $brand-primary;
+  font-size: 1.2rem;
+}
+// this can be removed when added to yotpo admin
+.yotpo-icon-star,
+.yotpo-icon-half-star,
+.yotpo-icon-empty-star {
+  color: $brand-primary !important;
+}
+
+
+.slick-prev,
+.slick-next {
+  background: $green; //rgba(34, 107, 73, 0.6);
+  z-index: 79;
+  width: 34px;
+  height: 34px;
+  color: $white;
+  &:focus {
+    border: 1px solid #fff;
+  }
+}
+.slick-prev {
+  left: 0;
+  border-radius: 0 10px 10px 0;
+}
+.slick-next {
+  right: 0;
+  border-radius: 10px 0 0 10px;
+}
+.slick-prev:hover,
+.slick-prev:focus,
+.slick-next:hover,
+.slick-next:focus {
+  background: $green; //rgba(34, 107, 73, 1);
+}
+
+.featured-products {
+  a {
+    outline: none;
+  }
+  .slick-prev {
+    left: 10px;
+  }
+  .slick-next {
+    right: 10px;
+  }
+}
+
+.personalization {
+  .personalization__block {
+    position: relative;
+    font-size: 1.2rem;
+    line-height: 2rem;
+    border-bottom: 1px solid $gray-light;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    label {
+      margin-top: 15px;
+    }
+    .changed-mind {
+      font-size: 0.8rem;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+    }
+    .deliverytime {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+
+// fix for product price container needs to be uniform height
+.product-wrapper .product .product-price {
+  line-height: 1.2;
+}
+
+.featured-products .carousel_outer {
+  border-bottom: none;
+}
+
+@media (max-width: 575.98px) {
+  .multi-banner-display .section a p {
+    font-size: 15px;
+  }
+}
+
+.cvv_card_image {
+  width: 239px;
+}
+
+.more-icon {
+  cursor: pointer;
+}
+
+.well {
+	min-height: 20px;
+	padding: 19px;
+	margin-bottom: 20px;
+	background-color: #f5f5f5;
+	border: 1px solid #e3e3e3;
+	border-radius: 4px;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+// add to iframe tags
+.video-responsive {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}

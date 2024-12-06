@@ -1,0 +1,43 @@
+{% macro render_price(product) -%}
+  {% set pricerange_prefix = "" %}
+  {% set origprice = product.get_origprice() if product.get_origprice is defined else product.get('origprice', 0.00) %}
+    <span data-price-skuid="{{ product.get('skuid') }}">
+      {% if product.get('has_pricerange') %}
+        {% set pricerange_prefix = "Starting at " %}
+      {% endif %}
+      {% if origprice %}
+        <del
+          class="price-original old"
+          data-price-original="1"
+          data-price="{{ origprice }}"
+          data-default="{{ origprice | format_currency }}"
+        >{{ origprice | format_currency }}</del>
+      {% endif %}
+      {% if product.get('ppd1_price') and product.get('ppd1_price') != origprice %}
+        {% set origprice = product.get('ppd1_price') %}
+        <del
+          class="price-original old"
+          data-price-original="1"
+          data-price="{{ product.get('ppd1_price') }}"
+          data-default="{{ product.get('ppd1_price') | format_currency}}"
+        >{{ product.get('ppd1_price') | format_currency }}</del>
+      {% endif %}
+      {% set bleuorigprice = product.get('product', {}).get('bleuorigprice') %}
+      {% if bleuorigprice and bleuorigprice != origprice %}
+        {% set origprice = bleuorigprice %}
+        <del
+          class="price-original old"
+          data-price-original="1"
+          data-price="{{ bleuorigprice }}"
+          data-default="{{ bleuorigprice | format_currency}}"
+        >{{ bleuorigprice | format_currency }}</del>
+      {% endif %}
+      <{{ 'ins' if origprice else 'span' }}
+        class="{{ 'price-sale new' if origprice else 'regular-price' }}"
+        data-price="{{ product.get('price') }}"
+        data-default="{{ pricerange_prefix }}{{ product.get('price') | format_currency }}"
+      >
+        {{ pricerange_prefix }}{{ product.get('price') | format_currency }}
+      </{{ 'ins' if origprice else 'span' }}>
+    </span>
+{%- endmacro %}

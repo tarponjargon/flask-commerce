@@ -1,0 +1,45 @@
+{% extends "base.html.j2" %} {% set title %}Blog{% endset %} {% set page = 'blog' %} {% block
+content %}
+
+<main class="container">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Blog</li>
+        </ol>
+      </nav>
+    </div>
+    <div class="col-12">
+      <div class="text-page-content fullwidth__holder">
+        <h1 class="mb-4">{{ title }}</h1>
+        <div class="row product__list">
+          {% for post in posts %}
+          <div class="col-12 col-sm-2 col-lg-6 product--container">
+            <a href="/blog/{{ post.slug }}" class="text-decoration-none">
+              <div class="product__image-container">
+                <img
+                  class="product__image img-fluid"
+                  src="{{ config.IMAGE_BASE }}{{ post.thumbnail }}"
+                  width="337"
+                  height="337"
+                  alt=""
+                  onerror="imageError(this)"
+                />
+              </div>
+              <div class="product__data">
+                <div class="product__name">
+                  {{ post.title }}
+                </div>
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

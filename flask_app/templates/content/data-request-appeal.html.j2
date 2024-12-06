@@ -1,0 +1,191 @@
+{% extends "base.html.j2" %} {% set title %}Submit an Appeal for Denied Requests | Flask Commerce{%
+endset %} {% set page = 'generalform' %} {% block content %}
+
+<main class="container">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="col-12">
+      <h1 class="customer-service">{{ title }}</h1>
+    </div>
+
+    <div class="col-12">
+      <p>
+        If you have submitted a Consumer Data Request, as provided by applicable state law and
+        described in our <a href="/privacy">Privacy Policy</a>, and we deny the request or fail to
+        act on the request within a reasonable period of time, you may submit an appeal of the
+        denial or failure to act by filling out the form below.
+      </p>
+    </div>
+
+    <div class="col-12 col-md-6" data-js="general-form-container">
+      <div data-js="general-form-content" class="pt-0 pt-md-4 px-2 px-md-4">
+        <div
+          data-js="general-form-error"
+          class="card text-white bg-danger my-4 mx-0 mx-md-4 p-2 p-md-4 error-card"
+          style="display: none"
+        >
+          <div class="card-body">
+            <p class="card-text"></p>
+          </div>
+        </div>
+        <div class="row m-4">
+          <form data-js="general-form" class="w-100" action="ajax_requestappeal">
+            <div class="form-group row">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <input
+                  type="text"
+                  class="form-control"
+                  data-js="billing-field"
+                  required="required"
+                  title="Please enter a first name"
+                  value="{{ session_safe_get('bill_fname') }}"
+                  name="bill_fname"
+                  id="bill_fname"
+                  placeholder="First Name"
+                />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <input
+                  type="text"
+                  class="form-control"
+                  data-js="billing-field"
+                  required="required"
+                  title="Please enter a last name"
+                  value="{{ session_safe_get('bill_lname') }}"
+                  name="bill_lname"
+                  id="bill_lname"
+                  placeholder="Last Name"
+                />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <input
+                  type="text"
+                  class="form-control"
+                  data-js="billing-field"
+                  required="required"
+                  title="Please enter a street address"
+                  value="{{ session_safe_get('bill_street') }}"
+                  name="bill_street"
+                  id="bill_street"
+                  placeholder="Address 1"
+                />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-12">
+                <input
+                  type="text"
+                  class="form-control"
+                  data-js="billing-field"
+                  title="address 2 (optional)"
+                  value="{{ session_safe_get('bill_street2') }}"
+                  id="bill_street2"
+                  name="bill_street2"
+                  placeholder="Address 2"
+                />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <input
+                  type="text"
+                  class="form-control"
+                  data-js="billing-field"
+                  required="required"
+                  title="Please enter a city"
+                  value="{{ session_safe_get('bill_city') }}"
+                  name="bill_city"
+                  id="bill_city"
+                  placeholder="City"
+                />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <select
+                  id="bill_state"
+                  name="bill_state"
+                  data-js="billing-field"
+                  required="required"
+                  title="Please enter a state"
+                  class="form-select"
+                >
+                  <option value="">Select State</option>
+                  <option value="CA">California</option>
+                  <option value="CO">Colorado</option>
+                  <option value="CT">Connecticut</option>
+                  <option value="UT">Utah</option>
+                  <option value="VA">Virginia</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <input
+                  type="text"
+                  class="form-control"
+                  data-js="billing-field"
+                  required="required"
+                  value="{{ session_safe_get('bill_postal_code') }}"
+                  name="bill_postal_code"
+                  id="bill_postal_code"
+                  placeholder="Zip Code"
+                  title="Please enter a valid zip/postal code"
+                  pattern="^(\d{5}(-\d{4})?|[A-Z]\d[A-Z] ?\d[A-Z]\d)$"
+                />
+              </div>
+            </div>
+
+            {# honeypot for spam #}
+            <div class="form-group row" id="form-email-again">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <input type="text" class="form-control" name="email_again" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-12 not-mandatory">
+                <button
+                  type="submit"
+                  class="button-primary submit-button"
+                  id="general-submit-{{ get_random_string() }}"
+                >
+                  SUBMIT
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div data-js="general-success-content" style="display: none">
+        <div class="card text-white bg-success my-4 mx-0 mx-md-4">
+          <div class="card-header"><h2 class="text-white">Request Submitted</h2></div>
+          <div class="card-body">
+            <p class="card-text text-larger">
+              Your "{{ title }}" request has been submitted. Thank you!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

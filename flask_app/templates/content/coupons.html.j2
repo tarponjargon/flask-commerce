@@ -1,0 +1,101 @@
+{% extends "base.html.j2" %}
+{% set title %}Coupons and Promo Codes | {{ datetime.now().strftime('%B') }} {{ datetime.now().strftime('%Y') }} at FlaskCommerce{% endset %}
+{% set metadesc %}Our biggest money saving coupons for the month of {{ datetime.now().strftime('%B') }} {{ datetime.now().strftime('%Y') }}! Save big on sale and clearance products. Hurry these items are going fast! Don't miss your chance to save!{% endset %}
+{% set page = 'coupons' %}
+
+{% block content %}
+
+<style type="text/css">
+
+
+  .hr1 {margin: 30px 0 16px; background-color: #606975; border: 0; opacity: .25;}
+  .hr2 {margin: 16px 0 5px; background-color: #606975; border: 0; opacity: .25;}
+  .hr3 {margin: 0; height: 5px; background-color: #226b49; border: 0; opacity: 1;}
+
+  .col-two {text-align:center;font-size:0;}
+  .col-two .column_l {width:100%;max-width:25%;display:inline-block;vertical-align:middle;}
+  .col-two .column_r {width:100%;max-width:75%;display:inline-block;vertical-align:middle;}
+
+  .promo {width:100%;border:0;border-spacing:0;}
+  .promo_content {padding:10px;}
+  .promo_call_out {margin: 20px;font-family:'Nunito',Arial,sans-serif; font-size:30px;line-height:36px; font-weight:600; color:#006cb9;text-align: center;}
+  .promo_call_out a {color: #006cb9}
+  .promo_desc {margin:5px 0; font-family:'Nunito',Arial,sans-serif; font-style:normal; font-size:17px; line-height:29px; color: #606975; font-weight:600;text-align: left;}
+  .promo_dtl {margin-top:0;margin-bottom:14px;font-family:'Nunito',Arial,sans-serif; font-size:16px; line-height:23px; color: #606975; font-weight:400; text-align:left;}
+  .promo_cta {padding: 10px 20px; background-color: #006cb9; color: #FFF; border:  0; border-radius: 5px; font-family:'Nunito',Arial,sans-serif; font-weight: 600; font-size: 20px; text-align: center; line-height: 1.25; text-decoration: none; text-transform: uppercase; vertical-align: middle;}
+  .promo_cta:hover {background-color: #226b49; color: #fff; cursor: pointer;}
+  .promo_cta:active {background-color: #111;}
+
+
+  @media screen and (max-width: 768px){
+    .col-two .column_l, .col-two .column_r {max-width: 100% !important;}
+    .col-two img {width: 100% !important;}
+    .promo_call_out {margin: 5px 0; text-align: left;}
+  }
+
+
+</style>
+
+<div class="container minheight minheight-800">
+
+  <h1 class="page">{{ title }}</h1>
+  <h2 class="sub-headline">Welcome Bargain Hunter...</h2>
+  <p>
+    Whether you are looking for <a href="/sale">the next big sale</a> or <a href="/clearance">big markdowns on clearance items</a>,  you have come to the right place. We always strive to offer you wonderfully unique, high-quality merchandise at reasonable prices! Check back often,
+    we will keep this page updated with all of our current coupon codes, from free shipping to big discounts.
+  </p>
+  <p><strong>Don't miss out on exclusive coupons and shipping offers by subscribing to our emails. First time subscribers will receive a coupon you can use today.</strong></p>
+  <hr class="hr1">
+
+
+  {% include "includes/homepage_subscribe.html.j2" %}
+
+  {% for coupon in coupons %}
+
+    <hr>
+    <div class="col-two">
+      <div class="column_l">
+        <table class="promo" role="presentation">
+          <tbody>
+            <tr>
+              <td class="promo_content">
+                <h2 class="promo_call_out"><a href="{{ coupon.link }}">{{ coupon.title }}</a></h2>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="column_r">
+        <table class="promo" role="presentation">
+          <tbody>
+            <tr>
+              <td class="promo_content">
+                <p class="promo_desc">{{ coupon.subtitle }}</p>
+                <p class="promo_dtl">{{ coupon.description }}</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="promo_content">
+                <table align="left" border="0" cellspacing="0" cellpadding="0" role="button">
+                  <tbody>
+                    <tr>
+                      <td align="center">
+                        <a href="{{ coupon.link }}" target="_blank" class="promo_cta" title="Start Saving Now">{{ coupon.button_text }}</span></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p>&nbsp;</p>
+
+  {% endfor %}
+
+</div>
+
+
+{% endblock %}

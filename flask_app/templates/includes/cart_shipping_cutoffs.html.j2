@@ -1,0 +1,65 @@
+
+{% if int(datetime.now().strftime('%Y%m%d%H%M%S')) >= 20231211000000 %}
+{% if int(datetime.now().strftime('%Y%m%d%H%M%S')) < 20231225000000 %}
+    <div class="cart-shipping-cutoffs mb-2">
+      <h3 class="title text-warning">
+        2023 Christmas Shipping Guide
+      </h3>
+      <div class="cutoff-dates">
+        <div class="w-100">
+          <strong>Standard Delivery</strong> - Tuesday 12/19
+        </div>
+        <div class="w-100">
+          <strong>2-Day Delivery</strong> - Wednesday 12/20
+        </div>
+        <div class="w-100">
+          <strong>Overnight Delivery</strong> - Thursday 12/21
+        </div>
+        <div class="w-100 mt-4">
+          <strong class="text-warning">In-stock items only. Order by 12 NOON EST on dates indicated.</strong>
+        </div>
+      </div>
+    </div>
+  </hazel-true>
+{% endif %}
+{% endif %}
+
+
+{% if int(datetime.now().strftime('%Y%m%d%H%M%S')) >= 20240523000000 %}
+{% if int(datetime.now().strftime('%Y%m%d%H%M%S')) < 20240527120000 %}
+    <div class="cart-shipping-cutoffs mb-2">
+      <h3 class="title text-warning">
+        Rush Shipping
+      </h3>
+      <div class="cutoff-dates">
+        Due to the observance of Memorial Day, our deadline for Rush shipping has moved to 9:30 a.m. E.D.T. on Friday, May 24.
+        The regular deadline of noon E.D.T. will resume on Tuesday, May 28.
+      </div>
+    </div>
+  </hazel-true>
+{% endif %}
+{% endif %}
+
+
+{% if int(datetime.now().strftime('%Y%m%d%H%M%S')) >= 20231230000000 %}
+{% if int(datetime.now().strftime('%Y%m%d%H%M%S')) < 20240105000000 %}
+
+    {% set ship_delay_days = "4" %}
+    {% if int(datetime.now().strftime('%Y%m%d%H%M%S')) >= 20240102000000 %}
+      {% set ship_delay_days = "3" %}
+    {% endif %}
+    {% if int(datetime.now().strftime('%Y%m%d%H%M%S')) >= 20240103000000 %}
+      {% set ship_delay_days = "2" %}
+    {% endif %}
+
+    <div class="cart-shipping-cutoffs">
+      <h2 class="title text-warning">
+        Annual Physical Inventory
+      </h2>
+      <div class="cutoff-dates">
+        Please allow {{ ship_delay_days }} additional business days on all ship methods as our annual physical inventory is in process.
+        Thank you for your patience and understanding.
+      </div>
+    </div>
+  {% endif %}
+  {% endif %}

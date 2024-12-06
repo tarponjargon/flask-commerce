@@ -1,0 +1,439 @@
+{% from 'macros/errors.html.j2' import render_errors %} {% from 'macros/price.html.j2' import
+render_price %} {% extends "checkout_base.html.j2" %} {% set title %}Order Complete at
+{{ config.STORE_NAME }}{% endset %} {% set page = 'receipt' %} {% block content %} {# total
+quantities to provide to snippets #} {% set total_quantities = namespace(value=0) %} {% for item in
+order.get('items') %} {% set total_quantities.value = total_quantities.value + item.get('quantity')
+%} {% endfor %}
+<script>
+   window.cartItemsObject = {};
+   window.cartItemsArray = [];
+   {% for item in order.get('items') %}{% set skuid = item.get("skuid") %}{% set base_skuid = item.get("unoptioned_skuid") %}{% set product = item.get("product", {}) %}
+     window.cartItemsObject['{{ skuid }}'] = {
+       'name': '{{ item.get("name") | sanitize }}',
+       'id': '{{ base_skuid }}',
+       'price': '{{ item.get("price") }}',
+       'variant' : '',
+       'category': "{{ replace_double_quote(get_breadcrumb_string(product.get('breadcrumb', []), ' > ')) }}",
+       'quantity': {{ item.get("quantity", 0) }},
+       'dimension1' : '{{ skuid }}'
+     };
+   {% endfor %}
+   Object.keys(window.cartItemsObject).forEach(function(key) {
+     window.cartItemsArray.push(window.cartItemsObject[key]);
+   });
+  window.dataLayer.push({
+  	'event': 'purchase',
+  	'shipCity': "{{ order.get('ship_city') }}",
+  	'shipState': "{{ order.get('ship_state') }}",
+  	'shipCountry': "{{ 'CN' if order.get('ship_country') == 'CANADA' else 'USA' }}",
+  	'ecommerce': {
+  		'purchase': {
+  			'actionField': {
+  				'step': 5,
+  				'id': "{{config.ORDER_PREFIX}}{{ order.get('order_id') }}",
+  				'affiliation': "{{ config.STORE_NAME }}",
+  				'revenue': {{ order.get('total_subtotal')-order.get('total_discount') }},
+  				'undiscounted': {{ order.get('total_subtotal') }},
+  				'tax': {{ order.get('total_tax') }},
+  				'shipping': {{ order.get('total_shipping') }},
+  				'discount': {{ order.get('total_discount') }},
+  				'coupon': "{{ order.get('coupon_code', '').upper() }}"
+  			},
+  			'products': window.cartItemsArray
+  		}
+  	}
+  });
+</script>
+<script>
+  window._conv_q = window._conv_q || [];
+  _conv_q.push([
+    "pushRevenue",
+    "{{ order.get('total_subtotal') }}",
+    "{{ total_quantities.value }}",
+    "{{ config.CRO_ACCOUNT_ID }}",
+  ]);
+</script>
+
+<div class="container receipt-container padding-bottom-3x mb-2 bg-white">
+  <div class="row mb-3">
+    <div class="col-12 receipt-content fadeIn">
+      <div class="w-100 text-left d-block d-lg-none mt-3">
+        <a href="/" aria-label="{{ config.STORE_NAME }} Homepage"
+          ><img
+            src="{{ config.IMAGE_BASE }}/assets/images/logo.svg"
+            width="237"
+            class="logo img-fluid"
+            alt="{{ config.STORE_NAME }} Logo"
+        /></a>
+      </div>
+      <div class="w-100 d-block text-center my-4">
+        <h1 class="receipt-headline text-primary">
+          <i class="fa fa-check-square"></i> Order Complete! #{{ config.ORDER_PREFIX
+          }}{{ order.get("order_id") }}
+        </h1>
+      </div>
+      <div class="row mb-4">
+        <div class="col-12 col-md-4 pe-4" data-test="receipt-billing-address">
+          <div class="row">
+            <div class="col-12 text-left d-flex">
+              <h2 class="mb-0 text-large">Billing Address</h2>
+            </div>
+          </div>
+          <hr class="mb-3 mt-1" />
+          {{ order.get("bill_fname") }} {{ order.get("bill_lname") }} <br />
+          {{ order.get("bill_street") }} <br />
+          {{ order.get('bill_street2') + '<br />' if order.get('bill_street2') else '' }}
+          {{ order.get("bill_city") }},
+          {{ order.get("bill_state") }}
+          {{ order.get("bill_postal_code")
+          }}{{ '-'+order.get('bill_zip_4') if order.get('bill_zip_4') else '' }}
+          {{ order.get("bill_country") }}<br />
+          {{ order.get("bill_phone") }}<br />
+          {{ order.get("bill_email") }}
+        </div>
+        <div class="col-12 col-md-4 pe-4 mt-3 mt-md-0" data-test="receipt-shipping-address">
+          <div class="row">
+            <div class="col-12 text-left d-flex">
+              <h2 class="mb-0 text-large">Shipping Address</h2>
+            </div>
+          </div>
+          <hr class="mb-3 mt-1" />
+          {{ order.get("ship_fname") }} {{ order.get("ship_lname") }} <br />
+          {{ order.get("ship_street") }} <br />
+          {{ order.get('ship_street2') + '<br />' if order.get('ship_street2') else '' }}
+          {{ order.get("ship_city") }},
+          {{ order.get("ship_state") }}
+          {{ order.get("ship_postal_code")
+          }}{{ '-'+order.get('ship_zip_4') if order.get('ship_zip_4') else '' }}
+          {{ order.get("ship_country") }}
+        </div>
+        <div class="col-12 col-md-4 mt-3 mt-md-0">
+          <div class="row">
+            <div class="col-12 text-left d-flex">
+              <h2 class="mb-0 text-large">Order Totals</h2>
+            </div>
+          </div>
+          <hr class="mb-3 mt-1" />
+          <div class="checkout-totals">
+            {% if order.get('total_discount') %}
+            <div class="row">
+              <div class="col-6">Subtotal:</div>
+              <div class="col-6 text-end">{{ order.get("total_subtotal") | format_currency }}</div>
+            </div>
+
+            <div class="row">
+              <div class="col-6 text-success">Discount:</div>
+              <div class="col-6 text-end text-success">
+                -{{ order.get("total_discount") | format_currency }}
+              </div>
+            </div>
+            {% endif %}
+
+            <div class="row">
+              <div class="col-6">
+                {{ 'Post-discount' if order.get('total_discount') else ' Merchandise'}}
+                Subtotal:
+              </div>
+              <div class="col-6 text-end">
+                {{ order.get("total_subtotal") - order.get("total_discount") | format_currency }}
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6">Shipping & Processing:</div>
+              <div class="col-6 text-end">{{ order.get("total_shipping") | format_currency }}</div>
+            </div>
+
+            <div class="row">
+              <div class="col-6">Est. Tax</div>
+              <div class="col-6 text-end" data-test="receipt-tax">
+                {{ order.get("total_tax") | format_currency }}
+              </div>
+            </div>
+
+            {% if order.get('total_surcharge') %}
+            <div class="row">
+              <div class="col-6">Surcharge:</div>
+              <div class="col-6 text-end" data-test="receipt-surcharge">
+                {{ order.get("total_surcharge") | format_currency }}
+              </div>
+            </div>
+            {% endif %} {% if order.get('total_credit') %}
+            <div class="row">
+              <div class="col-6 text-success">Credit:</div>
+              <div class="col-6 text-end text-success" data-test="receipt-credit">
+                -{{ order.get("total_credit") | format_currency }}
+              </div>
+            </div>
+            {% endif %}
+
+            <div class="row border-bottom-0 border-top mt-4">
+              <div class="col-6"><strong>Total:</strong></div>
+              <div class="col-6 text-end">
+                <strong>{{ order.get("total_order") | format_currency }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# cart item listing #}
+    <div class="your-items mt-4">
+      <h2>YOUR ITEMS</h2>
+      <a name="cartitems"></a>
+      <div class="lineitems">
+        <div class="lineitem-headings row">
+          <div class="col-md-7 lineitem-heading-product">Item</div>
+          <div class="col-md-2 lineitem-heading-qty">Quantity</div>
+          <div class="col-md-2 lineitem-heading-price">Price</div>
+          <div class="col-md-1 lineitem-heading-total">Total</div>
+        </div>
+
+        {% for item in order.get('items') %} {% set skuid = item.get("skuid") %} {% set base_skuid =
+        item.get("unoptioned_skuid") %} {% set url = "/" + item.get('unoptioned_skuid') + ".html" %}
+
+        <div
+          class="lineitem-wrapper"
+          data-js="lineitem"
+          data-lineitem-skuid="{{ skuid }}"
+          data-lineitem-price="{{ item.get('price') }}"
+        >
+          <div class="lineitem row" data-js="row">
+            <div
+              class="col-4 col-md-2 d-flex align-items-center justify-content-center position-relative"
+            >
+              <a href="{{ url }}">
+                <img
+                  src="{{ config.IMAGE_BASE }}{{ item.get('image') }}"
+                  alt="{{ item.get('name') | sanitize }}"
+                  class="img-fluid cart-thumb"
+                  onerror="imageError(this)"
+                />
+              </a>
+            </div>
+            <div class="lineitem-product col-8 col-md-10 position-relative">
+              <div class="row">
+                <div class="lineitem-product-description col-md-6">
+                  <a class="product-title" href="{{ url }}">{{ item.get("name") }}</a>
+                  <div class="text-muted my-1">Item #: {{ skuid }}</div>
+                  {% if item.get('personalization') and item.get('personalization') | length %}
+                  <br />
+                  <strong> Personalization </strong>
+                  <div class="text-muted my-1">
+                    {% for qtyeach in item.get('personalization') %} {% set qtyloop = loop %} {% if
+                    qtyloop.index <= item.get('quantity') %} {% for prompt in qtyeach %}
+                    {{ prompt.get("prompt") }}{% if item.get('quantity') > 1 %}({{
+                      qtyloop.index
+                    }}){% endif %}: {{ prompt.get("value") | sanitize }}<br />
+                    {% endfor %} {% endif %} {% endfor %}
+                  </div>
+                  {% endif %} {# CA PROP65 message - if applicable #} {% if item.get('prop65') %}
+                  <div
+                    style="
+                      width: 100%;
+                      font-size: 11px;
+                      line-height: 16px;
+                      display: block;
+                      overflow: hidden;
+                      padding: 10px 0;
+                    "
+                  >
+                    {{ item.get("prop65") }}
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="lineitem-qty col-md-2">
+                  <div
+                    class="lineitem-qty-line mt-2 mt-md-0 {{ 'pt-2' if page == 'receipt' else '' }}"
+                  >
+                    <span class="d-md-none">Qty: &nbsp;</span>
+                    <div
+                      class="w-100 ps-md-4"
+                      data-js="{{ 'giftwrap-quantity' if is_giftwrap else '' }}"
+                    >
+                      {{ item.get("quantity") }}
+                    </div>
+                  </div>
+                </div>
+                <div class="lineitem-price product-price col-md-2">
+                  <span class="d-md-none">Price: </span>
+                  {{ render_price(item) }}
+                </div>
+                <div class="lineitem-total col-md-2">
+                  <span class="d-md-none">Total: </span>
+                  {{ item.get("total_price") | format_currency }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {# end cart item listing #}
+
+    <div id="receipt-messages">
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="card h-100">
+            <div class="card-header">
+              <h3 class="mb-0">ORDER DETAILS</h3>
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between py-2 border-bottom">
+                <span><strong>Your Order ID:&nbsp;</strong></span>
+                <span> {{ config.ORDER_PREFIX }}{{ order.get("order_id") }} </span>
+              </div>
+              <div class="d-flex justify-content-between py-2 border-bottom">
+                <span><strong>Order Date:&nbsp;</strong></span>
+                <span>
+                  {{ order.get("date").strftime("%m/%d/%Y") }}
+                </span>
+              </div>
+              <div class="d-flex justify-content-between py-2 border-bottom">
+                <span><strong>Shipping method:&nbsp;</strong></span>
+                <span
+                  >{{ order.selected_method.ship_method_name }} -
+                  {{ order.get("total_shipping") | format_currency }}</span
+                >
+              </div>
+              <div class="d-flex justify-content-between py-2 border-bottom">
+                <span><strong>Payment method:&nbsp;</strong></span>
+                <span>{{ order.payment_method_name }}</span>
+              </div>
+
+              {% if order.get('notes') %}
+              <div class="d-flex justify-content-between py-2 border-bottom">
+                <span><strong>Notes:&nbsp;</strong></span>
+                <span>
+                  {{ order.get("notes") }}
+                </span>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% if not order.get('customer_id') %}
+        <div class="col-12 col-md-6 mt-4 mt-md-0">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="mb-0">ACCOUNT SIGNUP (for faster checkout)</h3>
+            </div>
+            <div class="card-body">
+              <form id="receipt-signup-form">
+                <input type="hidden" name="receipt_id" value="{{ order.get('order_id') }}" />
+                <div
+                  class="card text-white bg-danger mt-0 mb-2 mx-0 error-card"
+                  style="display: none"
+                >
+                  <div class="card-body">
+                    <p class="card-text"></p>
+                  </div>
+                </div>
+                <div class="w-100">
+                  <div class="form-group row">
+                    <div class="controls col-lg-12">
+                      <label for="receipt-signup-email" class="control-label inline"
+                        >Email Address</label
+                      >
+                      <input
+                        type="email"
+                        id="receipt-signup-email"
+                        class="col-lg-12 form-control"
+                        required="required"
+                        name="bill_email"
+                        value="{{ order.get('bill_email') }}"
+                        placeholder="Email Address"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="controls col-md-12">
+                      <label for="receipt-signup-password" class="control-label inline"
+                        >Password</label
+                      >
+                      <input
+                        id="receipt-signup-password"
+                        type="password"
+                        autocomplete="off"
+                        class="col-lg-12 form-control"
+                        required="required"
+                        name="bill_account_password"
+                        placeholder="Password (8-24 chars, containing letters and numbers)"
+                        minlength="8"
+                        maxlength="24"
+                        pattern="(?=.*?[0-9])(?=.*?[A-Za-z]).+"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="controls col-md-12">
+                      <label for="receipt-signup-password2" class="control-label inline"
+                        >Confirm Password</label
+                      >
+                      <input
+                        id="receipt-signup-password2"
+                        type="password"
+                        autocomplete="off"
+                        class="col-lg-12 form-control"
+                        required="required"
+                        name="bill_account_password_confirm"
+                        placeholder="Confirm Password"
+                        minlength="8"
+                        maxlength="24"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="w-100">
+                  <button type="submit" class="button-primary" id="account-signup-button">
+                    Sign Up
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      <div class="w-100 mt-4">
+        <h3>INVENTORY AVAILABILITY</h3>
+        <p>
+          All items featured on our online store, that are marked "available", are available to the
+          best of our knowledge at the time of your order. If items become unavailable, we will
+          contact you. If you have an questions about the availability, please
+          <a href="/contact">contact {{ config.STORE_NAME }} Customer Service</a>.
+        </p>
+      </div>
+      <div class="w-100 mt-4">
+        <h3>CUSTOMER SERVICE INQUIRIES</h3>
+        <p>
+          If you have questions or comments about your order, please
+          <a href="/contact">contact {{ config.STORE_NAME }} Customer Service</a>. Visit our
+          <a href="/customerservice">Frequently Asked Questions</a> page for answers to
+          commonly-asked questions about shopping and ordering from us.
+        </p>
+      </div>
+      <div class="w-100 mt-4 mb-4">
+        <h3>YOUR ORDER STATUS</h3>
+        <p>
+          You can now
+          <a
+            data-test-status="{{ config.ORDER_PREFIX }}{{ order.get('order_id') }}"
+            href="/orderstatus?orderId={{ config.ORDER_PREFIX }}{{
+              order.get('order_id')
+            }}&bill_postal_code={{ order.get('bill_postal_code') | sanitize }}&bill_lname={{
+              order.get('bill_lname') | sanitize
+            }}"
+            >check your status online!</a
+          >
+          Please allow at least 2 hours for your order to enter our system, and for us to be able to
+          provide your order status online or by phone.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

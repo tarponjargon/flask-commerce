@@ -1,0 +1,30 @@
+{% if session_safe_get('customer_id') %}
+
+  <div class="dropdown account-dropdown">
+    <button
+      id="nav-profile-dropdown"
+      class="dropdown-toggle account px-0"
+      data-toggle="dropdown"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >
+      <span class="d-none d-md-inline">Welcome, {{ 'Shopper' if not session_safe_get('bill_fname') else session_safe_get('bill_fname') }}!</span>
+    </button>
+    <div
+      class="dropdown-menu"
+      aria-labelledby="nav-profile-dropdown"
+      aria-expanded="false"
+    >
+    {% include "includes/account_nav.html.j2" %}
+    </div>
+  </div>
+
+{% else %}
+
+  <a
+    href="#"
+    data-toggle="modal"
+    data-target="#account-modal"
+  >Sign In</span></a>
+
+{% endif %}

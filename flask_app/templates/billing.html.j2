@@ -1,0 +1,117 @@
+{% from 'macros/errors.html.j2' import render_errors %}
+{% extends "checkout_base.html.j2" %}
+{% set title %}Billing/Shipping Addresses at {{ config.STORE_NAME }}{% endset %}
+{% set page = 'billing' %}
+{% block content %}
+
+<script>
+	window.dataLayer.push({
+		'event': 'checkout',
+		'ecommerce': {
+			'checkout': {
+				'actionField': { 'step': 2 },
+				'products': window.cartItemsArray
+			}
+		}
+	});
+</script>
+
+<main class="container" data-js="billing-content">
+  {% include "includes/checkout_nav.html.j2" %}
+
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="cd-breadcrumb triangle">
+        <li class="current"><a href="/checkout?returntologin=1" class="text-white">Sign in</a></li>
+        <li class="active">
+          <button class="text-white" type="submit" form="billing-shipping-form">
+            <span class="d-none d-sm-inline">Billing &amp; Shipping</span>
+            <span class="d-sm-none">Addresses</span>
+          </button>
+        </li>
+        <li><button class="text-white" type="submit" form="billing-shipping-form">Payment</button></li>
+        <li><div class="text-white">Review</div></li>
+      </ol>
+    </div>
+  </div>
+
+
+  {% if errors | length %}
+    {# errors sent from application back-end here #}
+    {{ render_errors(errors) }}
+  {% else %}
+    {# errors sent from application front-end here #}
+    <div class="card text-white bg-danger mt-3 mx-3 error-card" style="display: none">
+      <div class="card-body">
+        <p class="card-text"></p>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-8">
+      <form method="POST" action="/payment" id="billing-shipping-form">
+          <div class="row ms-0 me-0">
+            <div class="col-12">
+              <h2 class="checkout__title">Billing Address</h2>
+              <div class="checkout-billing" data-js="billing-form">
+                {% include "includes/billing_fields.html.j2" %}
+              </div>
+
+              {# is shipping same as billing? #}
+              <fieldset>
+                <legend class="checkout__title" id="shipping-fields">Shipping Address</legend>
+                <div class="card bg-light bill-ship-radio mb-4">
+                  <div class="card-body">
+                    <div class="card-text">
+                      <div class="row">
+                        <div class="col-12">
+                          <input
+                            type="radio"
+                            value="yes"
+                            name="shipSame"
+                            class="shipSame"
+                            id="shipSameYes"
+                            {{ 'checked' if session_safe_get('shipSame') == 'yes' else ''}}
+                            {{ 'checked' if not session_safe_get('shipSame') else ''}}
+                          > <label class="d-inline-block" for="shipSameYes">Ship to billing address</label>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <input
+                            type="radio"
+                            value="no"
+                            name="shipSame"
+                            class="shipSame"
+                            id="shipSameNo"
+                            {{ 'checked' if session_safe_get('shipSame') == 'no' else ''}}
+                          > <label class="d-inline-block" for="shipSameNo">Ship to a different address</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="shipping-form" data-js="shipping-form">
+                {% if session_safe_get('customer_id') %}
+                  {% include "includes/addressbook_menu.html.j2" %}
+                {% endif %}
+                {% include "includes/shipping_fields.html.j2" %}
+              </div>
+
+              <div class="w-100">
+                <button id="billing-continue-button" type="submit" class="btn btn-block btn-lg btn-info">CONTINUE<span class="d-none d-md-inline"> CHECKOUT</span> <i class="fa fa-arrow-right"></i></button>
+              </div>
+            </div>
+          </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+      {% include "includes/checkout_cart_summary.html.j2" %}
+    </div>
+  </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html.j2" %}
+{% set title %}{{ config.STORE_NAME }} - Page Not Found (404){% endset %}
+{% set page = '404' %}
+
+{% block content %}
+
+<main>
+  <div class="container minheight minheight-400">
+    <h1>404 Not Found</h1>
+    Sorry, we couldn't find what you were looking for.
+
+    <div class="w-100 mt-4">
+      <div class="fullwidth__holder">
+        <div
+          id="recs-container"
+          class="certona-carousel minheight minheigt-800 loading-mask"
+          data-recs='[{"recommendationsType":"recommendations","reportingId":"Recommendations 1: Error Page","title": "You May Like"},{"recommendationsType":"recommendations","reportingId":"Recommendations 2: Error Page","title": "Customers Also Viewed"},{"recommendationsType":"recommendations","reportingId":"Recommendations 3: Error Page","title": "Bestsellers"}]'
+        ></div>
+      </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% from 'macros/personalization_prompts.html.j2' import render_prompts with context %}
+{% set page = 'personalization' %}
+<div
+  class="pop-body cartpage"
+  data-last-added="{{ last_added.get('skuid') if last_added else ''}}"
+  {% if returnpage %}data-return="{{ returnpage | sanitize }}"{% endif %}
+>
+  <div class="modal-header">
+    <h2 class="modal-title text-white" id="cart-modalLabel">Personalize Your Item</h2>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <i class="fa fa-times fa-2x"></i>
+    </button>
+  </div>
+  <div class="modal-body personalization">
+    <div class="scrolling-container personalization__inner">
+      <form method="POST" id="personalization-modal">
+        <input type="hidden" name="last_added" value="{{ last_added.get('skuid') if last_added else ''}}" />
+        {% if last_added %}
+        {{ render_prompts(last_added)}}
+        {% endif %}
+        <div>
+          <button class="btn btn-info"  id="personalization-modal-submit" name="submit" value="Submit">PERSONALIZE</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+
+{% set phase = 'checkout' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{ title if title else config.STORE_TAGLINE }}</title>
+    <meta name="robots" content="noindex, nofollow" />
+    {% include "includes/heading_meta.html.j2" %}
+    {% include 'includes/assets.inc' %}
+    {% include "includes/google_tag_manager.html.j2" %}
+    {% if not session_safe_get('RORY') == "1" %}
+    {% endif %}
+  </head>
+  <body
+    id="body"
+    data-phase="checkout"
+    data-view="{{ page }}"
+    data-page-path="{{ request.path | sanitize }}"
+    data-client-id="{{ get_session_id() | sanitize }}"
+    data-is-fo="{{ '1' if config.get('FAILOVER') else '0'}}"
+  >
+    <header>
+      <div class="container logo-section d-block">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="checkout-logo">
+              <a href="/" aria-label="{{ config.STORE_NAME }} Homepage"><img src="{{ config.IMAGE_BASE }}/assets/images/logo.svg" width="235" height="77" class="img-fluid" alt="{{ config.STORE_NAME }} Logo"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <div class="container footer-copyright">
+      <div class="footer-copyright-text-div">
+        <div class="footer-copyright-text-div-inner">
+          <span class="footer-copyright-text">Copyright &copy; <span>{{ datetime.now().strftime('%Y') }}</span> {{ config.STORE_NAME }}. All rights reserved.
+          <span class="footer-copyright-vertical-line">&nbsp;</span>
+          <a class="footer-copyright-semibold" href="/privacy">Privacy &amp; Security</a>
+          <span class="footer-copyright-vertical-line">&nbsp;</span>
+          <a class="footer-copyright-semibold d-none d-md-inline" href="tel:{{ config.STORE_PHONE }}">{{ config.STORE_PHONE }}</a>
+          <a class="footer-copyright-semibold d-inline d-md-none" href="tel:{{ config.STORE_PHONE_MOBILE }}">{{ config.STORE_PHONE_MOBILE }}</a>
+        </div>
+      </div>
+    </div>
+
+    {% include "includes/modals_alerts.html.j2" %}
+    <div id="footer-drawer"></div>
+    {% set cart_id = get_cart_id() %}
+    {% set cart_url = config.STORE_URL + '/get-cart?cart=' + cart_id if cart_id else '' %}
+    <div id="cart-url" data-cart-url="{{ cart_url }}" style="display: none;"></div>
+    {% include 'includes/footer_assets.inc' %}
+
+
+    {% include "includes/chat_widget.html.j2" %}
+  </body>
+</html>

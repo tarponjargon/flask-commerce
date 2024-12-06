@@ -1,0 +1,7 @@
+{% macro render_rating(rating) -%}
+<div class="rating-stars">
+  {% for rating in rating_list(rating) %}
+    <i ng-repeat="star in result.rating_array" class="fa {{ rating }}"></i>
+  {% endfor %}
+</div>
+{%- endmacro %}

@@ -1,0 +1,111 @@
+.account-container {
+	font-size: 1.2rem;
+	.user-info-wrapper {
+		position: relative;
+		width: 100%;
+		margin-bottom: -1px;
+		padding-bottom: 25px;
+		border: 1px solid #e1e7ec;
+		border-top-left-radius: 7px;
+		border-top-right-radius: 7px;
+		overflow: hidden;
+		.user-info {
+			display: table;
+			position: relative;
+			width: 100%;
+			padding: 0 18px;
+			z-index: 5;
+			.user-data {
+				padding-top: 30px;
+				padding-left: 12px;
+				span {
+					display: block;
+					color: $gray-light;
+					font-size: 13px;
+				}
+			}
+		}
+	}
+	.table > tbody > tr:last-child > td {
+		border: none;
+	}
+
+	.list-group {
+    .badge-pill {
+      color: $white;
+      background-color: $brand-info;
+    }
+		.active {
+			.badge-pill {
+				color: $brand-info;
+				background-color: $white;
+			}
+		}
+	}
+	.list-group-item {
+		text-decoration: none;
+		padding-top: 1.6rem;
+		padding-bottom: 1.6rem;
+		transition: all 0.25s;
+		font-weight: 500;
+    &.active {
+      background-color: $brand-info;
+      border-color: $brand-info;
+    }
+    &:hover {
+      color: $white!important;
+      background-color: $brand-info;
+      border-color: $brand-info;
+			.badge-pill {
+				color: $brand-info;
+				background-color: $white;
+			}
+    }
+		.fa {
+			margin-top: -4px;
+			margin-right: 8px;
+			font-size: 1.1em;
+		}
+	}
+	.with-badge .badge {
+		position: absolute;
+		top: 50%;
+		right: 1.15rem;
+		transform: translateY(-50%);
+		font-size: 1rem;
+	}
+
+	.receipt-container,
+	.profile-content {
+		font-size: 1.1rem;
+		line-height: 1.8rem;
+	}
+	.wishlist-container,
+	.receipt-container {
+		@media only screen and (min-width: 768px) {
+			.lineitem {
+				.lineitem-price {
+					padding-left: 45px !important;
+				}
+				.lineitem-total {
+					padding-right: 15px !important;
+				}
+			}
+		}
+		.cart-button-desktop {
+			position: absolute;
+			bottom: 10px;
+			right: 10px;
+		}
+	}
+}
+.wishlist-container {
+	.wl-share-btn {
+		width: 110px;
+	}
+}
+
+.account-summary-table tr:first-child > th {
+	border-top: none;
+	border-bottom: 1px solid #d5d5d5;
+}

@@ -1,0 +1,9 @@
+{% from 'macros/thumbnail.html.j2' import render_thumbnail with context %}
+
+<div class="row">
+  {% for product in products %}
+    <div class="col-lg-3 col-6 p-0">
+      {{ render_thumbnail(product)}}
+    </div>
+  {% endfor %}
+</div>

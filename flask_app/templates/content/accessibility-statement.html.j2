@@ -1,0 +1,67 @@
+{% extends "base.html.j2" %}
+{% set title %}Digital Accessibility Statement at FlaskCommerce{% endset %}
+{% set page = 'generalform' %}
+
+{% block content %}
+
+<main class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><strong><a href="/">Home</a></strong></li>
+          <li class="breadcrumb-item active" aria-current="page">Digital Accessibility Statement</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="col-md-12">
+      <h1 class="customer-service">Digital Accessibility Statement</h1>
+      <p>
+        <strong>Our Policy & Commitment</strong>
+      </p>
+      <p>
+          At FlaskCommerce, we are committed to accessibility,
+          diversity and inclusion. As part of that commitment, we are making
+          efforts to ensure that FlaskCommerce digital properties are
+          accessible to all individuals, regardless of ability. In doing so,
+          FlaskCommerce has a goal to comply with applicable
+          accessibility standards included in the W3C's WCAG 2.1 Level AA
+          guidelines.
+      </p>
+      <p>
+          <strong>Digital Accessibility Statement</strong>
+      </p>
+      <p>
+          We are working to ensure our websites and online services are
+          accessible for all and are committed to following the W3C
+          <a href="https://www.w3.org/WAI/standards-guidelines/wcag/">
+              Web Content Accessibility Guidelines
+          </a>
+          and other applicable accessibility laws.
+      </p>
+      <p>
+          <strong>Contact</strong>
+      </p>
+      <p>
+          We want to hear from you - If you would like further information
+          about FlaskCommerce accessibility efforts, have other
+          accessibility questions or feedback, or encounter accessibility
+          barriers on our digital properties, please contact us via the form below:
+      </p>
+    </div>
+
+
+    <div class="card text-white bg-danger my-5 p-3 error-card">
+      <div class="card-body p-1">
+        <p class="card-text">
+          <h1 class="text-white">Sorry!</h1>
+          We are temporarily unable to accept orders at this time
+        </p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+{% endblock %}

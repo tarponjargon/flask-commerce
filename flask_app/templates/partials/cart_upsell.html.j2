@@ -1,0 +1,135 @@
+
+{% from 'macros/variant_select.html.j2' import render_variant_select %}
+{% set product = upsell.get('product', {}) %}
+<style>
+  .popup {
+    background:#fefefb url("/assets/images/popup.jpg") top center no-repeat;
+    max-width:530px;
+    margin:0;
+  }
+  .modal-header-row {
+    height: 77px;
+  }
+  .popup h1 {
+    font-family: "Nunito", Helvetica, sans-serif;
+    font-size: 2.5em;
+  }
+  @media (max-width: 768px) {
+    .popup h1 {
+      font-size: 1.9em;
+    }
+  }
+  @media (max-width: 400px) {
+    .popup h1 {
+      font-size: 1.5em;
+    }
+  }
+  .popup h3 {
+    font-family: "Nunito", Helvetica, sans-serif;
+  }
+</style>
+
+<div class="popup" data-js="upsell-popup">
+  <form
+    method="GET"
+    data-js="order-form"
+    role="form"
+    data-add-item="{{ upsell.get('skuid') }}"
+    data-item-name="{{ upsell.product_title | sanitize }}"
+    data-item-category="{{ replace_double_quote(get_breadcrumb_string(product.get('breadcrumb', []), ' > ')) }}"
+  >
+    <input type="hidden" name="SO_ACCEPT" value="{{ upsell.id }}">
+      <div class="row modal-header-row">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+          <h1 id="smallModalLabel" class="text-white mt-2">
+            {{ upsell.headline if upsell.headline else 'LIMITED TIME!' }}
+          </h1>
+        </div>
+      </div>
+      {% if upsell.subhead %}
+        <div class="row">
+          <div class="col-12 text-center">
+            <h2 class="text-md my-2">{{ upsell.subhead }}</h2>
+          </div>
+        </div>
+      {% endif %}
+      <div class="row m-0">
+        <div class="col-12 col-sm-5 d-flex align-items-center justify-content-center">
+          <img
+            src="{{ config.IMAGE_BASE }}{{ upsell.image }}"
+            alt=""
+            class="img-fluid"
+            onerror="imageError(this)"
+          >
+        </div>
+        <div class="col-12 col-sm-7 d-flex align-items-center">
+          <div class="d-block w-100">
+            <h3 class="d-block w-100 text-md">{{ upsell.product_title }}</h3>
+            <p class="my-2">
+              {{ upsell.product_copy }}
+            </p>
+            <div data-js="detail-item-price">
+              {% if upsell.origprice %}
+                <h3 class="text-muted d-inline">
+                  <s data-price='{{ upsell.origprice }}'
+                    data-default='{{ upsell.origprice | format_currency }}'
+                  >{{ upsell.origprice | format_currency }}</s>
+                </h3>&nbsp;
+              {% endif %}
+              <h3 class="text-warning d-inline">
+                {{ upsell.price_prefix if upsell.price_prefix else '' }}
+                <span
+                  data-price='{{ upsell.price}}'
+                  data-default='{{ upsell.price | format_currency }}'
+                >{{ upsell.price | format_currency }}</span></h3>
+            </div>
+
+            {% if upsell.break_qty >= 2 and upsell.break_price >= 0.01 %}
+              <h4 class="my-1 text-warning">Buy {{upsell.break_qty}} or more for {{ upsell.break_price | format_currency }} ea.</h4>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      {% if product.get('variant_sets') and product.get('variant_sets') | length %}
+        <div class="w-100 my-3 text-center">
+            <div class="d-inline-block">
+              <input
+                type="number"
+                class="form-control w-auto"
+                data-js="quantity"
+                min="1"
+                max="{{ product.get('maxq') if product.get('maxq') else str(config.DEFAULT_MAXQ)}}"
+                data-maxq="{{ product.get('maxq') if product.get('maxq') else str(config.DEFAULT_MAXQ)}}"
+                name="OPTIONED_QUANTITY_{{ upsell.skuid }}"
+                value="1"
+                id="OPTIONED_QUANTITY_{{ upsell.skuid }}"
+                aria-label="Quantity"
+              />
+            </div>
+            {% if product.get('variant_sets') %}
+              <div class="d-inline-block">
+                {{ render_variant_select(product) }}
+              </div>
+            {% endif %}
+        </div>
+      {% else %}
+        <input
+          data-js="quantity"
+          type="hidden"
+          name="PRODUCT_{{ upsell.skuid }}"
+          value="1"
+          id="PRODUCT_{{ upsell.skuid }}"
+        />
+      {% endif %}
+
+
+      <div class="row mt-4 mb-2">
+        <div class="col-12 d-flex justify-content-center">
+          <a data-dismiss="modal" href="#" class="btn btn-lg button-primary me-3">No, Thanks</a>
+          <button id="cart-upsell-yes-btn" type="submit" class="btn btn-lg button-primary">Yes, Please!</button>
+        </div>
+      </div>
+
+  </form>
+</div>

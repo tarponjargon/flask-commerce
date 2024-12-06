@@ -1,0 +1,875 @@
+{% from 'macros/errors.html.j2' import render_errors %}
+{% extends "checkout_base.html.j2" %}
+{% set title %}Payment Information at {{ config.STORE_NAME }}{% endset %}
+{% set page = 'payment' %}
+{% block content %}
+
+<script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
+<script>
+	window.dataLayer.push({
+		'event': 'checkout',
+		'ecommerce': {
+			'checkout': {
+				'actionField': { 'step': 3 },
+				'products': window.cartItemsArray
+			}
+		}
+	});
+</script>
+
+<main class="container" data-js="payment-content">
+  {% include "includes/checkout_nav.html.j2" %}
+
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="cd-breadcrumb triangle">
+        <li class="current"><a href="/checkout?returntologin=1" class="text-white">Sign in</a></li>
+        <li class="current">
+          <a href="/checkout" class="text-white">
+            <span class="d-none d-sm-inline">Billing &amp; Shipping</span>
+            <span class="d-sm-none">Addresses</span>
+          </a>
+        </li>
+        <li class="active"><button type="submit" form="cc-entry" class="text-white">Payment</button></li>
+        <li><button type="submit" form="cc-entry" class="text-white">Review</button></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="row ml-0 mr-0">
+        <div class="col-12">
+          <div class="checkout_login">
+            <h2 class="checkout__title">Select a Payment Option</h2>
+            <div class="well payment-method row justify-content-center align-items-center">
+              <div class="payment-button-container col-sm-4">
+                <button
+                  id="pay-cc"
+                  class="button-primary btn-block submit-button"
+                  type="button"
+                >CREDIT CARD <i data-js="payment-indicator" class="d-none d-sm-inline fa fa-caret-down fa-lg"></i></button>
+              </div>
+              {# only show giftcert button if the entire cart is NOT giftcerts (i.e. you can't pay for GCs with GCs) #}
+              {% if g.cart.get_gc_quantities() < g.cart.get_quantities() %}
+                <div class="payment-button-container col-sm-4">
+                  <button
+                    id="pay-gc"
+                    class="button-primary btn-block submit-button"
+                    type="button"
+                  >GIFT CERT<span class="d-none d-sm-inline-block">IFICATE</span>
+                  <i data-js="payment-indicator" class="d-none fa fa-caret-down fa-lg mt-2"></i>
+                </button>
+                </div>
+              {% endif %}
+              {% if g.cart.is_paypal_eligible() %}
+                <div class="payment-button-container col-sm-4 text-center">
+                  <a
+                    href="/start-expresscheckout"
+                    role="button"
+                    class="button-secondary submit-button btn-block paypal-image"
+                    onClick="window.dataLayer.push({'event':'trackEvent','eventCategory':'Payment','eventAction':'PayPal','eventLabel':'Checkout login page'});"
+                  >
+                    <span class="d-inline-block d-lg-none">Check Out With&nbsp;</span><img src="/assets/images/PayPal.svg" height="21" alt="Check Out With PayPal" />
+                  </a>
+                </div>
+              {% endif %}
+              {% if not g.cart.has_drop_ship() %}
+                <div class="payment-button-container col-sm-4 pt-2">
+                    <style>
+                      apple-pay-button {
+                        width: 100%;
+                        --apple-pay-button-height: 35px;
+                        --apple-pay-button-border-radius: 2px;
+                        /* --apple-pay-button-padding: 5px 0px; */
+                      }
+                    </style>
+                    <apple-pay-button type="check-out" locale="en"></apple-pay-button>
+                </div>
+              {% endif %}
+            </div>
+
+            {% if errors | length %}
+              {# errors sent from application back-end here #}
+              {{ render_errors(errors) }}
+            {% else %}
+              {# errors sent from application front-end here #}
+              <div class="card text-white bg-danger mt-3 error-card" style="display: none">
+                <div class="card-body">
+                  <p class="card-text"></p>
+                </div>
+              </div>
+            {% endif %}
+
+            {# only show giftcert entry if not all the items on the order ARE gc's #}
+            {% if g.cart.get_gc_quantities() < g.cart.get_quantities() %}
+              <div class="gc-payment" id="gc-payment">
+                <div class="row">
+                  <div class="col-12">
+                    <h2 class="checkout__title">Payment by Gift Certificate</h2>
+                  </div>
+                </div>
+                <div class="checkout__gift">
+                  <form id="giftcertificate-entry-form">
+                    <div class="form-group row">
+                      <div class="col-md-4 col-12 form-group new-mandatory-input-wrapper">
+                        <input
+                          id="gift-certificate-number"
+                          name="giftcertificate"
+                          value="{{ session_safe_get('giftcertificate') }}"
+                          type="text"
+                          class="form-control"
+                          required="required"
+                          aria-label="Please enter your gift certificate number"
+                          placeholder="Gift Certificate Number"
+                        >
+                      </div>
+                      <div class="col-md-4 col-12 form-group new-mandatory-input-wrapper">
+                        <input
+                          type="text"
+                          id="gift-certificate-amount"
+                          class="form-control"
+                          name="gc_amt"
+                          value="{{ session_safe_get('gc_amt') }}"
+                          required="required"
+                          aria-label="Original Amount"
+                          placeholder="Original Amount">
+                      </div>
+                      <div class="col-md-4 col-12 form-group">
+                        <button
+                          type="submit"
+                          id="giftcertificate-apply-button"
+                          class="button-primary submit-button"
+                        >Apply</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div id="gc-message" class="card border-primary" style="display: none;">
+                  <div class="card-body text-primary">
+                    <div id="gc-message-text"></div>
+                    <a
+                      href="/confirmation"
+                      id="gc-continue-button"
+                      class="button-primary submit-button mt-4"
+                      onClick="spinButton('gc-continue-button', 'Please wait')"
+                      style="display: none"
+                    >REVIEW YOUR ORDER</a>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+
+            {# default credit card entry fields, shown only if payment widget can't load #}
+            <div id="cc-entry">
+              <div class="cc-payment p-2" id="alternate-payment" style="margin-top: 10px; {{ '' if session_safe_get('credit_code') else 'display:none'}}">
+                {% if not session_safe_get('payment_method') == 'applepay' %}
+                <div class="row">
+                  <div class="col-6">
+                    <h2 class="checkout__title">Payment</h2>
+                  </div>
+                  <div class="col-6 cc-image text-end">
+                    <i class="fa fa-2x fa-cc-visa text-primary"></i>
+                    <i class="fa fa-2x fa-cc-mastercard text-primary"></i>
+                    <i class="fa fa-2x fa-cc-discover text-primary"></i>
+                    <i class="fa fa-2x fa-cc-amex text-primary"></i>
+                  </div>
+                </div>
+                {% endif %}
+
+                <div class="checkout-form">
+                  <div class="checkout-billing">
+                    <form id="credit-payment-form">
+                      <input type="hidden" name="worldpay_registration_id" value="" />
+                      <input type="hidden" name="worldpay_vantiv_txn_id" value="" />
+                      <input type="hidden" name="worldpay_last_four" value="" />
+                      <input type="hidden" name="card_month" value="" />
+                      <input type="hidden" name="card_year" value="" />
+                      <input type="hidden" name="card_type" value="" />
+                      <div class="form-group row">
+                        <div class="col-12 new-mandatory-input-wrapper">
+                          <input
+                            type="text"
+                            class="form-control"
+                            name="credit_name"
+                            value="{{ session_safe_get('credit_name') if session_safe_get('credit_name') else session_safe_get('bill_fname') + ' ' + session_safe_get('bill_lname') }}"
+                            autocomplete="off"
+                            id="CardName"
+                            placeholder="Name on card"
+                            aria-label="Please enter the name on the credit card"
+                          />
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-12 new-mandatory-input-wrapper">
+                          <select
+                            name="credit_type"
+                            id="CardType"
+                            required="required"
+                            class="form-select"
+                            aria-label="Please select a card type"
+                          >
+                            <option value="">Select Card Type</option>
+                              <option value="MC" {{ 'selected' if session_safe_get('credit_type') == 'MC' else '' }}>MasterCard</option>
+                              <option value="VI" {{ 'selected' if session_safe_get('credit_type') == 'VI' else '' }}>Visa</option>
+                              <option value="DI" {{ 'selected' if session_safe_get('credit_type') == 'DI' else '' }}>Discover</option>
+                              <option value="AX" {{ 'selected' if session_safe_get('credit_type') == 'AX' else '' }}>American Express</option>
+                        </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-12 new-mandatory-input-wrapper">
+                          <input
+                            type="tel"
+                            class="form-control"
+                            name="credit_code"
+                            autocomplete="off"
+                            id="CardNumber"
+                            value="{{ session_safe_get('credit_code') }}"
+                            placeholder="Enter Card Number"
+                            required="required"
+                            minlength="15"
+                            maxlength="16"
+                            pattern="^[3456x][0-9x]{12,15}$"
+                            aria-label="Please enter a valid credit card number"
+                          />
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-sm-6 col-12 new-mandatory-input-wrapper mb-3 mb-sm-0">
+                          <select
+                            name="credit_month"
+                            required="required"
+                            id="CreditMonth"
+                            class="form-select"
+                            aria-label="Please select an expiration month"
+                          >
+                            <option value="">Expiration Month</option>
+                            <option value="01" {{ 'selected' if session_safe_get('credit_month') == '01' else '' }}>01 - January</option>
+                            <option value="02" {{ 'selected' if session_safe_get('credit_month') == '02' else '' }}>02 - February</option>
+                            <option value="03" {{ 'selected' if session_safe_get('credit_month') == '03' else '' }}>03 - March</option>
+                            <option value="04" {{ 'selected' if session_safe_get('credit_month') == '04' else '' }}>04 - April</option>
+                            <option value="05" {{ 'selected' if session_safe_get('credit_month') == '05' else '' }}>05 - May</option>
+                            <option value="06" {{ 'selected' if session_safe_get('credit_month') == '06' else '' }}>06 - June</option>
+                            <option value="07" {{ 'selected' if session_safe_get('credit_month') == '07' else '' }}>07 - July</option>
+                            <option value="08" {{ 'selected' if session_safe_get('credit_month') == '08' else '' }}>08 - August</option>
+                            <option value="09" {{ 'selected' if session_safe_get('credit_month') == '09' else '' }}>09 - September</option>
+                            <option value="10" {{ 'selected' if session_safe_get('credit_month') == '10' else '' }}>10 - October</option>
+                            <option value="11" {{ 'selected' if session_safe_get('credit_month') == '11' else '' }}>11 - November</option>
+                            <option value="12" {{ 'selected' if session_safe_get('credit_month') == '12' else '' }}>12 - December</option>
+                          </select>
+                        </div>
+                        <div class="col-sm-6 col-12 new-mandatory-input-wrapper">
+                          <select
+                            name="credit_year"
+                            required="required"
+                            id="CreditYear"
+                            class="form-select"
+                            aria-label="Please select an expiration year"
+                          >
+                            <option value="">Expiration Year</option>
+                            {% set cur_year = int(datetime.now().strftime('%Y')) %}
+                            {% for i in range(11) %}
+                              {% set year_inc = str(cur_year+i) %}
+                              <option value="{{ year_inc }}" {{ 'selected' if session_safe_get('credit_year') == year_inc else '' }}>{{ year_inc }}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-sm-6 col-12 new-mandatory-input-wrapper position-relative">
+                          <input
+                            type="tel"
+                            id="CreditCVV"
+                            class="form-control"
+                            autocomplete="off"
+                            name="credit_security_code"
+                            size="4"
+                            maxlength="4"
+                            required="required"
+                            pattern="^[0-9x]{3,4}$"
+                            aria-label="Please enter a valid security code for your card type"
+                            placeholder="CVV Security Code"
+                            value="{{ session_safe_get('credit_security_code') }}"
+                          />
+                        </div>
+                      </div>
+                      <div class="form-group row mt-4">
+                        <div class="col-12">
+                          <button
+                            type="submit"
+                            id="cc-checkout-button-payment"
+                            class="btn btn-block btn-lg btn-info">Review Your Order <i class="fa fa-arrow-right"></i>
+                        </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cc-payment" id="cc-payment" style="{{ 'display:none' if session_safe_get('credit_code') else ''}}">
+                <div class="row">
+                  <div class="col-6">
+                    <h2 class="checkout__title">Payment</h2>
+                  </div>
+                  <div class="col-6 cc-image text-end d-none d-sm-inline-block">
+                    <i class="fa fa-2x fa-cc-visa text-secondary"></i>
+                    <i class="fa fa-2x fa-cc-mastercard text-secondary"></i>
+                    <i class="fa fa-2x fa-cc-discover text-secondary"></i>
+                    <i class="fa fa-2x fa-cc-amex text-secondary"></i>
+                  </div>
+                </div>
+                <div class="checkout-form">
+                  <div class="checkout-billing">
+                    <form
+                      data-js="cc-form"
+                      action="/confirmation"
+                      method="POST"
+                      data-transaction-id="{{ session_safe_get('order_id') }}"
+                      data-order-id="{{ config.ORDER_PREFIX }}{{ session_safe_get('order_id') }}"
+                    >
+                      <input type="hidden" id="response$paypageRegistrationId" name="worldpay_registration_id" value="{{ session_safe_get('worldpay_registration_id') }}" readOnly="true" value=""/>
+                      <input type="hidden" id="response$vantivTxnId" name="worldpay_vantiv_txn_id" value="{{ session_safe_get('worldpay_vantiv_txn_id') }}" readOnly="true"/>
+                      <input type="hidden" id="response$lastFour" name="worldpay_last_four" value="{{ session_safe_get('worldpay_last_four') }}" readOnly="true"/>
+                      <input type="hidden" id="response$expDate" name="card_date" value="{{ session_safe_get('worldpay_vantiv_txn_id') }}" readOnly="true"/>
+                      <input type="hidden" id="response$expMonth" name="card_month" value="{{ session_safe_get('card_month') }}" readOnly="true"/>
+                      <input type="hidden" id="response$expYear" name="card_year" value="{{ session_safe_get('card_year') }}" readOnly="true"/>
+                      <input type="hidden" id="response$type" name="card_type" value="{{ session_safe_get('card_type') }}" readOnly="true"/>
+                      <input type="hidden" name="payment_method" value="{{ 'standard' if not session_safe_get('wpp_token') else 'expresscheckout' }}" readOnly="true"/>
+
+                      <style>
+                        #payframe {
+                          overflow: hidden;
+                        }
+                        .minheight {
+                          min-height: 250px;
+                        }
+                        .loading-mask {
+                          height: 250px;
+                          overflow: hidden;
+                          background-position: 50%;
+                          background-image: url(/assets/images/loading-drip.gif);
+                          background-repeat: no-repeat;
+                          background-size: 74px;
+                        }
+                        .payment-configured-container {
+                          width: 100%;
+                          display: block;
+                          text-align: center;
+                          overflow: hidden;
+                        }
+                        .payment-configured-container .content {
+                          display: block;
+                          margin: 0 auto;
+                        }
+                      </style>
+
+                      {# payment already configured #}
+                      {% set has_payment_already = False %}
+                      {% if session_safe_get('worldpay_registration_id') %}
+                        {% set has_payment_already = True %}
+                        {% if session_safe_get('payment_method') == 'applepay' %}
+                          <div class="well payment-configured-container">
+                            <div class="content">
+                              <img src="/assets/images/apple-logo.png" class="img-fluid" alt="ApplePay" />
+                              <h4>ApplePay</h6>
+                              <a href="/reset-payment" data-js="another-payment" class="gray-link"><u>Choose a different payment method</u></a>
+                            </div>
+                          </div>
+                        {% else %}
+
+                          {% set payment_icon = "" %}
+                          {% set payment_name = "" %}
+                          <div class="well payment-configured-container">
+                            {% if session_safe_get('card_type') == 'VI' %}
+                              {% set payment_icon = "fa-cc-visa" %}
+                              {% set payment_name = "Visa" %}
+                            {% endif %}
+                            {% if session_safe_get('card_type') == 'MC' %}
+                              {% set payment_icon = "fa-cc-mastercard" %}
+                              {% set payment_name = "MasterCard" %}
+                            {% endif %}
+                            {% if session_safe_get('card_type') == 'DI' %}
+                              {% set payment_icon = "fa-cc-discover" %}
+                              {% set payment_name = "Discover" %}
+                            {% endif %}
+                            {% if session_safe_get('card_type') == 'AX' %}
+                              {% set payment_icon = "fa-cc-amex" %}
+                              {% set payment_name = "American Express" %}
+                            {% endif %}
+                            <div class="content">
+                              <i class="fa fa-4x {{payment_icon}}" aria-hidden="true"></i>
+                              <span class="sr-only">{{ payment_name }}</span>
+                              <h4>Ending in {{ session_safe_get('worldpay_last_four') }}</h4>
+                              <a href="/reset-payment" data-js="another-payment" class="gray-link"><u>Enter a different payment method</u></a>
+                            </div>
+                          </div>
+                        {% endif %} {# end if /else for applepay #}
+                      {% endif %} {# end if for has worldpay_registration_id  #}
+
+
+                      {% if session_safe_get('wpp_token') %}
+                        {% set has_payment_already = True %}
+                        <div class="well payment-configured-container">
+                          {% set payment_icon = "fa-paypal" %}
+                          {% set payment_name = "PayPal" %}
+                          <div class="content">
+                            <img src="/assets/images/PayPal.svg" alt="PayPal is your selected payment method" />
+                            <br/>
+                            <a href="/reset-payment" data-js="another-payment" class="gray-link"><u>Choose a different payment type</u></a>
+                          </div>
+                        </div>
+                      {% endif %}
+
+                      {# payment not configured (load worldpay) #}
+                      {% if not has_payment_already %}
+                        <div id="payframe" class="well minheight loading-mask"></div>
+                      {% endif %}
+
+                      <button type="submit" id="cc-checkout-button" class="btn btn-block btn-lg btn-info">Review Your Order <i class="fa fa-arrow-right"></i></button>
+                    </form>
+
+                    <form
+                      data-js="applepay-confirm-form"
+                      action="/confirmation"
+                      method="POST"
+                      data-transaction-id="{{ session_safe_get('order_id') }}"
+                      data-order-id="{{ config.ORDER_PREFIX }}{{ session_safe_get('order_id') }}"
+                    >
+                      <input type="hidden" id="responseap$paypageRegistrationId" name="worldpay_registration_id" value="{{ session_safe_get('worldpay_registration_id') }}" readOnly="true" />
+                      <input type="hidden" id="responseap$checkoutId" name="worldpay_checkout_id" value="{{ session_safe_get('worldpay_vantiv_txn_id') }}" readOnly="true" />
+                      <input type="hidden" id="responseap$vantivTxnId" name="worldpay_vantiv_txn_id" value="{{ session_safe_get('worldpay_vantiv_txn_id') }}" readOnly="true" />
+                      <input type="hidden" id="responseap$expDate" name="card_date" value="{{ session_safe_get('worldpay_vantiv_txn_id') }}" readOnly="true"/>
+                      <input type="hidden" id="responseap$expMonth" name="card_month" value="{{ session_safe_get('card_month') }}" readOnly="true"/>
+                      <input type="hidden" id="responseap$expYear" name="card_year" value="{{ session_safe_get('card_year') }}" readOnly="true"/>
+                      <input type="hidden" id="responseap$type" name="card_type" value="{{ session_safe_get('card_type') }}" readOnly="true"/>
+                      <input type="hidden" id="responseap$aptype" name="payment_method" value="applepay" readOnly="true" />
+                    </form>
+
+                    {% if not has_payment_already %}
+                    <script>
+                      var showAlternatePayment = function() {
+                        $('#cc-payment').removeClass('show').slideUp();
+                        $('#alternate-payment').slideDown();
+                        console.error("Payframe load failed")
+                      }
+
+                      var startTime;
+                      var payframeClientCallback = function(response) {
+                        console.log("response", response);
+                        var elapsedTime = new Date().getTime() - startTime;
+                        console.log("response time", elapsedTime);
+                        if (response.timeout) {
+                          afterLoad('unSpinButton', function() {
+                            unSpinButton("cc-checkout-button");
+                          });
+                          showAlternatePayment();
+                          console.error('worldpay payment request timed out after ' + elapsedTime + 'ms', response);
+                        } else {
+
+                          if (response.paypageRegistrationId) document.getElementById("response$paypageRegistrationId").value = response.paypageRegistrationId;
+                          if (response.vantivTxnId) document.getElementById("response$vantivTxnId").value = response.vantivTxnId;
+                          if (response.lastFour) document.getElementById("response$lastFour").value = response.lastFour;
+                          if (response.expMonth) document.getElementById("response$expMonth").value = response.expMonth;
+                          if (response.expYear) document.getElementById("response$expYear").value = response.expYear;
+                          if (response.type) document.getElementById("response$type").value = response.type;
+
+                          if (response.response === "870") {
+                            // worldpay seems to allow empty expiration
+                            if (!response.expMonth || !response.expYear) {
+                              flashMessage.show({
+                                message: "Please check your expiration date",
+                                alertType: 'danger',
+                                timeout: false
+                              });
+                              afterLoad('unSpinButton', function() {
+                                unSpinButton("cc-checkout-button");
+                              });
+                              return false;
+                            }
+
+                            //Submit the form
+                            $('[data-js="cc-form"]').off().submit();
+                          } else if (
+                            response.response === "871" ||
+                            response.response === "872" ||
+                            response.response === "873" ||
+                            response.response === "874" ||
+                            response.response === "876"
+                          ) {
+                            //Recoverable error caused by user mis-typing their credit card
+                            //alert("Please check and re-enter your credit card number and try again.");
+                            afterLoad('unSpinButton', function() {
+                              unSpinButton("cc-checkout-button");
+                            });
+                          } else if (
+                            response.response === "881" ||
+                            response.response === "882" ||
+                            response.response === "883"
+                          ) {
+                            //Recoverable error caused by user mis-typing their credit card
+                            //alert("Please check and re-enter your card validation number and try again.");
+                            afterLoad('unSpinButton', function() {
+                              unSpinButton("cc-checkout-button");
+                            });
+                          } else if (response.response === "884") {
+                            //Frame failed to load, so payment can't proceed.
+                            //You may want to consider a larger timeout value for the htmlTimeout property
+                            //You may also want to log the customer ip, user agent, time, paypageId and style that failed to load for debugging.
+                            //Here, we hide the frame to remove the unsightly browser error message from the middle of our payment page that may eventually display
+                            $("#eProtectiframe").hide();
+                            /* and disable the checkout button
+                            NOTE: When there is a timeout or you receive a validation - related error response code, be sure to
+                            submit enough information(for example, customer IP address, user agent, and time) to your order
+                            processing system to identify transactions that could not be completed.This will help you monitor
+                            problems with the eProtect Integration and also have enough information
+                            for debugging. */
+                            $("#cc-checkout-btn").attr("disabled", "disabled");
+                            afterLoad('unSpinButton', function() {
+                              unSpinButton("cc-checkout-button");
+                            });
+                            console.error('worldpay iframe did not load ' + elapsedTime + 'ms ', response);
+                            showAlternatePayment();
+                          } else if (response.response === "885") {
+                            //CSS Failed to load, so the page will look unsightly but will function.
+                            //We are going to continue with the order
+                            $("#cc-checkout-btn").removeAttr("disabled");
+                            console.error('worldpay css did not load ' + elapsedTime + 'ms ', response);
+                            //You may also want to log the customer ip, user agent, time, and style that failed to load for debugging
+                          } else if (response.response === "886") {
+                            //Recoverable error caused by invalid month, year, or both
+                            //alert("Please check expiration date and try again.");
+                            afterLoad('unSpinButton', function() {
+                              unSpinButton("cc-checkout-button");
+                            });
+                          } else {
+                            //Non-recoverable or unknown error code
+                            //You may also want to submit the vantivTxnId and response received, plus information you have about the consumer to your servers to facilitate debugging, i.e., customer ip address, user agent and time
+                            console.error('worldpay non-recoverable error ' + elapsedTime + 'ms ', response);
+                            afterLoad('unSpinButton', function() {
+                              unSpinButton("cc-checkout-button");
+                            });
+                            showAlternatePayment();
+                          }
+                        }
+                      };
+
+                      function inputsEmptyCallback(res) {
+                        console.log("inputsEmptyCallback: message received");
+                        console.log(res);
+                        var isEmpty = res.allInputsEmpty;
+                        if (isEmpty) {
+                          console.log("Card input fields empty");
+                          //$( "<p>Inputs are Empty</p>" ).insertAfter(".checkout");
+                          return true;
+                        } else {
+                          console.log("Card inputs not empty");
+                          //$( "<p>Inputs are not Empty</p>" ).insertAfter(".checkout");
+                          return false;
+                        }
+                      }
+
+                      afterLoad('$', function() {
+
+                        // listen for submits
+                        $('[data-js="cc-form"]').on('submit', function(e) {
+                          console.log("submit form", e);
+                          e.preventDefault();
+                          if (payframeClient.allInputsEmpty()) {
+                            return false;
+                          }
+                          console.log("document.getElementById('expMonth').value", document.getElementById('expMonth'));
+
+                          var message = {
+                            "id": e.target.getAttribute('data-transaction-id'),
+                            "orderId": e.target.getAttribute('data-order-id')
+                          };
+                          startTime = new Date().getTime();
+                          spinButton("cc-checkout-button", "PLEASE WAIT");
+                          window.payframeClient.getPaypageRegistrationId(message);
+                          //window.payframeClient.getCheckoutId(message);
+                          return false;
+                        })
+
+                        $.getScript("{{ config.WORLDPAY_JS }}{{ 'breakthis' if session_safe_get('RORY') == '2' else '' }}")
+                          .done(function() {
+                            var configure = {
+                              "paypageId": "{{ config.WORLDPAY_PAYPAGE_ID }}",
+                              "style": "{{ config.WORLDPAY_STYLE }}",
+                              "height": "275",
+                              "reportGroup": "{{ config.WORLDPAY_MERCHANTID }}",
+                              "timeout": 30000,
+                              "div": "payframe",
+                              "callback": payframeClientCallback,
+                              "showCvv": true,
+                              "months": {
+                                "1": "January",
+                                "2": "February",
+                                "3": "March",
+                                "4": "April",
+                                "5": "May",
+                                "6": "June",
+                                "7": "July",
+                                "8": "August",
+                                "9": "September",
+                                "10": "October",
+                                "11": "November",
+                                "12": "December"
+                              },
+                              "numYears": 11,
+                              "tooltipText": "A CVV is the 3 digit code on the back of your Visa, MasterCard and Discover or a 4 digit code on the front of your American Express",
+                              "tabIndex": {
+                                "accountNumber": 1,
+                                "cvv": 4,
+                                "expMonth": 2,
+                                "expYear": 3
+                              },
+                              "placeholderText": {
+                                "cvv": "CVV",
+                                "accountNumber": "Account Number"
+                              },
+                              "htmlTimeout": 30000, // change back to 8000
+                              "inputsEmptyCallback": inputsEmptyCallback,
+                              "clearCvvMaskOnReturn": true,
+                              "enhancedUxFeatures": {
+                                "inlineFieldValidations": true,
+                                "numericInputsOnly": false,
+                                "expDateValidation": true
+                              },
+                              "customErrorMessages": {
+                                "871": "Error: Invalid account number",
+                                "872": "Error: Card number too short",
+                                "873": "Error: Card number too long",
+                                "874": "Error: Card number not numeric",
+                                "876": "Error: Invalid account number",
+                                "881": "Error: Card validation number not numeric",
+                                "882": "Error: Card validation number too short",
+                                "883": "Error: Card validation number too long",
+                                "886": "Error: Expiration date invalid",
+                                "886-month": null,
+                                "886-year": null,
+                              },
+                            };
+                            window.payframeClient = new EprotectIframeClient(configure);
+                            $('#payframe').removeClass('loading-mask');
+                          })
+                          .fail(function() {
+                            window.payframeClient = 'fail';
+                            showAlternatePayment();
+                          });
+
+                        // Applepay with Eprotect methods
+
+                        // Validate on the server
+                        validateMerchant = (validationURL) => {
+                          return fetch("/api/checkout/start-applepay")
+                            .then(res => res.json())
+                            .catch(err => {
+                              console.error("Error fetching merchant session", err);
+                            });
+                        };
+                        // Payment completion
+                        paymentCompletion = () => {
+                          return fetch("/api/checkout/complete-applepay")
+                            .then(res => res.json())
+                            .catch(err => {
+                              console.error("Error fetching payment completion", err);
+                            });
+                        };
+                        $("apple-pay-button").on("click", function(e) {
+                          e.preventDefault();
+                          if (!window.ApplePaySession)
+                            return;
+                          console.log("applepay button clicked");
+
+                          // Define ApplePayPaymentRequest
+                          const request = {
+                            "countryCode": "US",
+                            "currencyCode": "USD",
+                            "merchantCapabilities": [
+                              "supports3DS"
+                            ],
+                            "supportedNetworks": [
+                              "visa",
+                              "masterCard",
+                              "amex",
+                              "discover"
+                            ],
+                            "total": {
+                              "label": "Order Total",
+                              "type": "final",
+                              "amount": "{{ g.cart.get_total() }}"
+                            }
+                          };
+
+                          // Create ApplePaySession
+                          const session = new ApplePaySession(3, request);
+
+                          session.onvalidatemerchant = async event => {
+                            // Call your own server to request a new merchant session w/ given URL
+                            console.log('called validate merchant');
+                            const merchantSession = await validateMerchant(event.validationURL);
+                            session.completeMerchantValidation(merchantSession);
+                          };
+
+                          session.onpaymentmethodselected = async event => {
+                            // Define ApplePayPaymentMethodUpdate based on the selected payment method.
+                            console.log('called payment method selected');
+                            const newTotal = await paymentCompletion();
+                            session.completePaymentMethodSelection(newTotal);
+                          };
+                          session.onshippingmethodselected = event => {
+                            // Define ApplePayShippingMethodUpdate based on the selected shipping method.
+                            // No updates or errors are needed, pass an empty object.
+                            console.log('called shipping method selected');
+                            const update = {};
+                            session.completeShippingMethodSelection(update);
+                          };
+
+                          session.onshippingcontactselected = event => {
+                            // Define ApplePayShippingContactUpdate based on the selected shipping contact.
+                            console.log('called shipping contact selected');
+                            const update = {};
+                            session.completeShippingContactSelection(update);
+                          };
+
+                          session.onpaymentauthorized = event => {
+                            // Call Worldpay eProtect with ApplePay data
+                            // Define ApplePayPaymentAuthorizationResult
+                            console.log('called payment authorized');
+                            document.getElementById("responseap$paypageRegistrationId").value = "";
+                            document.getElementById("responseap$checkoutId").value = "";
+                            document.getElementById("responseap$vantivTxnId").value = "";
+                            //document.getElementById("responseap$lastFour").value = "";
+                            document.getElementById("responseap$expMonth").value = "";
+                            document.getElementById("responseap$expYear").value = "";
+                            document.getElementById("responseap$expDate").value = "";
+                            document.getElementById("responseap$type").value = "";
+                            document.getElementById("responseap$aptype").value = "";
+                            $.getScript("{{ config.WORLDPAY_APPLEPAY_JS }}")
+                              .done(function() {
+                                const applePayData = {
+                                  "data": event.payment.token.paymentData.data,
+                                  "signature": event.payment.token.paymentData.signature,
+                                  "version": event.payment.token.paymentData.version,
+                                  "header": {
+                                    "applicationData": null,
+                                    "ephemeralPublicKey": event.payment.token.paymentData.header.ephemeralPublicKey,
+                                    "publicKeyHash": event.payment.token.paymentData.header.publicKeyHash,
+                                    "transactionId": event.payment.token.transactionIdentifier,
+                                  }
+                                };
+                                // Init ApplePay result
+                                var applePayResult = {
+                                  "status": ApplePaySession.STATUS_FAILURE
+                                };
+                                var eProtectUrl = "{{ config.WORLDPAY_EPROTECT_URL }}";
+
+                                const eProtectRequest = {
+                                  "paypageId": "{{ config.WORLDPAY_APPLEPAY_PAYPAGE_ID }}",
+                                  "reportGroup": "{{ config.WORLDPAY_MERCHANTID }}",
+                                  "orderId": "{{ config.ORDER_PREFIX }}{{ session_safe_get('order_id') }}",
+                                  "id": "{{ session_safe_get('order_id') }}",
+                                  "checkoutIdMode": true,
+                                  "applepay": applePayData,
+                                  "url": eProtectUrl,
+                                  "minPanLength": 16
+                                };
+                                new eProtect().sendToEprotect(eProtectRequest, {},
+                                  // submitAfterEprotect
+                                  function(response) {
+                                    // console.log('sendToEprotect response', response);
+                                    if (response.paypageRegistrationId) document.getElementById("responseap$paypageRegistrationId").value = response.paypageRegistrationId;
+                                    if (response.checkoutId) document.getElementById("responseap$checkoutId").value = response.checkoutId;
+                                    if (response.vantivTxnId) document.getElementById("responseap$vantivTxnId").value = response.vantivTxnId;
+                                    //if (response.lastFour) document.getElementById("responseap$lastFour").value = response.lastFour;
+                                    if (response.expDate) {
+                                      document.getElementById("responseap$expDate").value = response.expDate;
+                                      if (response.expDate.length == 4) {
+                                        document.getElementById("responseap$expMonth").value = response.expDate.substring(0, 2);
+                                        document.getElementById("responseap$expYear").value = response.expDate.substring(2);
+                                      }
+                                    }
+                                    if (response.type) document.getElementById("responseap$type").value = response.type;
+                                    document.getElementById("responseap$aptype").value = 'applepay';
+                                    //Submit the form
+                                    applePayResult.status = ApplePaySession.STATUS_SUCCESS;
+                                    session.completePayment(applePayResult);
+                                    // console.log(response.paypageRegistrationId, response.vantivTxnId);
+                                    $('[data-js="applepay-confirm-form"]').submit();
+                                  },
+                                  // onErrorAfterEprotect
+                                  function(response) {
+                                    // console.log('onErrorAfterEprotect', response);
+                                    if (response.paypageRegistrationId) document.getElementById("responseap$paypageRegistrationId").value = response.paypageRegistrationId;
+                                    if (response.checkoutId) document.getElementById("responseap$checkoutId").value = response.checkoutId;
+                                    if (response.vantivTxnId) document.getElementById("responseap$vantivTxnId").value = response.vantivTxnId;
+                                    if (response.type) document.getElementById("responseap$type").value = response.type;
+                                    document.getElementById("responseap$aptype").value = 'applepay';
+                                    session.completePayment(applePayResult);
+                                    if (response.response === "871" ||
+                                      response.response === "872" ||
+                                      response.response === "873" ||
+                                      response.response === "874" ||
+                                      response.response === "876"
+                                    ) {
+                                      //Recoverable error caused by user mis-typing their credit card
+                                      alert("Please try a different credit card or payment type with applepay.");
+                                    } else if (
+                                      response.response === "881" ||
+                                      response.response === "882" ||
+                                      response.response === "883"
+                                    ) {
+                                      //Recoverable error caused by user mis-typing their credit card cvv code
+                                      alert("Please check and re-enter your card validation code and try again.");
+                                    } else {
+                                      //Non-recoverable or unknown error code
+                                      //You may also want to submit the vantivTxnId and response received, plus information you have about the consumer to your servers to facilitate debugging, i.e., customer ip address, user agent and time
+                                      console.error('worldpay non-recoverable error CART: {{ get_cart_id() }}', response, eProtectRequest);
+                                      showAlternatePayment();
+                                    }
+                                  },
+                                  // timeoutOnEprotect
+                                  function(response) {
+                                    // console.log('timeoutOnEprotect', response);
+                                    session.completePayment(applePayResult);
+                                    showAlternatePayment();
+                                    //alert("We are experiencing technical difficulties. Please try again or call us to complete your order");
+                                    //You may also want to submit information you have about the consumer to your servers to facilitate debugging like customer ip address, user agent, and time
+                                    console.error('worldpay payment request timed out after ' + response.responseTime + 'ms CLIENT: CART: {{ get_cart_id() }}', response);
+                                  },
+                                  15000);
+                              })
+                              .fail(function() {
+                                window.payframeClient = 'fail';
+                                showAlternatePayment();
+                              });
+
+                          };
+                          session.oncancel = event => {
+                            // Payment cancelled by WebKit
+                            console.log("applepay checkout canceled");
+                          };
+
+                          session.begin();
+                        });
+                      });
+                    </script>
+                    {% endif %} {# end if for not has_payment_already #}
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      {% include "includes/checkout_cart_summary.html.j2" %}
+    </div>
+  </div>
+</main>
+
+{% endblock %}

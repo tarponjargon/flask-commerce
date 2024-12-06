@@ -1,0 +1,26 @@
+<div class="container checkout-nav">
+  <div class="row">
+    <div class="col-6 text-left ps-0 pe-0">
+      <h1 class="header-title primary-color mb-0">Checkout</h1>
+    </div>
+    <div class="col-6 d-flex align-items-end justify-content-end button-section">
+      <div class="d-inline-block mb-1 ms-1 position-relative sign-in-outer">
+        <div class="sign_in">
+          <div class="d-block sign-in-container">
+            {% include "includes/account_link.html.j2" %}
+          </div>
+        </div>
+      </div>
+      <div class="d-inline-block mb-1 ms-2 ms-xl-4">
+        <a href="/cart" data-js="mini-cart" title="Login or Check Order Status" class="ps-1 cart">
+        <img src="{{ config.IMAGE_BASE }}/assets/images/shopping-cart-mobile.png"  width="22" height="22" class="img-fluid" alt="Your Cart">
+        <span class="position-relative visible" data-js="cart-item-container">
+        <span data-js="cart-item-quantity" class="mobile-quantity">{{ g.cart.get_quantities() }}</span>
+        </span>
+        &nbsp;
+        <span class="d-none d-md-inline-block">CART</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

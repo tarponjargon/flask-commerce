@@ -1,0 +1,64 @@
+{% extends "base.html.j2" %}
+{% set title %}{{ config.STORE_NAME }} Terms of Use at {{ config.STORE_NAME }}{% endset %}
+{% set page = 'termsofuse' %}
+
+{% block content %}
+
+<main class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ config.STORE_NAME }} Terms of Use</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="col-md-12">
+      <h1 class="customer-service">{{ config.STORE_NAME }} Terms of Use</h1>
+    </div>
+
+    <div class="col-12 p-4">
+      Welcome to {{ config.STORE_NAME }}. {{ config.STORE_NAME }} provides its services to you subject to the following terms and conditions. If you visit or shop at {{ config.STORE_NAME }}, you accept these conditions. Please read them carefully.
+      <BR><BR><b>Privacy</b><BR>
+      Please review our <a href="/privacy">Privacy Policy</a>, which also governs your visit to {{ config.STORE_NAME }}, to understand our practices.
+      <BR><BR><b>Copyright</b><BR>
+      All content included on this site, such as text, graphics, logos, button icons, images, data compilations, and software, is the property of {{ config.STORE_NAME }} or its content suppliers and protected by United States and international copyright laws. The compilation of all content on this site is the exclusive property of {{ config.STORE_NAME }} and protected by U.S. and international copyright laws. All software used on this site is the property of {{ config.STORE_NAME }}, The White Room, Inc. or their software suppliers and protected by United States and international copyright laws.
+      <BR><BR><b>License and Site Access</b><BR>
+      {{ config.STORE_NAME }} grants you a limited license to access and make personal use of this site and not to download (other than page caching) or modify it, or any portion of it, except with express written consent of {{ config.STORE_NAME }}. This license does not include any resale or commercial use of this site or its contents; any collection and use of any product listings, descriptions, or prices; any derivative use of this site or its contents; any downloading or copying of account information for the benefit of another merchant; or any use of data mining, robots, or similar data gathering and extraction tools. This site or any portion of this site may not be reproduced, duplicated, copied, sold, resold, visited, or otherwise exploited for any commercial purpose without express written consent of {{ config.STORE_NAME }}. You may not frame or utilize framing techniques to enclose any trademark, logo, or other proprietary information (including images, text, page layout, or form) of {{ config.STORE_NAME }} without express written consent. You may not use any meta tags or any other "hidden text" utilizing {{ config.STORE_NAME }} 's name or logos without the express written consent of {{ config.STORE_NAME }}. Any unauthorized use terminates the permission or license granted by {{ config.STORE_NAME }} .You are granted a limited, revocable, and nonexclusive right to create a hyperlink to the home page of {{ config.STORE_NAME }} so long as the link does not portray {{ config.STORE_NAME }}, or its products or services in a false, misleading, derogatory, or otherwise offensive matter. You may not use any {{ config.STORE_NAME }} logo or other proprietary graphic as part of the link without express written permission.
+      <BR><BR><b>Your Account</b><BR>
+      If you use this site, you are responsible for maintaining the confidentiality of your account and password and for restricting access to your computer, and you agree to accept responsibility for all activities that occur under your account or password. {{ config.STORE_NAME }} does sell products for children, but it sells them to adults, who can purchase with a credit card. If you are under 18, you may use {{ config.STORE_NAME }} only with involvement of a parent or guardian. {{ config.STORE_NAME }} reserves the right to refuse service, terminate accounts, remove or edit content, or cancel orders at their sole discretion.
+      <BR><BR><b>Comments, Communications, and Other Content</b><BR>
+      Visitors may post comments; send e-cards and other communications; and submit suggestions, ideas, comments, questions, or other information, so long as the content is not illegal, obscene, threatening, defamatory, invasive of privacy, infringing of intellectual property rights, or otherwise injurious to third parties or objectionable and does not consist of or contain software viruses, political campaigning, commercial solicitation, chain letters, mass mailings, or any form of "spam." You may not use a false e-mail address, impersonate any person or entity, or otherwise mislead as to the origin of a card or other content. {{ config.STORE_NAME }} reserves the right (but not the obligation) to remove or edit such content.
+      If you do post content or submit material, and unless we indicate otherwise, you grant {{ config.STORE_NAME }} a nonexclusive, royalty-free, perpetual, irrevocable, and fully sublicensable right to use, reproduce, modify, adapt, publish, translate, create derivative works from, distribute, and display such content throughout the world in any media. You grant {{ config.STORE_NAME }} and sublicensees the right to use the name that you submit in connection with such content, if they choose. You represent and warrant that you own or otherwise control all of the rights to the content that you post; that the content is accurate; that use of the content you supply does not violate this policy and will not cause injury to any person or entity; and that you will indemnify {{ config.STORE_NAME }} for all claims resulting from content you supply. {{ config.STORE_NAME }} has the right but not the obligation to monitor and edit or remove any activity or content. {{ config.STORE_NAME }} takes no responsibility and assumes no liability for any content posted by you or any third party.
+      <BR><BR><b>Copyright Complaints</b><BR>
+      {{ config.STORE_NAME }} respects the intellectual property of others. If you believe that your work has been copied in a way that constitutes copyright infringement, please notify us at {{ config.STORE_CUSTOMER_SERVICE }}.
+      <BR><BR><b>Product Descriptions</b><BR>
+      {{ config.STORE_NAME }} attempt to be as accurate as possible. However, {{ config.STORE_NAME }} does not warrant that product descriptions or other content of this site is accurate, complete, reliable, current, or error-free. If a product offered by {{ config.STORE_NAME }} itself is not as described, your sole remedy is to return it in unused condition.
+      <BR><BR><b>Use of Discount Offers & Coupons</b><BR>
+      Use of {{ config.STORE_NAME }} or {{ config.STORE_NAME }} Catalog coupons or discount offers are subject to certain terms, conditions and restrictions including, but not limited to the following:
+      <BR>
+      <ul>
+        <li>Limit of one coupon or discount offer per order.</li>
+        <li>Not valid with any other offer.</li>
+        <li>Void if transferred or reproduced</li>
+        <li>No cash value</li>
+      </ul>
+      <BR><BR><b>DISCLAIMER OF WARRANTIES AND LIMITATION OF LIABILITY</b><BR>
+      THIS SITE IS PROVIDED BY {{ config.STORE_NAME }} ON AN "AS IS" AND "AS AVAILABLE" BASIS. {{ config.STORE_NAME }} MAKES NO REPRESENTATIONS OR WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, AS TO THE OPERATION OF THIS SITE OR THE INFORMATION, CONTENT, MATERIALS, OR PRODUCTS INCLUDED ON THIS SITE. YOU EXPRESSLY AGREE THAT YOUR USE OF THIS SITE IS AT YOUR SOLE RISK.
+      TO THE FULL EXTENT PERMISSIBLE BY APPLICABLE LAW, {{ config.STORE_NAME }} DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. {{ config.STORE_NAME }} DOES NOT WARRANT THAT THIS SITE, ITS SERVERS, OR E-MAIL SENT FROM {{ config.STORE_NAME }} ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS. {{ config.STORE_NAME }} WILL NOT BE LIABLE FOR ANY DAMAGES OF ANY KIND ARISING FROM THE USE OF THIS SITE, INCLUDING, BUT NOT LIMITED TO DIRECT, INDIRECT, INCIDENTAL, PUNITIVE, AND CONSEQUENTIAL DAMAGES.
+      CERTAIN STATE LAWS DO NOT ALLOW LIMITATIONS ON IMPLIED WARRANTIES OR THE EXCLUSION OR LIMITATION OF CERTAIN DAMAGES. IF THESE LAWS APPLY TO YOU, SOME OR ALL OF THE ABOVE DISCLAIMERS, EXCLUSIONS, OR LIMITATIONS MAY NOT APPLY TO YOU, AND YOU MIGHT HAVE ADDITIONAL RIGHTS.
+      <BR><BR><b>Applicable Law</b><BR>
+      By visiting {{ config.STORE_NAME }}, you agree that the laws of the state of Ohio, without regard to principles of conflict of laws, will govern these Conditions of Use and any dispute of any sort that might arise between you and {{ config.STORE_NAME }} or its affiliates.
+      <BR><BR><b>Disputes</b><BR>
+      Any dispute relating in any way to your visit to {{ config.STORE_NAME }} or to products you purchase through {{ config.STORE_NAME }} shall be submitted to confidential arbitration in Ohio, except that, to the extent you have in any manner violated or threatened to violate {{ config.STORE_NAME }} 's intellectual property rights, {{ config.STORE_NAME }} may seek injunctive or other appropriate relief in any state or federal court in the state of Ohio, and you consent to exclusive jurisdiction and venue in such courts. Arbitration under this agreement shall be conducted under the rules then prevailing of the American Arbitration Association. The arbitrator's award shall be binding and may be entered as a judgment in any court of competent jurisdiction. To the fullest extent permitted by applicable law, no arbitration under this Agreement shall be joined to an arbitration involving any other party subject to this Agreement, whether through class arbitration proceedings or otherwise.
+      <BR><BR><b>Site Policies, Modification & Severability</b><BR>
+      Please review our other policies posted on this site. These policies also govern your visit to {{ config.STORE_NAME }}. We reserve the right to make changes to our site, policies, and these Terms of Use at any time. If any of these conditions shall be deemed invalid, void, or for any reason unenforceable, that condition shall be deemed severable and shall not affect the validity and enforceability of any remaining condition.
+      {% include "includes/store_address.html.j2" %}
+
+    </div>
+  </div>
+</main>
+
+{% endblock %}

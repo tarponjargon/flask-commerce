@@ -1,0 +1,58 @@
+/*Plain text page*/
+.sidebar-item {
+	border: none;
+	.sidebar-heder {
+		float: left;
+		width: 100%;
+		padding: 6px 0 15px;
+		border-bottom: 1px solid $divider;
+		.sidebar-name {
+			font-family: "Nunito", Helvetica, sans-serif;
+			font-size: 28px;
+			font-weight: 300;
+			color: $brand-primary;
+		}
+		.switch {
+			color: $brand-info;
+			.more-icon {
+				display: inline-block;
+				margin-right: 5px;
+				color: $white;
+				background-color: $brand-info;
+				border-radius: 100px;
+				width: 18px;
+				height: 18px;
+				vertical-align: middle;
+				text-align: center;
+				line-height: 16px;
+				font-size: 22px;
+			}
+		}
+	}
+	.sidebar-nav-wrapper {
+		float: left;
+		width: 100%;
+		padding-top: 15px;
+		@media screen and (min-width: 769px) {
+			display: block !important;
+		}
+		@media screen and (max-width: 768px) {
+			display: none;
+		}
+		ul {
+			padding: 0;
+			li {
+				list-style-type: none;
+				padding: 10px 0;
+				a {
+					color: $gray;
+					font-size: 18px;
+					font-weight: 400;
+				}
+			}
+		}
+	}
+}
+.text-page-content {
+	padding-top: 15px;
+}

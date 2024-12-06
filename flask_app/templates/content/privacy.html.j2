@@ -1,0 +1,481 @@
+{% extends "base.html.j2" %}
+{% set title FlaskCommerce Privacy Policy{% endset %}
+{% set page = 'privacy' %}
+
+{% block content %}
+
+<main class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Privacy</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="col-md-12">
+      <h1 class="customer-service">Privacy Policy</h1>
+    </div>
+
+    <div class="col-md-12">
+      <div class="text-page-content">
+
+          <div class="container-fluid">
+            <p>We respect each consumer's opinion and choice regarding their privacy online and offline. The following policies disclose our information gathering and dissemination practices
+            for our online {{ config.STORE_NAME }} Web site ({{ config.STORE_URL }}) and our offline print catalogs.</p>
+            <p>If you have any questions regarding privacy issues after consulting this page, please contact us at:</p>
+            <p>
+            {% include "includes/store_address.html.j2" %}
+            </p>
+            <p>At {{ config.STORE_NAME }}, we respect the privacy of our customers and the importance of the information they entrust to us. We summarize below the basic information policies and practices on our {{ config.STORE_NAME }} website.</p>
+            <p><strong>What information is collected by {{ config.STORE_NAME }}?</strong></p>
+            <p><strong> </strong></p>
+            <p>{{ config.STORE_NAME }} collects information from you and about you in order to fulfill your orders, to provide you with a better user experience and make
+              improvements to our website and business, and for purposes of marketing to you, as described in our <strong><a href="/notice-at-collection">Notice at Collection</a></strong>. The below table describes the categories of information {{ config.STORE_NAME }}
+               has collected about website visitors in the previous 12 months, as well as the use of the data, the categories of third-parties to whom the data was disclosed for
+                {{ config.STORE_NAME }}' business purposes, and the categories of third parties to whom the data may have been sold or disclosed for those parties' marketing purposes.</p>
+            <p> </p>
+            <p> </p>
+            <table class="table table-responsive">
+              <thead>
+                <tr>
+                  <td >
+                    <p><strong>Type of information</strong></p>
+                  </td>
+                  <td >
+                    <p><strong>Purpose</strong></p>
+                  </td>
+                  <td >
+                    <p><strong>Disclose / disclosed</strong></p>
+                  </td>
+                  <td >
+                    <p><strong>Sell / Share</strong></p>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td >
+                    <p>Identifiers, such as name, shipping address and telephone number</p>
+                  </td>
+                  <td >
+                    <p>To fulfill your order, communicate with you about your orders, and send you catalogs or marketing communications, and comply with our legal obligations</p>
+                  </td>
+                  <td >
+                    <p>We share contact information with our agents (including credit card clearing agencies, and delivery companies) in order to process the orders you place.</p>
+                  </td>
+                  <td >
+                    <p>We may rent or sell customer mailing lists to third-parties who may send you catalogs or other items in the mail. If you wish to opt out of this, please <strong><a href="/do-not-rent">click here</a></strong>.</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <p>Email address</p>
+                  </td>
+                  <td >
+                    <p>We ask for an email address so that we can email you information about your order, or send you email offers.</p>
+                    <p>You can also sign up to receive email offers without making a purchase.</p>
+                    <p>You can unsubscribe from commercial emails by clicking the "unsubscribe" link in an email.</p>
+                  </td>
+                  <td >
+                    <p>We may share email addresses of our customers for our own business purposes including with our email provider, for purposes of sending you emails, and with advertising agencies for purposes of developing target audiences for our own marketing efforts.</p>
+                  </td>
+                  <td >
+                    <p>While we do not share customer email addresses with third parties for third parties' email marketing purposes, we may share this information with third party marketing and analytics services as described in the section titled "How is my Information Used?" below.  </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <p>Commercial Information</p>
+                  </td>
+                  <td >
+                    <p>We collect and retain commercial information, such as a record of your purchase transactions, in order to fulfill your orders, comply with our legal obligations, aid in fraud prevention efforts, and to analyze our business and improve our marketing efforts.</p>
+                  </td>
+                  <td >
+                    <p>Marketing agencies working on our behalf may access our customer database, including purchase history, for purpose of designing and implementing marketing strategies for our business.</p>
+                  </td>
+                  <td >
+                    <p>We may share information with third party marketing and analytics services as described in the section titled "How is my Information Used" below. </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <p>Demographic information: including age, gender, and other demographic traits</p>
+                  </td>
+                  <td >
+                    <p>We may collect demographic information directly from you, or may obtain this information from publicly available sources or purchase it from data enhancement vendors and combine it with information we have collected about you. We use this information to better inform our marketing efforts and to understand the preferences of our customers.</p>
+                  </td>
+                  <td >
+                    <p>Marketing agencies working on our behalf may access our customer database, including demographic overlay information, for purpose of designing and implementing marketing strategies for our business.</p>
+                  </td>
+                  <td>
+                    <p>We may share information with third party marketing and analytics services as described in the section titled "How is my Information Used?" below</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <p>Credit card details (including billing information)</p>
+                  </td>
+                  <td >
+                    <p>We only ask for these when you place an order.</p>
+                  </td>
+                  <td >
+                    <p>With our agents (including credit card clearing agencies, and delivery companies) that we use to process the orders you place with us or who assist us in the services we provide to you. We provide them with only the information they need to perform their duties. These details may also be used for fraud prevention and detection purposes.</p>
+                    <p> </p>
+                  </td>
+                  <td >
+                    <p>N/A</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <p>Other information you submit</p>
+                  </td>
+                  <td >
+                    <p>We may collect personal information when you send us a message by email or though the "contact us" page on this website.  </p>
+                  </td>
+                  <td >
+                    <p>N/A</p>
+                  </td>
+                  <td >
+                    <p>N/A</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <p>Internet activity collected via Cookies and similar technologies</p>
+                  </td>
+                  <td >
+                    <p>Our site utilizes cookies, web beacons, and other tracking technology to facilitate a smooth shopping experience, to improve our website, and to inform marketing efforts on our behalf, including identifying audiences for marketing campaigns and measuring the effectiveness of marketing efforts.  </p>
+                    <p>The information collected through the use of cookies and similar technologies includes browsing behavior, IP address, and device type.</p>
+                    <p>Further information on our use of cookies, and your choices, is provided below.</p>
+                  </td>
+                  <td >
+                    <p>We use information collected via cookies and similar technology to operate our website, analyze the way our website is used, and improve our site and our marketing efforts. Further information about cookies is provided below</p>
+                  </td>
+                  <td >
+                    <p>Information collected using cookies and similar technologies may be shared with third party advertising networks to serve you advertising tailored to your interests.  Further information about cookies, and your choices, is provided below</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <p>As directed by the law or governmental request</p>
+                  </td>
+                  <td >
+                    <p>-</p>
+                  </td>
+                  <td >
+                    <p>We will disclose your information where required to obey the law, such as in response to a subpoena or legal process we will disclose your personal information. We also reserve the right to use your personal information to exercise or defend legal claims.</p>
+                  </td>
+                  <td >
+                    <p>-</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p> </p>
+            <p> </p>
+            <p><strong>How is my information used? </strong></p>
+            <p>The information we receive allows us to tailor our product offer and improve your shopping experience, making shopping easier and more enjoyable. It also enables us to process your purchases, confirm your orders, customize the content and layout of our pages, notify you about updates to our websites and products, and provide you with marketing information.</p>
+            <p>The information you supply to us is added to our customer database. You may receive periodic mailings from us about new products and services, discounts, special promotions or upcoming events. If you do not want to receive such mailings from us, please contact us at the address, telephone numbers, Fax number or e-mail above and specify "Do Not Mail Catalog" in your communication along with your exact name and address.</p>
+            <p>Our website uses Google Analytics to analyze visits to our site and to help us improve our site and improve the effectiveness of our marketing efforts, including by personalizing advertisements you may be shown as your browse the web. To learn more about Google Analytics and your choices, please visit: <strong><a href="https://policies.google.com/technologies/partner-sites">https://policies.google.com/technologies/partner-sites</a></strong></p>
+            <p>We may share contact information with our business partners and third party companies and other organizations that may interest you. These companies and organizations may use the information we share to contact you for their own marketing purposes. We will not share your email address or any personal financial information with third parties for their direct marketing use. Should {{ config.STORE_NAME }} merge with, acquire or be acquired by another business entity, some or all of your information could be transferred to the other entity. We may disclose your personal information when {{ config.STORE_NAME }} believes it necessary to comply with any applicable law, regulation, legal process or governmental request or to protect against harm to the rights, property or safety of {{ config.STORE_NAME }}, our customers, or the public as required or permitted by law. If you do not wish to receive mailings from other third party companies, please contact us at the address, telephone numbers, Fax number or e-mail above and specify "Do Not Rent Address to Third Party" in your communication along with your exact name and address.
+              Residents of California, Colorado, Connecticut, Utah, Virginia have additional privacy rights, described <strong><a href="/privacy#states">below</a></strong>.
+            </p>
+            <p>We periodically email our customer list about new products and services, discounts, special promotions or upcoming events. If you do not wish to receive such
+            emails in the future, simply click the "unsubscribe" link on any promotional email you receive from us, or click the link below.</p>
+            <p> </p>
+            <p><strong><strong><a href="/optout">Click here to unsubscribe from {{ config.STORE_NAME }} emails</a></strong></strong></p>
+            <p> </p>
+            <p><strong><em>How will my telephone number be used?</em></strong><br /> {{ config.STORE_NAME }} will contact you by telephone only in the event that the need arises to communicate with you directly regarding the processing of your order or inquiry.</p>
+            <p>On limited occasions, we may contact you to survey your shopping experience.</p>
+            <p>Telephone numbers are not shared with third parties.</p>
+            <p><strong><em>How will my credit card number be used?</em></strong><br /> You credit card number and expiration are used to process your current transaction.</p>
+            <p>For your security and ours, we do not store credit card information on our online server.</p>
+            <p><strong>Privacy of Minors </strong></p>
+            <p>Our Website is not intended for children under 16 years of age. No one under age 16 may provide any personal information on the Website. We do not knowingly collect personal information from children under 16. If you are under 16, do not use or provide any information on this Website. If we learn we have collected or received personal information from a child under 16 without verification of parental consent, we will delete that information.</p>
+            <p><strong>Cookies and similar technologies</strong></p>
+            <p>Like many websites, we use cookies and other tracking technologies such as tracking pixels or web beacons to improve and personalize your browsing experience, to better understand visitors' experience of our website, and to implement and measure the effectiveness of our marketing efforts.</p>
+            <p> </p>
+            <p>"Cookies" are small pieces of information that are stored by your browser on your computer's hard drive. You can adjust the settings on your devices to remove or refuse cookies by following instructions provided by your web browser. If you adjust your browser to remove or delete cookies, some features of our website may not function as designed.</p>
+            <p> </p>
+            <p>We use first party cookies (set by us) and third party cookies (set by digital marketing partners), and may use both persistent cookies (which remain on your hard drive until deleted by you) and session cookies (which expire when you leave our website). For example, we use cookies to record session information, such as items that consumers add to their shopping cart. Our third party marketing partners may use cookies to identify audiences for advertising, and to show relevant advertising to potential customers across the internet. You can learn more about interest-based advertising, and your choices, in the section below.</p>
+            <p><strong>Your Choices regarding Interest-Based Advertising</strong></p>
+            <p>We may work with third-party advertising companies that collect and use information about your browsing behavior across the internet over time, in order to deliver more relevant advertising elsewhere on the internet. For example, if you view a product on our website, our partners may use pseudonymized browsing information gathered using cookies placed by our website and other websites you visit to show you an advertisement for that product when you visit another website.</p>
+            <p> </p>
+            <p>We work with OneTrust to provide you with tools to manage your cookie preferences on our website.  You can choose to disable certain categories of cookies by accessing the cookie management
+            choices available here: <button id="ot-sdk-btn" class="ot-sdk-show-settings">Cookies Settings</button>.
+            The cookie management tool is also configured to recognize the “Global Privacy Control” as a method of expressing a choice to opt-out of all but necessary cookies, however, our website may not recognize every
+            web browser's “do not track” signal, as these technologies continue to develop.  You can also opt-out of interest-based advertising generally by visiting the industry opt-out pages maintained by the
+            Network Advertising Initiative (<strong><a href="http://optout.networkadvertising.org">http://optout.networkadvertising.org</a></strong>) or the Digital Advertising Alliance (<strong><a href="http://optout.aboutads.info">http://optout.aboutads.info</a></strong>).</p>
+            <p><strong> </strong></p>
+            <a name="states"></a>
+            <p><strong>Privacy Rights and Choices for Residents of California, Connecticut, Colorado, Utah and Virginia</strong></p>
+            <p>
+              <u>
+                  Residents of California, Connecticut, Colorado, Utah and Virginia have
+                  certain privacy rights under state law. The below section describes
+                  these data rights and how residents of these states can exercise them.
+              </u>
+            </p>
+            <p>
+              <u>Right to Know</u>
+            </p>
+            <ul type="disc">
+              <li>
+                  You have the right to request that we disclose certain information to
+                  you about our collection and use of your personal information over the
+                  past 12 months. Once we receive and verify your request, we will
+                  disclose to you:
+              </li>
+            </ul>
+            <ul type="disc">
+              <ul type="circle">
+                  <li>
+                      The categories of personal information we collected about you.
+                  </li>
+                  <li>
+                      The categories of sources from which the personal information is
+                      collected.
+                  </li>
+                  <li>
+                      The specific pieces of personal information we collected about you.
+                  </li>
+                  <li>
+                      Our business or commercial purpose for collecting or selling any
+                      personal information.
+                  </li>
+                  <li>
+                      The purposes for which the categories of personal information we
+                      collected will be used.
+                  </li>
+                  <li>
+                      The categories of third parties with whom we share personal
+                      information.
+                  </li>
+                  <li>
+                      If we sold or disclosed your personal information for a business
+                      purpose; and, if so, any categories of personal information that
+                      were sold or disclosed, and the categories of any third parties to
+                      whom personal information was sold or disclosed.
+                  </li>
+              </ul>
+            </ul>
+            <p>
+              <u>Right to Delete</u>
+            </p>
+            <ul type="disc">
+              <li>
+                  You have the right to request that we delete any of your personal
+                  information that we collected from you and retained, subject to certain
+                  exceptions. Once we receive and verify your request, we will delete
+                  (and direct our service providers to delete) your personal information
+                  from our records, unless an exception applies.
+              </li>
+              <ul type="circle">
+                  <li>
+                      We may deny your deletion request if retaining the information is
+                      necessary for us or our service providers to:
+                  </li>
+                  <ul type="square">
+                      <li>
+                          Complete the transaction for which we collected the personal
+                          information, provide a good or service that you requested, take
+                          actions reasonably anticipated within the context of our
+                          ongoing business relationship with you, or otherwise perform
+                          our agreement with you.
+                      </li>
+                      <li>
+                          Detect security incidents, protect against malicious,
+                          deceptive, fraudulent, or illegal activity, or prosecute those
+                          responsible for such activities.
+                      </li>
+                      <li>
+                          Debug products to identify and repair errors that impair
+                          existing intended functionality.
+                      </li>
+                      <li>
+                          Exercise free speech, ensure the right of another consumer to
+                          exercise their free speech rights, or exercise another right
+                          provided for by law.
+                      </li>
+                      <li>
+                          Comply with the California Electronic Communications Privacy
+                          Act.
+                      </li>
+                      <li>
+                          Enable internal uses that are reasonably aligned with consumer
+                          expectations based on your relationship with us.
+                      </li>
+                      <li>
+                          Comply with a legal obligation.
+                      </li>
+                      <li>
+                          Make other internal and lawful uses of that information that
+                          are compatible with the context in which you provided it.
+                      </li>
+                  </ul>
+              </ul>
+            </ul>
+            <p>
+              <u>Right of Correct</u>
+            </p>
+            <ul>
+              <li>
+                  You have the right to request that we correct inaccuracies in any of
+                  your personal information that we collected from you and retained,
+                  taking into account the nature of the personal data and the purposes of
+                  processing your data. If you have created an online account, you may
+                  edit your personal information at any time.
+              </li>
+            </ul>
+            <p>
+              <u>Right to Limit the Processing of Sensitive Personal Information</u>
+            </p>
+            <ul>
+              <li>
+                  California law provides a right to limit the processing of Sensitive
+                  Personal Information.
+                  <a>
+                      We do not collect sensitive personal information (such as social
+                      security numbers, racial or ethnic origin, or religious or
+                      philosophical beliefs),
+                  </a>
+                  except that we may collect payment card information solely for the
+                  purpose of completing a purchase transaction at your request.
+              </li>
+            </ul>
+            <p>
+              <u>Right to Opt-out of the sale or sharing of Personal Data</u>
+            </p>
+            <ul>
+              <li>
+                  You have the right to opt-out of the sale of your personal data to
+                  third parties for third-party marketing uses. To opt out of the sale or
+                  sharing of personal data, please click <strong><a href="/ca-do-not-sell">here.</a></strong>
+              </li>
+            </ul>
+            <p>
+              Right to Opt-out of the sharing of Personal Data or the Processing of
+              Personal Data for targeted marketing
+            </p>
+            <ul>
+              <li>
+                  You have the right to opt out of the processing or sharing of your
+                  personal information with third parties for the cross-context
+                  behavioral advertising. You can submit a request to opt-out of the
+                  sharing of your data by clicking <strong><a href="/ca-do-not-sell">here.</a></strong>
+              </li>
+              <li>
+                  You can also opt-out of the use of cookies for purposes of targeted
+                  advertising by accessing the cookie management choices available:
+                  <button id="ot-sdk-btn" class="ot-sdk-show-settings">Cookies Settings</button> and/or by by visiting the industry opt-out pages
+                  maintained by the Network Advertising Initiative (<strong><a href="http://optout.networkadvertising.org/">http://optout.networkadvertising.org</a></strong>) or the
+                  Digital Advertising Alliance (<strong><a href="http://optout.aboutads.info/">http://optout.aboutads.info</a></strong>).
+              </li>
+            </ul>
+            <p>
+              To exercise the rights described above, please submit a verifiable request
+              to us by calling us at 1-800-944-8879, or by <strong><a href="/ca-consumer-privacy">clicking here</a></strong> to
+              contact us.
+            </p>
+            <p>
+              Only you or a person that you authorize to act on your behalf may make a
+              verifiable consumer request related to your personal information. However,
+              you may also make a verifiable consumer request on behalf of your minor
+              child.
+            </p>
+            <p>
+              Unfortunately, we cannot respond to your request or provide you with
+              personal information if we cannot verify your identity or authority to make
+              the request and confirm that the personal information relates to you.
+              Making a verifiable consumer request does not require you to create an
+              account with us. We will only use personal information provided in a
+              verifiable consumer request to verify the requestor's identity or authority
+              to make the request.
+            </p>
+            <p>
+              We try to respond to a verifiable consumer request within 45 days of its
+              receipt. If we require more time, we will inform you of the reason and
+              extension time period (up to 90 days). If you have an account with us, we
+              will deliver our response to that account. If you do not have an account
+              with us, we will deliver our response by mail or electronically, at your
+              option. The response we provide will also explain any reasons we cannot
+              comply with a request, if applicable.
+            </p>
+            <p>
+              If you wish to opt-out of the sale or sharing of personal information,
+              <strong><a href="/ca-do-not-sell">please fill out this form</a></strong>. If exercised, the decision to opt-out will be
+              valid for 12 months, at which time we may request that you authorize the
+              sale of personal information again.
+            </p>
+            <p>
+              We will not discriminate against you for exercising any of your privacy
+              rights under state law. Unless permitted by law, we will not:
+            </p>
+            <ul type="disc">
+              <li>
+                  Deny you goods or services.
+              </li>
+              <li>
+                  Charge you different prices or rates for goods or services, including
+                  through discounts or other benefits, or imposing penalties.
+              </li>
+              <li>
+                  Provide you a different level or quality of goods or services.
+              </li>
+              <li>
+                  Suggest that you may receive a different price or rate for goods or
+                  services or a different level or quality of goods or services.
+              </li>
+            </ul>
+            <p>
+              We may offer you certain financial incentives permitted by law that can
+              result in different prices, rates, or quality levels. Any legally-permitted
+              financial incentive we offer will reasonably relate to your personal
+              information's value and contain written terms that describe the program's
+              material aspects. Participation in a financial incentive program requires
+              your prior opt in consent, which you may revoke at any time.
+            </p>
+            <p>
+              <u>Right to Appeal</u>
+            </p>
+            <p>
+              If we deny a consumer data request made under this section, or fail to act
+              on the request within a reasonable period of time, you have a
+              <a>right to appeal</a> the denial or failure to act. You may initiate an
+              appeal by clicking <strong><a href="/data-request-appeal">here</a></strong>.
+            </p>
+
+            <div class="table-responsive" style="margin-top:20px;">
+              <h2>Below are the metrics for all CCPA requests received by {{ config.STORE_NAME }} in the 2022 calendar year</h2>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Requests to Opt-Out Received and Complied</th>
+                    <th>Mean Number of Days to Respond Opt-Out</th>
+                    <th>Requests to Know or Delete,  Received and Complied</th>
+                    <th>Mean Number of Days to Respond, Request to Know or Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <td>97</td>
+                  <td>2</td>
+                  <td>0</td>
+                  <td>N/A</td>
+                </tbody>
+              </table>
+
+            <p><strong>Updates to our policy:</strong><br /> We may update this policy from time to time in the future. We will post the updated policy to our Web site to notify you of these changes. We recommend you check this site periodically.</p>
+            <p> </p>
+            <p>Last updated: 7/1/2023</p>
+            <p> </p>
+          </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

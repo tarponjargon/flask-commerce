@@ -1,0 +1,178 @@
+// fixes for "snap" integration
+@supports (display: grid) {
+  .ss-18eur7n::before {
+      padding-bottom: 0;
+  }
+}
+
+.ss-18eur7n {
+  //align-items: start !important;
+  &.ss__inline-banner--grid {
+    flex-direction: row !important;
+  }
+  .ss__facet-grid-options__option {
+    .ss__facet-grid-options__option__value {
+      &.ss__facet-grid-options__option__value--smaller {
+        font-size: inherit !important;
+      }
+    }
+  }
+}
+
+// searchspring inline banner correction
+.ss-11pvwu4 {
+  align-items: start !important;
+  &.ss__inline-banner--grid {
+    flex-direction: row !important;
+  }
+}
+
+// this is important for firefox, it's putting red borders around invalid fields
+input:invalid,
+select:invalid {
+  box-shadow: none;
+}
+
+input.form-control {
+  line-height: 36px;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 1em;
+}
+.radio,
+.checkbox {
+  display: block;
+  min-height: 20px;
+  padding-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+select.form-control {
+  font-family: Arial, Helvetica, sans-serif !important;
+  option {
+    font-size: 1.3rem;
+  }
+}
+
+// need to bump up these default font sizes
+.form-control {
+  font-size: 1.1rem;
+}
+
+
+
+// making bs3 js work with bs4 css
+.menu-element.in,
+.panel-collapse.in {
+  display: block !important;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-lg {
+  padding: .5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: .3rem;
+}
+
+.btn-block+.btn-block {
+  margin-top: .5rem;
+}
+
+/*checkbox custom override*/
+.custom-control-input:checked ~ .custom-control-label::before {
+  color: $white;
+  border-color: $dark-gray-alt;
+  background-color: $brand-info;
+}
+.custom-control-label {
+  display: inline-block;
+  font-family: "Nunito", Helvetica, sans-serif;
+  font-weight: 400;
+  color: $dark-gray;
+  font-size: 14px;
+  line-height: 1.2;
+  &::before {
+    position: absolute;
+    top: 0;
+    left: -1.5rem;
+    display: block;
+    width: 1.1rem;
+    height: 1.1rem;
+    pointer-events: none;
+    content: "";
+    background-color: $white;
+    border: $custom-label solid 1px;
+  }
+  &::after {
+    position: absolute;
+    top: 0;
+    left: -1.5rem;
+    display: block;
+    width: 1.1rem;
+    height: 1.1rem;
+    content: "";
+    background: no-repeat 50%/50% 50%;
+  }
+}
+
+// trying to stop ios from zooming on input fields.  it doesn't zoom out on foucusout so it kind of wrecks the window
+@media (hover: none) {
+	/* start mobile styles */
+	select,
+	textarea,
+	input[type="text"],
+	input[type="password"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="date"],
+	input[type="month"],
+	input[type="time"],
+	input[type="week"],
+	input[type="number"],
+	input[type="email"],
+	input[type="tel"],
+	input[type="url"] {
+		font-size: 16px !important;
+	}
+	/* end mobile styles */
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 600px;
+  }
+}
+
+
+.list-group-item + .list-group-item.active {
+  margin-top: initial;
+  border-top-width: 0;
+}
+
+_:-ms-fullscreen, // ie11 fix for img fluid
+:root .img-fluid {
+  width: 100%;
+}
+
+#quick-order-add-button {
+  height: 38px;
+}
+
+.bottom-line-items-container .avg-score {
+  white-space: nowrap;
+  @media only screen and (max-width: 564px) {
+    font-size: 24px !important;
+  }
+  @media only screen and (max-width: 768px) {
+    font-size: 32px !important;
+  }
+}

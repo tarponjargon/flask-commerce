@@ -1,0 +1,50 @@
+{% extends "base.html.j2" %}
+{% set title %}Do Not Sell or Share my Personal Information at FlaskCommerce{% endset %}
+{% set page = 'generalform' %}
+
+{% block content %}
+
+<main class="container">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="col-12">
+      <h1 class="customer-service">{{ title }}</h1>
+    </div>
+
+    <div class="col-12">
+      <p>
+        We may share or sell information as described in our <strong><a href="/privacy">Privacy Policy</a></strong>.
+        Residents of California, Colorado, Connecticut, Utah and Virginia have a right to opt-out of the sale or sharing
+        of their Personal Information, or the processing of their Personal Information for purposes of cross-context
+        behavioral advertising. To opt-out of the sale or sharing of your personal information, please submit the form below.
+        To limit the collection and sharing of Personal Information relating to your browsing activities on our website through
+        cookies and similar internet technologies, you can access the cookie management choices available here: <button id="ot-sdk-btn" class="ot-sdk-show-settings">Cookies Settings</button>.
+        If you would like to exercise a general opt out of interest-based digital advertising utilizing cookies and similar technologies, you may also visit the industry opt-out pages maintained by the Network Advertising Initiative
+        (<strong><a href="http://optout.networkadvertising.org">http://optout.networkadvertising.org</a></strong>) or the
+        Digital Advertising Alliance (<strong><a href="http://optout.aboutads.info">http://optout.aboutads.info</a></strong>).
+      </p>
+    </div>
+
+    <div class="col-12 col-md-6" data-js="general-form-container">
+      <div class="card text-white bg-danger my-5 p-3 error-card">
+        <div class="card-body p-1">
+          <p class="card-text">
+            <h1 class="text-white">Sorry!</h1>
+            We are temporarily unable to accept orders at this time
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+{% endblock %}

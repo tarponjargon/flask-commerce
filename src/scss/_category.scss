@@ -1,0 +1,705 @@
+/*category*/
+
+#results-header {
+  .row {
+    @media screen and (min-width: 768px) {
+      border-bottom: 1px solid $gray-light;
+    }
+  }
+}
+
+// collapse-expand text box
+.expandable-box {
+  a {
+    text-decoration: none;
+  }
+  input {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  p {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  input:checked + p {
+    -webkit-line-clamp: unset;
+  }
+
+  input:checked ~ label {
+    #read-less {
+      display: inline-block;
+    }
+    #read-more {
+      display: none;
+    }
+  }
+
+  p {
+    margin: 0;
+  }
+
+  label {
+    margin-top: 5px;
+    border-radius: 4px;
+    padding: 0.2em 0.6em;
+    border: 1px solid $brand-info;
+    background-color: $white;
+    color: $brand-info;
+    font-size: 0.8em;
+    #read-more {
+      display: inline-block;
+    }
+    #read-less {
+      display: none;
+    }
+  }
+}
+
+.ss__autocomplete--target {
+  .ss__autocomplete__terms__option {
+    a {
+      &:focus {
+        text-decoration: underline;
+      }
+      &:focus-visible {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.facets-target,
+.ss-slideout_show {
+	a {
+		color: #666565;
+	}
+  .treeview a {
+    color: $brand-info;
+  }
+	.item-count {
+		padding: 0 0 13px 0;
+		font-size: 28px;
+		font-weight: 300;
+		font-family: "Nunito", Helvetica, sans-serif;
+		border-bottom: 1px solid $divider;
+		color: $brand-primary;
+	}
+	.list-group-item-text {
+		margin-bottom: 6px;
+	}
+	.searchspring-toggle {
+		a {
+			font-size: 14px;
+			color: $brand-info;
+			cursor: pointer;
+		}
+	}
+	.clear-filters {
+		color: $brand-info;
+	}
+	.filters-container {
+		.facet_container {
+      a {
+        text-decoration: none;
+      }
+			font-size: 14px;
+			line-height: 20px;
+			margin-bottom: 15px;
+			.list-group {
+				.list-group-item {
+					padding: 0 0 0 20px;
+					border: none;
+					background-image: url(../images/check_no.png);
+					background-repeat: no-repeat;
+					background-position-y: 2px;
+					margin: 0 2px 5px 0;
+					display: block;
+					font-weight: normal;
+					cursor: pointer;
+				}
+				.list-group-item.highlight {
+					background-image: url(../images/check_yes.png);
+					background-repeat: no-repeat;
+					background-position-y: 2px;
+				}
+				.list-group-item {
+					&:hover {
+						background-image: url(../images/check_yes.png);
+						background-repeat: no-repeat;
+						background-position-y: 2px;
+					}
+				}
+			}
+
+			&.grid {
+				li {
+					padding: 5px 6px;
+					display: inline-block;
+					border: 1px solid #dcdcdc;
+					border-radius: 3px;
+					margin: 2px;
+					.list-group-item {
+						padding: 0;
+						background-color: #fff;
+						background-image: none;
+						margin: 0;
+						&:hover {
+							background-image: none;
+						}
+					}
+					&.active {
+						background-color: $gray;
+						border-color: $gray;
+						.list-group-item {
+							color: #fff;
+							background-color: $gray;
+							padding: 0;
+							background-image: none;
+							margin: 0;
+							&:hover,
+							&.highlight {
+								background-image: none;
+							}
+						}
+					}
+				}
+			}
+			&.hierarchy {
+				.list-group {
+					.search-filters {
+						.filtered_link {
+							.list-group-item {
+								.list-group-item-text {
+									&:before {
+										content: "\0000AB";
+										padding: 0 5px 0 0;
+									}
+								}
+							}
+						}
+						.filtered_current {
+							font-weight: bold;
+						}
+					}
+				}
+				.filtered_link {
+					.list-group-item {
+						padding-left: 0;
+						background-image: none;
+					}
+				}
+			}
+		}
+		.ss-facet-title {
+			font-size: 1.3rem;
+			margin-bottom: 10px;
+			margin-top: 10px;
+			&:after {
+				content: "+";
+				float: right;
+				border: 1px solid #d6d6d6;
+				width: 20px;
+				height: 20px;
+				text-align: center;
+				font-size: 18px;
+				line-height: 18px;
+			}
+			cursor: pointer;
+			~ {
+				.list-group {
+					display: none;
+				}
+				.show_more {
+					display: none;
+				}
+			}
+		}
+		.ss-facet-title.open {
+			&:after {
+				content: "-";
+			}
+			~ {
+				.list-group {
+					display: block;
+				}
+				.show_more {
+					display: block;
+				}
+			}
+		}
+	}
+}
+
+.filter-these-items {
+	margin: 0 -15px;
+	.slideout_button {
+		background-color: $brand-info;
+		color: #fff;
+		transition: all 250ms ease-in-out 0s;
+		text-align: center;
+		height: 40px;
+		width: 100%;
+		margin: 0;
+		font-size: 16px;
+		position: relative;
+		display: none;
+		position: relative;
+		margin: 10px 0 0 0;
+		&:hover {
+			cursor: pointer;
+		}
+		.slideout_button_text {
+			line-height: 40px;
+			font-weight: bold;
+		}
+		.slideout_button-icon {
+			font-weight: bold;
+			font-size: 1.3rem;
+			position: absolute;
+			left: 10px;
+			top: 10px;
+		}
+	}
+	@media only screen and (max-width: 767px) {
+		.slideout_button {
+			display: block;
+		}
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.filter-wrapper {
+		display: block !important;
+	}
+	#facets-container {
+		display: none;
+	}
+}
+
+
+// successful CRO test, make add to cart an actual button
+// TODO: make this apply to monetate
+.ss__result__container {
+  margin-bottom: 20px;
+  position: relative;
+  .ss-item-inner {
+    height: 100%;
+    .product-wrapper {
+      &.h-100 {
+        padding: 0;
+        margin: 0;
+      }
+      .product {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: space-between;
+      }
+      .product-buttons {
+        &> span {
+          .addbtn-divider {
+            display: none;
+          }
+          & > a {
+            width: 100%;
+            height: 100%;
+            padding-left: 13px;
+            padding-right: 13px;
+            padding-top: 7px;
+            padding-bottom: 7px;
+            background: $brand-info;
+            border-radius: 4px;
+            justify-content: center;
+            display: inline-flex;
+            text-align: center;
+            color: white;
+            margin-top: 5px;
+            max-height: 40px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.ss-slideout_show {
+	width: 100% !important;
+	padding: 10px !important;
+	.searchspring-slideout_button_text {
+		font-size: 1.4rem;
+		font-weight: bold;
+		display: block;
+		padding: 10px 0;
+	}
+	.glyphicon {
+		position: absolute;
+		right: 10px;
+		top: 20px;
+		font-size: 20px;
+		color: $brand-primary;
+	}
+}
+
+.filters-mobile-summary {
+	margin: 20px -15px;
+}
+
+.search-filters {
+	display: block;
+	margin: 10px 0 0 0;
+	padding: 0;
+	list-style: none;
+}
+.filter-summary-container {
+  margin-top: 20px;
+	.list-group {
+		.list-group-item {
+			border: none;
+			padding: 0 0 0 2px;
+			.list-group-item-text {
+				margin-bottom: 6px;
+			}
+		}
+	}
+}
+
+.category-caption {
+	padding: 5px 0 10px;
+	line-height: 32px;
+	font-family: "Nunito", Helvetica, sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 28px;
+	color: $dark-gray;
+	margin-bottom: 0;
+	@media screen and (max-width: 1200px) {
+    padding: 0 0 10px 0;
+    font-size: 1.3rem;
+    //margin-left: -10px;
+	}
+	@media screen and (max-width: 768px) {
+    padding: 0;
+	}
+}
+.banner {
+	margin: 15px 0;
+	display: block;
+}
+
+.pagination-wrapper {
+	text-align: right;
+	margin-bottom: 0 !important;
+	@media screen and (max-width: 768px) {
+		width: 100%;
+	}
+	.pagination {
+		margin: 0;
+		vertical-align: middle;
+		display: inline-block;
+		padding-left: 0;
+		border-radius: 4px;
+		@media screen and (max-width: 768px) {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		li {
+      a {
+        text-decoration: none;
+      }
+			display: inline;
+			font-size: 19px;
+			margin-right: 0;
+			border: none;
+			background-color: transparent;
+			font-family: "Nunito", Helvetica, sans-serif;
+			font-weight: 400;
+			font-style: normal;
+			cursor: pointer;
+			padding: 4px 7px;
+			color: $brand-info;
+			position: relative;
+			float: left;
+			margin-left: -1px;
+			line-height: 1.42857143;
+			text-decoration: none;
+			// @media screen and (max-width: 767px) {
+			// 	padding-left: 11px;
+			// 	padding-right: 11px;
+			// }
+			.custom-icon {
+				width: 20px;
+				height: 20px;
+				display: inline-block;
+				text-align: center;
+				padding: 0;
+				border-radius: 50%;
+				background: $brand-info;
+				color: $white;
+				font-size: 16px;
+				line-height: 20px;
+				@media screen and (max-width: 767px) {
+					width: 15px;
+					height: 15px;
+					display: inline-block;
+					text-align: center;
+					padding: 0;
+					border-radius: 50%;
+					background: $brand-info;
+					color: $white;
+					font-size: 12px;
+					line-height: 15px;
+				}
+			}
+			&.active {
+				a {
+					color: $dark-gray-alt2;
+					cursor: default;
+          text-decoration: underline;
+          font-weight: bold;
+				}
+        span {
+          text-decoration: underline;
+          font-weight: bold;
+          // font-size: 1.9em;
+        }
+      }
+			&.disabled {
+				a {
+					color: $divider;
+					cursor: default;
+					.custom-icon {
+						background: $divider !important;
+					}
+				}
+			}
+		}
+	}
+	.view-all-link {
+		display: inline-block;
+		vertical-align: middle;
+		margin-left: 25px;
+		cursor: pointer;
+		color: $brand-info;
+		font-size: 14px;
+	}
+}
+
+.top-panel {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 15px 0 15px;
+	//border-bottom: 1px solid $divider;
+	margin: 10px -10px;
+	@media screen and (max-width: 850px) and (min-width: 768px) {
+		flex-direction: column;
+		align-items: flex-start;
+		padding-bottom: 35px;
+	}
+	@media screen and (max-width: 768px) {
+		border-bottom: none;
+    padding: 5px 0 5px;
+    margin: 0 -10px;
+	}
+	.selects-wrapper {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+
+		@media screen and (max-width: 768px) {
+      margin-bottom: 15px;
+      margin-top: 15px;
+			display: block;
+			width: 100%;
+		}
+		.top-panel-section {
+			margin: 0 20px 0 0;
+
+			@media screen and (max-width: 768px) {
+				margin: 0 0 10px 0;
+			}
+			.dropdown-span-text {
+				font-family: $brand-info, Helvetica, sans-serif;
+				font-weight: 600;
+				font-style: normal;
+				font-size: 14px;
+        display: inline-block;
+        @media screen and (max-width: 991px) {
+          display: none;
+        }
+			}
+			select {
+				width: 155px;
+				display: inline-block;
+				background-color: $white;
+				@media screen and (max-width: 768px) {
+					width: 100%;
+				}
+			}
+		}
+	}
+}
+
+.bottom-panel {
+  border-top: 1px solid $gray-lighter;
+  padding: 20px 0;
+	margin: 0 -15px;
+}
+
+.badge-wrapper {
+  position: absolute!important;
+  z-index: 10;
+  top: 5px;
+  left: 0;
+  @media (min-width: 991px) {
+    left: 5px;
+  }
+  .badges {
+    width: 91px;
+    height: 37px;
+    &.badge-new {
+      background: url("../images/BADGES/NEW.png") 0 -5px no-repeat!important;
+    }
+    &.badge-sale {
+      background: url("../images/BADGES/SALE.png") 0 -5px no-repeat!important;
+    }
+    &.badge-personalized {
+      background: url("../images/BADGES/PERS.png") 0 -5px no-repeat!important;
+    }
+    &.badge-sold-out {
+      background: url("../images/BADGES/SOLDOUT.png") 0 -5px no-repeat!important;
+    }
+    &.badge-clearance {
+      background: url("../images/BADGES/CLEARANCE.png") 0 -5px no-repeat;
+    }
+  }
+}
+
+/*Product item*/
+.product-wrapper {
+	position: relative;
+	margin: 0 0 30px;
+	padding: 0 0 30px;
+	//border-bottom: 1px solid $divider;
+	.product {
+    font-size: 1.1rem;
+		padding: 4px 10px 0;
+		@media screen and (max-width: 991px) {
+			padding: 0 12px 0 0;
+		}
+		@media screen and (max-width: 380px) {
+			padding: 0 5px 0 0;
+		}
+
+    .product-image {
+      text-align: center;
+      width: 100%;
+      border: 1px solid $gray-light;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      @include thumb-height;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+		.product-title {
+      width: 100%;
+      text-align: center;
+      margin: 3px 0;
+			// font-family: "Nunito", Helvetica, sans-serif;
+			// font-weight: 400;
+			// font-style: normal;
+			// font-size: 14px;
+			// text-align: center;
+			// height: 64px;
+			// margin: 0 0 10px;
+			// color: $black;
+			// @media screen and (max-width: 767px) {
+			// 	height: 50px;
+			// 	font-size: 10px;
+			// 	line-height: 1.3;
+			// }
+			// a {
+			// 	color: $black;
+			// }
+		}
+		.product-price {
+			height: auto;
+			text-align: center;
+			font-weight: 600;
+      margin: 3px 0;
+			.price-original {
+        text-decoration: line-through;
+        color: $dark-gray;
+        font-weight: 600;
+        margin-right: 10px;
+			}
+			.price-sale {
+				color: $price-sale;
+				font-weight: bold;
+			}
+		}
+		.product-buttons {
+			text-align: center;
+      margin: 3px 0;
+      display: none;
+		}
+    .search-product-link {
+      img[width="12"] {
+        margin: -1px 3px 2px;
+      }
+    }
+	}
+}
+
+/* 9/1/2023 show nested categories under left-side category listing (on category pages)
+ONLY ON gifts category.  I'm doing this by hiding anything with data-level="1"
+*/
+.facet_container .search-filters [data-level="1"] {
+  display: none;
+}
+// and then totally different styles for the /gifts page
+body[data-page-path="/clothing"],
+body[data-page-path="/seasonal"],
+body[data-page-path="/gifts"] {
+  .facet_container .search-filters {
+    [data-level="1"] {
+      display: block;
+    }
+
+    [data-level="0"] {
+      padding-top: 15px;
+      a {
+        font-weight: bold;
+        font-size: 0.9rem;
+        color: black;
+      }
+    }
+
+    [data-level="0"]:first-of-type {
+      padding-top: 0;
+    }
+
+    [data-level]:last-of-type {
+      padding-bottom: 20px;
+    }
+  }
+}
+
+.product-wrapper .product-title a H2 {
+  font-size: 1.1rem!important;
+  font-weight: 500;
+  color: $brand-primary;
+}

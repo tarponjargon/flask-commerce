@@ -1,0 +1,65 @@
+{% from 'macros/cart_items.html.j2' import render_cart_items with context %}
+{% from 'macros/errors.html.j2' import render_errors %}
+{% extends "base.html.j2" %}
+{% set page = 'view' %}
+{% set updatepage = '/cart' %}
+{% set title %}Your {{ config.STORE_NAME }} Order{% endset %}
+{% if upsell_id %}
+{% set body_attrs %}data-cart-upsell="{{ upsell_id }}"{% endset %}
+{% endif %}
+
+{% block content %}
+<main class="container">
+
+  {% if g.messages.get('errors', None) %}
+    {# errors sent from application back-end here #}
+    {{ render_errors(g.messages.get('errors')) }}
+  {% else %}
+    {# errors sent from application front-end here #}
+    <div class="card text-white bg-danger mt-3 mx-3 error-card" style="display: none">
+      <div class="card-body">
+        <p class="card-text"></p>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="shopping-cart-header">
+        <h1 class="header-title primary-color">Shopping Cart</h1>
+        <a class="back-link blue-link text-decoration-none" href="/"><i class="fa fa-caret-left" aria-hidden="true"></i>Continue Shopping</a>
+        <a
+          class="btn btn-info btn-lg checkout-top-btn"
+          onClick="checkoutClick(event)"
+          href="/checkout"
+          tabindex="0"
+        >CHECKOUT <i class="fa fa-arrow-right"></i></a>
+      </div>
+      {{ render_cart_items(g.cart, page) }}
+    </div>
+  </div>
+  <div class="cart-shipping-details">
+    <div class="row m-0">
+      <div class="col-lg-4">
+        {% include "includes/tax_calculator.html.j2" %}
+      </div>
+      <div class="col-lg-4">
+        {% include "includes/cart_shipping_cutoffs.html.j2" %}
+      </div>
+      <div class="col-lg-4">
+        {% include "includes/cart_summary.html.j2" %}
+      </div>
+    </div>
+  </div>
+
+  <hr class="mt-4 mb-5" />
+
+  <div class="fullwidth__holder">
+    <div
+      id="recs-container"
+      class="certona-carousel minheight minheigt-800 loading-mask"
+      data-recs='[{"recommendationsType":"recommendations","reportingId":"Recommendations 1: Cart","title": "Complete Your Order With These Items"}]'
+    ></div>
+  </div>
+</main>
+{% endblock %}

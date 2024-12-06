@@ -1,0 +1,154 @@
+<a name="coupon"></a>
+<div class="summary-block">
+  <div class="promotion">
+    {% set rand_id = 'btn-' + get_random_string() %}
+    <form
+      action="/cart#coupon"
+      method="POST"
+      onSubmit="spinButton('{{ rand_id }}', 'ADDING')"
+      data-js="cart-promo-submit"
+      >
+      <h2>Add a Coupon or Promotion Code</h2>
+      <div class="control-wrapper">
+        <input
+          type="text"
+          name="coupon_code"
+          value="{{ session_safe_get('coupon_code') }}"
+          class="form-control"
+          placeholder="Coupon (one per order)"
+          required="required"
+          aria-label="Enter a coupon code"
+          />
+        <button class="button-primary" id="{{ rand_id }}" type="submit">Apply</button>
+      </div>
+      <div class="w-100">
+        {% include "includes/coupon_message.html.j2" %}
+      </div>
+    </form>
+  </div>
+  <div class="cart-orderSummary">
+    <div class="ordersummary summary-details clearfix">
+      <a name="cartsummary"></a>
+
+      {% if g.cart.get_discount() %}
+        <div class="clearfix summary-line">
+          <span class="summary-label">Subtotal ({{ g.cart.get_quantities() }}):</span>
+          <span class="price">{{ g.cart.get_subtotal() | format_currency }}</span>
+        </div>
+
+        <div class="clearfix summary-line">
+          <span class="summary-label text-success">Discount:</span>
+          <span class="price text-success">-{{ g.cart.get_discount() | format_currency }}</span>
+        </div>
+      {% endif %}
+
+      <div class="clearfix summary-line">
+        <span class="summary-label">
+          {{ 'Post-discount' if g.cart.get_discount() else ' Merchandise'}}
+          Subtotal:
+        </span>
+        <span class="price">{{ g.cart.get_discounted() | format_currency }}</span>
+      </div>
+
+      <div class="clearfix summary-line d-flex align-items-center justify-content-start">
+        <span class="summary-label">
+        <span class="d-none d-sm-inline">Shipping<span class="d-none d-md-inline-block">&nbsp;& Processing</span>:</span>
+        <a
+          class="showmodal blue-link text-decoration-none"
+          href="/shippinginfo"
+          ><i class="fa fa-info-circle" title="Click for quick shipping info" aria-hidden="true"></i><span class="visually-hidden">Shipping & Processing Information</span></a>
+        </span>
+        <span class="price">
+          <form action="/cart" id="cart-shipping-rates" method="POST">
+            <select class="form-select" data-js="ship-methods-menu" aria-label="Select a Shipping Method">
+              {% for method in g.cart.get_shipping_methods() %}
+                {% set code = method.get('ship_method_code') %}
+                <option
+                  data-id="{{ code }}"
+                  value="/cart?ship_method={{ code }}"
+                  {{ 'selected' if code == session_safe_get('ship_method') else '' }}
+                >{{ method.get('ship_method_short_name') }}:
+                  {% if method.get('ship_method_delivery_desc') %}({{ method.get('ship_method_delivery_desc') }}){% endif %}
+                  {{ method.get('ship_method_cost') | format_currency }}
+                </option>
+              {% endfor %}
+            </select>
+          </form>
+        </span>
+      </div>
+
+      {% if g.cart.get_tax() %}
+      <div class="clearfix summary-line">
+        <span class="summary-label">Est Tax:</span>
+        <span class="price">{{ g.cart.get_tax() | format_currency }}</span>
+      </div>
+      {% endif %}
+
+      {% if g.cart.get_surcharge() %}
+      <div class="clearfix summary-line">
+        <span class="summary-label"><span class="d-none d-sm-inline">Retail </span>Surcharge:
+        <a
+            class="showmodal blue-link text-decoration-none"
+            href="/shippinginfo#surcharge"
+          ><i class="fa fa-info-circle" title="Click for quick shipping info" aria-hidden="true"></i><span class="visually-hidden">Retail Surcharge</span></a>
+        </span>
+        <span class="price">{{ g.cart.get_surcharge() | format_currency }}</span>
+      </div>
+      {% endif %}
+
+      {% if g.cart.get_credit() %}
+      <div class="clearfix summary-line">
+        <span class="summary-label text-success">Credit:</span>
+        <span class="price text-success">-{{ g.cart.get_credit() | format_currency }}</span>
+      </div>
+      {% endif %}
+
+      <div role="alert" aria-live="polite" aria-atomic="true" class="total-line">
+        <div class="clearfix summary-line">
+          <span class="summary-label">ESTIMATED ORDER TOTAL:</span>
+          <span class="price">{{ g.cart.get_total() | format_currency }}</span>
+        </div>
+      </div>
+    </div>
+    {% if (page and page != 'minicart') %}
+      <div class="mt-4">
+        <a
+          class="btn btn-info btn-lg btn-block"
+          onClick="checkoutClick(event)"
+          href="/checkout"
+          tabindex="0"
+          >CHECKOUT <i class="fa fa-arrow-right"></i></a>
+      </div>
+      {% if g.cart.is_paypal_eligible() %}
+      <div class="paypal-holder mt-4">
+        <a
+          href="/start-expresscheckout"
+          class="button-secondary btn-lg btn-block paypal-image"
+          onclick="window.dataLayer.push({'event':'trackEvent','eventCategory':'Checkout Paths','eventAction':'Click','eventLabel':'PayPal'});"
+        >
+          Check Out With <img src="/assets/images/PayPal.svg" height="28" alt="PayPal">
+        </a>
+      </div>
+      {% endif %}
+      {% if not g.cart.has_drop_ship() %}
+        <div class="d-block mt-4">
+          <script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
+          <style>
+            apple-pay-button {
+              width: 100%;
+              --apple-pay-button-height: 49px;
+              --apple-pay-button-border-radius: 5px;
+              /* --apple-pay-button-padding: 5px 0px; */
+            }
+          </style>
+          <apple-pay-button
+            type="check-out"
+            locale="en"
+            onClick="window.dataLayer.push({'event':'trackEvent','eventCategory':'Payment','eventAction':'ApplePay','eventLabel':'Cart page'});"
+          ></apple-pay-button>
+        </div>
+        {% include "includes/applepay_worldpay.html.j2" %}
+      {% endif %}
+    {% endif %}
+  </div>
+</div>

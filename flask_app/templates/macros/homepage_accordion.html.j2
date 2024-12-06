@@ -1,0 +1,10 @@
+{% macro render_accordion(category_code) -%}
+  {% for category in get_subcategories(category_code) %}
+    <li><a
+      href="{{ category.path }}"
+      class="additional_nav additional_nav_category text-uppercase"
+      title="{{ category.category_name }}"
+    >{{ category.category_name }}
+    </a></li>
+  {% endfor %}
+{%- endmacro %}

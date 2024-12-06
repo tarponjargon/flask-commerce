@@ -1,0 +1,201 @@
+{% extends "base.html.j2" %}
+{% set title %}Change Your E-Mail Preferences at FlaskCommerce{% endset %}
+{% set page = 'generalform' %}
+
+{% block content %}
+
+<main class="container">
+	<div class="row">
+		<div class="col-12">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="/">Home</a></li>
+					<li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+				</ol>
+			</nav>
+		</div>
+		<div class="col-12 mb-4">
+			<h1 class="customer-service">{{ title }}</h1>
+		</div>
+
+
+		<div class="col-12 col-md-6 pb-5" data-js="general-form-container">
+			<div class="card h-100" data-js="general-form-content">
+				<div class="card-header text-white bg-info"><h2 class="my-0 text-white">We Hate To See You Go!</h2></div>
+				<div class="card-body p-4">
+					<h5 class="card-title">
+						If you are interested we can tailor a special email program to your needs. Just click below to tell us how often you'd like to hear about special offers, terrific deals, and great gift ideas.
+					</h5>
+
+					<div data-js="general-form-error" class="card text-white bg-danger my-4 mx-0 mx-md-4 error-card" style="display: none">
+						<div class="card-body">
+							<p class="card-text"></p>
+						</div>
+					</div>
+
+					<p class="card-text">
+						<h4 class="mt-0">Do you want to limit the special e-mails you get to:</h4>
+						<form data-js="general-form" method="post" action="ajax_optchange">
+							<input type="hidden" name="optin" value="yes" />
+							<input type="hidden" name="request" value="prefchange" />
+
+							<div class="not-mandatory form-group row">
+								<div class="custom-radio col-12">
+									<input
+										type="radio"
+										id="customCheck"
+										name="frequency"
+										value="1W"
+                    {{ '1W' if session_safe_get('FREQUENCY') == '1W' else '' }}
+									>
+									<label class="" for="customCheck" ><span class="receive-email-text">Once a week</span></label>
+								</div>
+							</div>
+
+              {#
+							<div class="not-mandatory form-group row">
+								<div class="custom-radio col-12">
+									<input
+										type="radio"
+										id="customCheck2"
+										name="frequency"
+										value="2M"
+										{{ '2M' if session_safe_get('FREQUENCY') == '2M' else '' }}
+									>
+									<label class="" for="customCheck2" ><span class="receive-email-text">Twice a Month</span></label>
+								</div>
+							</div>
+
+
+							<div class="not-mandatory form-group row">
+								<div class="custom-radio col-12">
+									<input
+										type="radio"
+										id="customCheck3"
+										name="frequency"
+										value="PO"
+										{{ 'PO' if session_safe_get('FREQUENCY') == 'PO' else '' }}
+									>
+									<label class="" for="customCheck3" ><span class="receive-email-text">Promos Only</span></label>
+								</div>
+							</div>
+              #}
+
+							<div class="not-mandatory form-group row">
+								<div class="col-12 custom-radio">
+									<input
+										type="radio"
+										id="customCheck4"
+										name="frequency"
+										value="All"
+										{{ 'All' if session_safe_get('FREQUENCY') == 'All' or not session_safe_get('FREQUENCY') else '' }}
+									>
+									<label class="" for="customCheck4" ><span class="receive-email-text">Or what the heck? Send 'em all - I don't want to miss a thing!</span></label>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<div class="col-12 new-mandatory-input-wrapper">
+									<input
+										type="email"
+										class="form-control"
+										required="required"
+										title="Enter a valid e-mail address"
+										placeholder="Your E-Mail"
+										name="bill_email"
+										value="{{ session_safe_get('bill_email') }}"
+									/>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<div class="col-12 not-mandatory">
+									<button
+										type="submit"
+										class="button-primary submit-button"
+										id="general-submit-{{ get_random_string() }}"
+									>
+										UPDATE PREFERENCES
+									</button>
+								</div>
+							</div>
+						</form>
+
+					</p>
+				</div>
+			</div>
+			<div data-js="general-success-content" style="display: none">
+				<div class="card text-white bg-success my-4 mx-0 mx-md-4">
+					<div class="card-header"><h2 class="text-white">Preference Change Successful</h2></div>
+					<div class="card-body">
+						<p class="card-text text-larger">Your frequency preference request has been processed.  Thank you!</p>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="col-12 col-md-6" data-js="general-form-container">
+			<div class="card h-100" data-js="general-form-content">
+				<div class="card-header text-white bg-info"><h2 class="my-0 text-white">Unsubscribe Me</h2></div>
+				<div class="card-body p-4">
+					<h5 class="card-title">
+						If you really want to say goodbye, we will completely unsubscribe your email address from all of our special offers.  We are sorry to see you go!
+					</h5>
+
+					<div data-js="general-form-error" class="card text-white bg-danger my-4 mx-0 mx-md-4 error-card" style="display: none">
+						<div class="card-body">
+							<p class="card-text"></p>
+						</div>
+					</div>
+
+						<div class="card-body">
+							<p class="card-text">
+								<form data-js="general-form" method="post" action="ajax_optchange">
+									<input type="hidden" name="optin" value="no" />
+									<input type="hidden" name="request" value="optoutrequest" />
+									<div class="form-group row">
+										<div class="col-12 new-mandatory-input-wrapper">
+											<input
+												type="email"
+												class="form-control"
+												required="required"
+												title="Enter a valid e-mail address"
+												placeholder="Your E-Mail"
+												name="bill_email"
+												value="{{ session_safe_get('bill_email') }}"
+											/>
+										</div>
+									</div>
+
+									<div class="form-group row">
+										<div class="col-12 not-mandatory">
+											<button
+												type="submit"
+												class="button-primary submit-button"
+												id="general-submit-{{ get_random_string() }}"
+											>
+												UNSUBSCRIBE
+											</button>
+										</div>
+									</div>
+								</form>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div data-js="general-success-content" style="display: none">
+					<div class="card text-white bg-success my-4 mx-0 mx-md-4">
+						<div class="card-header"><h2 class="text-white">Opt-out Successful</h2></div>
+						<div class="card-body">
+							<p class="card-text text-larger">Your opt-out request has been processed.  Thank you!</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</main>
+
+{% endblock %}

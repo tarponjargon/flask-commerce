@@ -1,0 +1,186 @@
+{% from 'macros/price.html.j2' import render_price %}
+{% set page = 'minicart' %}
+<div class="modal-header">
+  <h3 class="modal-title text-white" id="cart-summary-modalLabel">Your Shopping Cart</h3>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  <i class="fa fa-times fa-2x"></i>
+  </button>
+</div>
+
+{# mobile-only cart #}
+<div class="modal-body pb-0 mobile-minicart d-block d-md-none" id="mobile-minicart-v1">
+  {% if cart.get_quantities() %}
+    <div class="scrolling-container">
+      <div class="dropdowncartItems items" summary="Shopping Cart">
+        {% for item in cart.get('items') %}
+          {% set product = item.get("product") %}
+          <div class="row m-0 item">
+            <div class="col-4 image text-center" role="presentation">
+              <a href="{{ product.get('url') }}">
+                <img src="{{ item.get('image') }}"	alt="{{ item.get('name') | sanitize }}" onerror="imageError(this)">
+              </a>
+            </div>
+            <div class="col-8 description position-relative">
+              <div class="row">
+                <div class="col-sm-8">
+                  <a class="name text-decoration-none" href="{{ product.get('url') }}">{{ product.get('name') }}</a>
+                  <div class="qty">Qty: <span>{{ item.get('quantity') }}</span>
+                  </div>
+                  {% if item.get('variant_data') %}
+                    {% for variant in item.get('variant_data') %}
+                      <div class="optionsText">
+                        {{ variant.get('type', 'Option') }}: {{ variant.get('description') }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+
+                </div>
+                <div class="col-sm-4 price-block">
+                  <div class="product-price cart-item-price fw-normal">
+                    {{ render_price(item) }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% include "includes/cart_summary.html.j2" %}
+    <div class="row">
+      <div class="col-12 col-md-4 mt-3 mt-md-0">
+        <script>
+          var continueLink = function(e) {
+            e.preventDefault();
+            window.dataLayer.push({'event':'trackEvent','eventCategory':'Modal 1 Continue Shopping Button','eventAction':'Click','eventLabel':'Continue Shopping'});
+            if (document.body.getAttribute('data-phase') === 'checkout') {
+              window.location = "/"
+            } else {
+              closeModal('#cart-summary-modal');
+            }
+          }
+        </script>
+        <a
+          role="button"
+          class="btn btn-outline-info btn-lg w-100"
+          href="/cart"
+          onclick="continueLink(event)"
+        ><i class="fa fa-arrow-left"></i> Continue</a>
+      </div>
+      <div class="col-12 col-md-4 mt-3 mt-md-0">
+        <a role="button"
+          class="btn btn-outline-info btn-lg w-100 mb-2"
+          href="/cart"
+        >
+        <i class="fa fa-shopping-cart"></i> VIEW CART
+        </a>
+      </div>
+    </div>
+
+    <div class="sticky-atc-minicart pb-3">
+      <div class="d-flex justify-content-between border-top py-2 mt-2">
+        <span>ESTIMATED ORDER TOTAL:</span>
+        <span>{{ g.cart.get_total() | format_currency }}</span>
+      </div>
+      <a
+        role="button"
+        class="btn btn-info btn-lg w-100"
+        href="/checkout"
+        onClick="window.dataLayer.push({'event':'trackEvent','eventCategory':'Modal 1 Checkout Button','eventAction':'Click','eventLabel':'Checkout'});checkoutClick(event)"
+        >Checkout <i class="fa fa-arrow-right"></i>
+      </a>
+    </div>
+  {% else %}
+    Your cart is empty
+  {% endif %}
+</div>
+{# end mobile-only cart #}
+
+{# desktop cart #}
+<div class="modal-body d-none d-md-block" id="mobile-minicart-v0">
+  {% if cart.get_quantities() %}
+    <div class="scrolling-container">
+      <div class="dropdowncartItems items" summary="Shopping Cart">
+        {% for item in cart.get('items') %}
+          {% set product = item.get("product") %}
+          <div class="row m-0 item">
+            <div class="col-sm-2 image text-center" role="presentation">
+              <a href="{{ product.get('url') }}">
+                <img src="{{ item.get('image') }}"	alt="{{ item.get('name') | sanitize }}" onerror="imageError(this)">
+              </a>
+            </div>
+            <div class="col-sm-10 description position-relative">
+              <div class="row">
+                <div class="col-sm-8">
+                  <a class="name text-decoration-none" href="{{ product.get('url') }}">{{ product.get('name') }}</a>
+                  <div class="qty">Qty: <span>{{ item.get('quantity') }}</span>
+                  </div>
+                  {% if item.get('variant_data') %}
+                    {% for variant in item.get('variant_data') %}
+                      <div class="optionsText">
+                        {{ variant.get('type', 'Option') }}: {{ variant.get('description') }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+
+                </div>
+                <div class="col-sm-4 price-block">
+                  <div class="product-price cart-item-price">
+                    {{ render_price(item) }}
+                  </div>
+                </div>
+              </div>
+              <a
+                class="blue-link btn-remove text-decoration-none position-absolute"
+                href="/cart?PRODUCT_{{ item.get('skuid')}}=0"
+                title="Remove this item"
+              ><i class="fa fa-times-circle"></i>
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% include "includes/cart_summary.html.j2" %}
+    <div class="row">
+      <div class="col-12 col-md-4 mt-3 mt-md-0">
+        <script>
+          var continueLink = function(e) {
+            e.preventDefault();
+            window.dataLayer.push({'event':'trackEvent','eventCategory':'Modal 1 Continue Shopping Button','eventAction':'Click','eventLabel':'Continue Shopping'});
+            if (document.body.getAttribute('data-phase') === 'checkout') {
+              window.location = "/"
+            } else {
+              closeModal('#cart-summary-modal');
+            }
+          }
+        </script>
+        <a
+          role="button"
+          class="btn btn-outline-info btn-lg w-100"
+          href="/cart"
+          onclick="continueLink(event)"
+        ><i class="fa fa-arrow-left"></i> Continue</a>
+      </div>
+      <div class="col-12 col-md-4 mt-3 mt-md-0">
+        <a role="button"
+          class="btn btn-outline-info btn-lg w-100"
+          href="/cart"
+        >
+        <i class="fa fa-shopping-cart"></i> VIEW CART
+        </a>
+      </div>
+      <div class="col-12 col-md-4 mt-3 mt-md-0">
+        <a
+          role="button"
+          class="btn btn-info btn-lg w-100"
+          href="/checkout"
+          onClick="window.dataLayer.push({'event':'trackEvent','eventCategory':'Modal 1 Checkout Button','eventAction':'Click','eventLabel':'Checkout'});checkoutClick(event)"
+        >Checkout <i class="fa fa-arrow-right"></i></a>
+      </div>
+    </div>
+  {% else %}
+    Your cart is empty
+  {% endif %}
+</div>
+{# end desktop cart #}

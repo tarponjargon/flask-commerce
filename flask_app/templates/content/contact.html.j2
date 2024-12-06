@@ -1,0 +1,229 @@
+{% extends "base.html.j2" %} {% set title %}Need Help? Contact FlaskCommerce Customer Service for
+Support{% endset %} {% set page = 'contact' %} {% block content %}
+
+<main class="container">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Contact Us</li>
+        </ol>
+      </nav>
+    </div>
+    <div class="col-12">
+      <h1 class="customer-service">Contact Us</h1>
+    </div>
+
+    <div class="col-md-6 text-center">
+      <div class="w-auto">
+        <div class="d-block">
+          <img src="{{ config.IMAGE_BASE }}/assets/images/contact.jpg" />
+        </div>
+        <div class="d-block text-left p-2 p-lg-4">
+          <h2>
+            <span class="text-info">Questions, Comments, Concerns?</span> We're here for you! Please
+            contact us by using this form. You may call us toll-free at
+            <span class="d-none d-md-inline">{{ config.STORE_PHONE }}</span
+            ><span class="d-inline d-md-none">{{ config.STORE_PHONE_MOBILE }}</span
+            >.
+          </h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div id="contact-content" class="pt-0 pt-md-4 px-2 px-md-4">
+        <div
+          id="error-card"
+          class="card text-white bg-danger my-4 mx-0 mx-md-4 error-card"
+          style="display: none"
+        >
+          <div class="card-body">
+            <p class="card-text"></p>
+          </div>
+        </div>
+        <div class="row justify-content-center m-0">
+          <form id="contact-form">
+            <div class="form-group row">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <input
+                  type="text"
+                  class="form-control"
+                  required="required"
+                  title="Please enter your first name"
+                  placeholder="First Name"
+                  name="bill_fname"
+                  value="{{ session_safe_get('bill_fname') }}"
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <input
+                  type="text"
+                  class="form-control"
+                  required="required"
+                  title="Please enter your last name"
+                  placeholder="Last Name"
+                  name="bill_lname"
+                  value="{{ session_safe_get('bill_lname') }}"
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <input
+                  type="email"
+                  class="form-control"
+                  required="required"
+                  title="Enter a valid e-mail address"
+                  placeholder="E-Mail"
+                  name="bill_email"
+                  value="{{ session_safe_get('bill_email') }}"
+                />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <select
+                  class="form-select"
+                  name="info_request_type"
+                  required="required"
+                  title="Please select a request type"
+                >
+                  <option value="">Select Request Type</option>
+                  <option value="info_request_subject_order">
+                    In regards to an existing order
+                  </option>
+                  <option value="info_request_subject_inquiry">General inquiry</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row" data-js="order-field" style="display: none">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <select
+                  class="form-control"
+                  name="info_request_subject_order"
+                  data-required="required"
+                  title="Please select an issue"
+                >
+                  <option value="">Select Issue</option>
+                  <option value="couponcode">Coupon Code Issues</option>
+                  <option value="orderstatus">Order Status</option>
+                  <option value="backorder">Backorder Status</option>
+                  <option value="cancel">Cancel Item/Order</option>
+                  <option value="change">Change Item/Order</option>
+                  <option value="return">Return/Exchange</option>
+                  <option value="damage">Received Damaged or Defective Item</option>
+                  <option value="incorrect">Received Incorrect Item</option>
+                  <option value="feedback">Feedback/Comments</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row" data-js="inquiry-field" style="display: none">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <select
+                  class="form-control"
+                  name="info_request_subject_inquiry"
+                  data-required="required"
+                  title="Please select an issue"
+                >
+                  <option value="">Select Issue</option>
+                  <option value="prodinfo">Product Information</option>
+                  <option value="availability">Item Availability</option>
+                  <option value="siteprob">Site Problem/Error</option>
+                  <option value="couponcode">Coupon Code Problem</option>
+                  <option value="removal">Remove From E-Mail/Postal List</option>
+                  <option value="membership">Membership Question</option>
+                  <option value="product_submission">Product Submission Question</option>
+                  <option value="feedback">Feedback/Comments</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row" data-js="order-field" style="display: none">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <input
+                  type="text"
+                  class="form-control"
+                  data-required="required"
+                  pattern="^[A-Za-z]?[0-9]{7,}$"
+                  title="Order ID begins with a letter, followed by 7-8 numbers"
+                  placeholder="Order ID"
+                  name="ordno"
+                  value="{{ session_safe_get('ORDNO') }}"
+                />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <textarea
+                  rows="4"
+                  cols="50"
+                  aria-required="true"
+                  maxlength="1500"
+                  type="text"
+                  class="form-control"
+                  required="required"
+                  name="request_body"
+                  title="Please enter a question or comment"
+                  placeholder="Questions and Comments"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="col-xs-12 not-mandatory form-group">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="customCheck" name="optpref"
+                value="yes"
+                {{ 'checked' if session_safe_get('optin') == 'yes' else '' }}
+                >
+                <label class="custom-control custom-checkbox" for="customCheck"
+                  ><span class="receive-email-text"
+                    >I would like to receive e-mails from {{ config.STORE_NAME }} about special
+                    sales, promotions, new products and more.</span
+                  ></label
+                >
+              </div>
+            </div>
+            <div class="form-group row" id="form-email-again">
+              <div class="col-12 new-mandatory-input-wrapper">
+                <input type="text" class="form-control" name="email_again" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-12 not-mandatory">
+                <button
+                  type="submit"
+                  class="button-primary submit-button"
+                  id="contact-submit-button"
+                >
+                  SUBMIT
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div id="success-content" style="display: none">
+        <div class="card text-white bg-success my-4 mx-0 mx-md-4">
+          <div class="card-header"><h2 class="text-white">Inquiry Submitted!</h2></div>
+          <div class="card-body">
+            <p class="card-text text-larger">
+              Your request is submitted. Thank you! Please allow 24-48 hours for us to respond to
+              you.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

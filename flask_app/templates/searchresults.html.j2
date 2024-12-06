@@ -1,0 +1,17 @@
+{% extends "base.html.j2" %}
+{% set title %}Search Results at {{ config.STORE_NAME }} | {{ request.args.get('q') | sanitize }}{% endset %}
+{% set page = 'search' %}
+{% set products = search.get('products', []) %}
+{% block content %}
+
+{% if plp_banner %}
+{% include "includes/plp_banner.html.j2" %}
+{% endif %}
+
+{% if get_search_state() %}
+{% include "includes/vendor_searchresults.html.j2" %}
+{% else %}
+  {% include "includes/default_searchresults.html.j2" %}
+{% endif %}
+
+{% endblock %}

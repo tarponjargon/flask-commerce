@@ -1,0 +1,178 @@
+{% from 'macros/errors.html.j2' import render_errors %}
+{% extends "checkout_base.html.j2" %}
+{% set title %}Checkout at {{ config.STORE_NAME }}{% endset %}
+{% set page = 'login' %}
+{% block content %}
+
+<main class="container">
+  {% include "includes/checkout_nav.html.j2" %}
+
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="cd-breadcrumb triangle">
+        <li class="active">
+          <button class="text-white" type="submit" data-js="checkout-heading-button">Sign in</button>
+        </li>
+        <li>
+          <button class="text-white" type="submit" data-js="checkout-heading-button">
+            <span class="d-none d-sm-inline">Billing &amp; Shipping</span>
+            <span class="d-sm-none">Addresses</span>
+          </form>
+        </li>
+        <li><div class="text-white">Payment</div></li>
+        <li><div class="text-white">Review</div></li>
+      </ol>
+    </div>
+  </div>
+
+  {% if errors | length %}
+    {{ render_errors(errors) }}
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="row ms-0 me-0">
+        <div class="col-12">
+          <div class="checkout_login">
+            <h2 class="checkout__title">Guest customer<br>
+            </h2>
+            <div class="checkout-form">
+              <div class="checkout-guest">
+                <form
+                  id="guest-checkout-form"
+                  action="/checkout"
+                  method="POST"
+                  onSubmit="spinButton('guest-checkout-button', 'PLEASE WAIT')"
+                >
+                  <input type="hidden" name="REQUEST" value="guest">
+                  <input type="hidden" name="LOGINPASS" value="">
+                  <div class="form-group row required">
+                    <div class="col-12 new-mandatory-input-wrapper">
+                      <input
+                        type="email"
+                        class="form-control"
+                        required="required"
+                        aria-label="Enter a valid e-mail address"
+                        placeholder="E-Mail"
+                        name="bill_email"
+                        value="{{ session_safe_get('bill_email') }}"
+                        id="guest-email"
+                        >
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <button
+                        type="submit"
+                        id="guest-checkout-button"
+                        class="button-primary submit-button btn-block"
+                        onClick="window.dataLayer.push({'event':'trackEvent','eventCategory':'Checkout Paths','eventAction':'Click','eventLabel':'Guest'});"
+                        >CONTINUE AS GUEST</button>
+                    </div>
+                  </form>
+
+                    {% if g.cart.is_paypal_eligible() %}
+                    <div class="col-lg-3 mt-4 mt-lg-0 text-center">
+                        <a
+                          href="/start-expresscheckout"
+                          role="button"
+                          class="button-secondary submit-button btn-block paypal-image"
+                          onClick="window.dataLayer.push({'event':'trackEvent','eventCategory':'Payment','eventAction':'PayPal','eventLabel':'Checkout login page'});"
+                        >
+                          <span class="d-inline-block d-lg-none">Check Out With&nbsp;</span><img src="/assets/images/PayPal.svg" height="21" alt="Check Out With PayPal" />
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    {% if not g.cart.has_drop_ship() %}
+                      <div class="col-lg-3 mt-3 mt-lg-0 text-center">
+                        <script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
+                        <style>
+                            apple-pay-button {
+                              width: 100%;
+                              --apple-pay-button-height: 35px;
+                              --apple-pay-button-border-radius: 5px;
+                              /* --apple-pay-button-padding: 5px 0px; */
+                            }
+                          </style>
+                          <apple-pay-button
+                            type="check-out"
+                            locale="en"
+                            onClick="window.dataLayer.push({'event':'trackEvent','eventCategory':'Payment','eventAction':'ApplePay','eventLabel':'Checkout login page'});"
+                          ></apple-pay-button>
+                      </div>
+                      {% include "includes/applepay_worldpay.html.j2" %}
+                    {% endif %}
+                  </div>
+
+              </div>
+              <h2 class="checkout__title">Sign-in</h2>
+              <form
+                id="member-checkout-form"
+                action="/checkout"
+                method="POST"
+              >
+                <div class="card text-white bg-danger my-2 error-card" style="display: none">
+                  <div class="card-body card-text"></div>
+                </div>
+                <input type="hidden" name="REQUEST" value="login">
+                <div class="form-group row required">
+                  <div class="col-12 new-mandatory-input-wrapper">
+                    <input
+                      type="email"
+                      class="form-control"
+                      required="required"
+                      aria-label="Enter a valid e-mail address"
+                      placeholder="E-Mail"
+                      name="bill_email"
+                      value="{{ session_safe_get('bill_email') }}"
+                      >
+                  </div>
+                </div>
+                <div class="form-group row required">
+                  <div class="col-12 new-mandatory-input-wrapper">
+                    <input
+                      type="password"
+                      class="form-control"
+                      required="required"
+                      aria-label="Enter your account password"
+                      placeholder="Returning customer enter password"
+                      autocomplete="off"
+                      name="bill_account_password"
+                      id="password_input"
+                      >
+                  </div>
+                </div>
+                <div class="form-group row under-password-text">
+                  <span class="col-6 remember-me">
+                    <div class="custom-control custom-checkbox">
+                      &nbsp;
+                    </div>
+                  </span>
+                  <span class="col-6 text-end">
+                  <a href="javascript:;" onclick="showForgotPassword(event)" class="blue-link">Forgot <span class="d-none d-sm-inline">your </span>password?</a>
+                  </span>
+                </div>
+                <div class="form-group row checkout__group">
+                  <div class="col-sm-6">
+                    <button
+                      id="member-checkout-button"
+                      class="button-primary submit-button btn-block"
+                      type="submit"
+                      onClick="window.dataLayer.push({'event':'trackEvent','eventCategory':'Checkout Paths','eventAction':'Click','eventLabel':'Login'});"
+                      >SIGN IN &amp; CONTINUE</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      {% include "includes/checkout_cart_summary.html.j2" %}
+    </div>
+  </div>
+</main>
+
+{% endblock %}
